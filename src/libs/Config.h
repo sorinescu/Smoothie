@@ -15,6 +15,8 @@
 using namespace std;
 #include <vector>
 #include <string>
+//#include <stdlib.h>
+#include <cstdlib>
 
 #define config_get_checksum        46310
 #define config_set_checksum        55538
@@ -31,7 +33,7 @@ class ConfigValue{
             if( this->found == true ){
                 return this;
             }else{
-                error("could not find config setting with checksum %u, please see http://smoothieware.org/configuring-smoothie\r\n", this->check_sum );
+                //error("could not find config setting with checksum %u, please see http://smoothieware.org/configuring-smoothie\r\n", this->check_sum );
             }
         }
 
@@ -41,7 +43,7 @@ class ConfigValue{
             }else{
                 double result = atof(remove_non_number(this->value).c_str());
                 if( result == 0.0 && this->value.find_first_not_of("0.") != string::npos ){
-                    error("config setting '%s' with value '%s' is not a valid number, please see http://smoothieware.org/configuring-smoothie\r\n", this->key.c_str(), this->value.c_str() );
+                    //error("config setting '%s' with value '%s' is not a valid number, please see http://smoothieware.org/configuring-smoothie\r\n", this->key.c_str(), this->value.c_str() );
                 }
                 return result; 
             }

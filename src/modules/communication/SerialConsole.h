@@ -21,7 +21,7 @@ using std::string;
 
 class SerialConsole : public Module, public StreamOutput {
     public:
-        SerialConsole( PinName rx_pin, PinName tx_pin, int baud_rate );
+//        SerialConsole( PinName rx_pin, PinName tx_pin, int baud_rate );
         
         virtual void on_module_loaded();
         void on_serial_char_received();
@@ -32,7 +32,7 @@ class SerialConsole : public Module, public StreamOutput {
         //string receive_buffer;                 // Received chars are stored here until a newline character is received
         //vector<std::string> received_lines;    // Received lines are stored here until they are requested
         RingBuffer<char,256> buffer;             // Receive buffer
-        Serial* serial;
+        //Serial* serial;
 };
 
 #endif

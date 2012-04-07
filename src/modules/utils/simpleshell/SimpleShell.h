@@ -36,7 +36,7 @@ class SimpleShell : public Module {
         string current_path;
         bool playing_file;
         StreamOutput* current_stream;
-        FILE* current_file_handler;
+        //FILE* current_file_handler;
 };
 
 

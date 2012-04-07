@@ -18,6 +18,9 @@
 #include "modules/robot/Planner.h"
 #include "modules/robot/Robot.h"
 #include "modules/robot/Stepper.h"
+//Added for compiler issues
+#include <stdlib.h>
+#include <cstdlib>
 
 // See : http://smoothieware.org/listofevents
 #define NUMBER_OF_DEFINED_EVENTS   11

@@ -26,7 +26,7 @@
 
 class Extruder : public Module{
     public:
-        Extruder(PinName stppin, PinName dirpin);
+        //Extruder(PinName stppin, PinName dirpin);
         void on_module_loaded();
         void on_config_reload(void* argument);
         void on_gcode_execute(void* argument);
@@ -39,8 +39,9 @@ class Extruder : public Module{
         uint32_t stepping_tick(uint32_t dummy);
         uint32_t reset_step_pin(uint32_t dummy);
 
-        DigitalOut      step_pin;                     // Step pin for the stepper driver
-        DigitalOut      dir_pin;                      // Dir pin for the stepper driver
+        //TODO:  Define what DigitalOut does
+        //DigitalOut      step_pin;                     // Step pin for the stepper driver
+        //DigitalOut      dir_pin;                      // Dir pin for the stepper driver
         double          start_position;               // Start point ( in steps ) for the current move
         double          target_position;              // End point ( in steps ) for the current move
         double          current_position;             // Current point ( in steps ) for the current move, incremented every time a step is outputed
