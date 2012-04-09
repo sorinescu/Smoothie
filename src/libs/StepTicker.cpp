@@ -26,8 +26,9 @@ StepTicker::StepTicker(){
 }
 
 void StepTicker::set_frequency( double frequency ){
-//    this->frequency = frequency;
+    this->frequency = frequency;
 //    LPC_TIM0->MR0 = int(floor((SystemCoreClock/4)/frequency));  // SystemCoreClock/4 = Timer increments in a second
+
 //    if( LPC_TIM0->TC > LPC_TIM0->MR0 ){
 //        LPC_TIM0->TCR = 3;  // Reset
 //        LPC_TIM0->TCR = 1;  // Reset
