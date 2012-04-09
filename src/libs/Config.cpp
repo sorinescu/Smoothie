@@ -9,7 +9,7 @@
 using namespace std;
 #include <vector>
 #include <string>
-
+#include <stdio.h>
 #include "libs/Kernel.h"
 #include "Config.h"
 #include "libs/nuts_bolts.h"

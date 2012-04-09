@@ -28,12 +28,12 @@ PROJINCS = $(sort $(dir $(SUBDIRS)))
 INCDIRS += $(PROJINCS) 
 
 STM32_INCLUDES = ./Libraries/STM32F4-Discovery \
-	./Libraries/CMSIS/ST/STM32F4xx/Include/ \
-	./Libraries/CMSIS/Include/ \
-	./Libraries/STM32F4xx_StdPeriph_Driver/inc/ \
-	./Libraries/STM32_USB_Device_Library/Class/hid/inc \
-	./Libraries/STM32_USB_Device_Library/Core/inc/ \
-	./Libraries/STM32_USB_OTG_Driver/inc/
+	./src/libs/stm32f4/CMSIS/ST/STM32F4xx/Include/ \
+	./src/libs/stm32f4/CMSIS/Include/ \
+	./src/libs/stm32f4/STM32F4xx_StdPeriph_Driver/inc/ \
+	./src/libs/stm32f4/STM32_USB_Device_Library/Class/hid/inc \
+	./src/libs/stm32f4/STM32_USB_Device_Library/Core/inc/ \
+	./src/libs/stm32f4/STM32_USB_OTG_Driver/inc/
 
 INCDIRS += $(STM32_INCLUDES)	
 

@@ -21,7 +21,7 @@ using std::string;
 
 class SerialConsole : public Module, public StreamOutput {
     public:
-//        SerialConsole( PinName rx_pin, PinName tx_pin, int baud_rate );
+        SerialConsole( PinName rx_pin, PinName tx_pin, int baud_rate );
         
         virtual void on_module_loaded();
         void on_serial_char_received();

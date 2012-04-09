@@ -19,15 +19,18 @@ using std::string;
 // Serial reading module
 // Treats every received line as a command and passes it ( via event call ) to the command dispatcher. 
 // The command dispatcher will then ask other modules if they can do something with it
+
+
+
 SerialConsole::SerialConsole( PinName rx_pin, PinName tx_pin, int baud_rate ){
-    this->serial = new  Serial( rx_pin, tx_pin );
-    this->serial->baud(baud_rate);
+//    this->serial = new  Serial( rx_pin, tx_pin );
+//    this->serial->baud(baud_rate);
 }  
 
 // Called when the module has just been loaded
 void SerialConsole::on_module_loaded() {
     // We want to be called every time a new char is received
-    this->serial->attach(this, &SerialConsole::on_serial_char_received, Serial::RxIrq);
+//    this->serial->attach(this, &SerialConsole::on_serial_char_received, Serial::RxIrq);
 
     // We only call the command dispatcher in the main loop, nowhere else
     this->register_for_event(ON_MAIN_LOOP);
@@ -35,12 +38,12 @@ void SerialConsole::on_module_loaded() {
         
 // Called on Serial::RxIrq interrupt, meaning we have received a char
 void SerialConsole::on_serial_char_received(){
-    if(this->serial->readable()){
-        char received = this->serial->getc();
-        //On newline, we have received a line, else concatenate in buffer
-        if( received == '\r' ){ return; }
-        this->buffer.push_back(received); 
-    }
+//    if(this->serial->readable()){
+//        char received = this->serial->getc();
+//        //On newline, we have received a line, else concatenate in buffer
+//        if( received == '\r' ){ return; }
+//        this->buffer.push_back(received);
+//    }
 }
         
 // Actual event calling must happen in the main loop because if it happens in the interrupt we will loose data
@@ -69,7 +72,7 @@ int SerialConsole::printf(const char* format, ...){
     va_list args;
     int result; 
     va_start (args, format);
-    result = vfprintf( this->serial->_file, format, args);
+//    result = vfprintf( this->serial->_file, format, args);
     va_end (args);
     return result;
 }

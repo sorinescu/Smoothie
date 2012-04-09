@@ -39,8 +39,9 @@ void Planner::on_config_reload(void* argument){
 void Planner::append_block( int target[], double feed_rate, double distance, double deltas[] ){
    
     // Stall here if the queue is ful
-    while( this->kernel->player->queue.size() >= this->kernel->player->queue.capacity()-2 ){ 
-        wait_us(500); 
+    while( this->kernel->player->queue.size() >= this->kernel->player->queue.capacity()-2 ){
+    	//TODO: implement this wait for STM
+//        wait_us(500);
     }
 
     Block* block = this->kernel->player->new_block();

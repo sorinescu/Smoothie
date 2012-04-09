@@ -9,6 +9,9 @@
 #define BLOCK_H
 #include "libs/Module.h"
 #include "libs/Kernel.h"
+//STM Specific
+#include "core_cm4.h"
+
 using namespace std;
 #include <string>
 #include <vector>

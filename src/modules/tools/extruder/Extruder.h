@@ -7,12 +7,15 @@
 
 
 
-#ifndef EXTURDER_MODULE_H
+#ifndef EXTRUDER_MODULE_H
 #define EXTRUDER_MODULE_H
 
 #include "libs/Module.h"
 #include "libs/Kernel.h"
 #include "modules/robot/Block.h"
+
+
+#include "DigitalOut.h"
 
 #define microseconds_per_step_pulse_ckeckusm 42333
 #define extruder_module_enable_checksum      6183
@@ -26,7 +29,7 @@
 
 class Extruder : public Module{
     public:
-        //Extruder(PinName stppin, PinName dirpin);
+        Extruder(PinName stppin, PinName dirpin);
         void on_module_loaded();
         void on_config_reload(void* argument);
         void on_gcode_execute(void* argument);
@@ -40,8 +43,8 @@ class Extruder : public Module{
         uint32_t reset_step_pin(uint32_t dummy);
 
         //TODO:  Define what DigitalOut does
-        //DigitalOut      step_pin;                     // Step pin for the stepper driver
-        //DigitalOut      dir_pin;                      // Dir pin for the stepper driver
+        DigitalOut      step_pin;                     // Step pin for the stepper driver
+        DigitalOut      dir_pin;                      // Dir pin for the stepper driver
         double          start_position;               // Start point ( in steps ) for the current move
         double          target_position;              // End point ( in steps ) for the current move
         double          current_position;             // Current point ( in steps ) for the current move, incremented every time a step is outputed

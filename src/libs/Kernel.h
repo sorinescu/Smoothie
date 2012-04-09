@@ -7,6 +7,11 @@
 
 #ifndef KERNEL_H
 #define KERNEL_H
+
+//STM Specific
+#include "stm32f4xx.h"
+
+
 #include "libs/Module.h"
 #include "libs/Config.h"
 #include "libs/SlowTicker.h"
@@ -21,6 +26,8 @@
 //Added for compiler issues
 #include <stdlib.h>
 #include <cstdlib>
+#include <cstring>
+#include <cmath>
 
 // See : http://smoothieware.org/listofevents
 #define NUMBER_OF_DEFINED_EVENTS   11
@@ -35,7 +42,6 @@
 #define ON_CONFIG_RELOAD           8
 #define ON_PLAY                    9
 #define ON_PAUSE                   10
-
 
 using namespace std;
 #include <vector>

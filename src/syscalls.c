@@ -1,10 +1,10 @@
 
 #include <reent.h>
 #include <errno.h>
-//#include <stdlib.h> /* abort */
+#include <stdlib.h> /* abort */
 #include <sys/types.h>
 #include <sys/stat.h>
-
+#include <stdio.h>
 
 //#include "stm32f10x.h" /* for _get_PSP() from core_cm3.h*/
 
@@ -100,4 +100,8 @@ char* get_stack_top(void)
 //	return (char*) __get_MSP();
 }
 
+//TODO: Implement?  Or find suitable implementation
+void _open() {
+
+}
 }

@@ -48,84 +48,84 @@ string SimpleShell::absolute_from_relative( string path ){
 // Act upon an ls command
 // Convert the first parameter into an absolute path, then list the files in that path
 void SimpleShell::ls_command( string parameters, StreamOutput* stream ){
-    string folder = this->absolute_from_relative( parameters );
-    DIR* d;
-    struct dirent* p;
-    d = opendir(folder.c_str());
-    if(d != NULL) {
-        while((p = readdir(d)) != NULL) { stream->printf("%s\r\n", lc(string(p->d_name)).c_str()); }
-    } else {
-        stream->printf("Could not open directory %s \r\n", folder.c_str());
-    }
+//    string folder = this->absolute_from_relative( parameters );
+//    DIR* d;
+//    struct dirent* p;
+//    d = opendir(folder.c_str());
+//    if(d != NULL) {
+//        while((p = readdir(d)) != NULL) { stream->printf("%s\r\n", lc(string(p->d_name)).c_str()); }
+//    } else {
+//        stream->printf("Could not open directory %s \r\n", folder.c_str());
+//    }
 }
 
 // Change current absolute path to provided path
 void SimpleShell::cd_command( string parameters, StreamOutput* stream ){
-    string folder = this->absolute_from_relative( parameters );
-    if( folder[folder.length()-1] != '/' ){ folder += "/"; }
-    DIR *d;
-    struct dirent *p;
-    d = opendir(folder.c_str());
-    if(d == NULL) { 
-        stream->printf("Could not open directory %s \r\n", folder.c_str() ); 
-    }else{
-        this->current_path = folder;
-    }
+//    string folder = this->absolute_from_relative( parameters );
+//    if( folder[folder.length()-1] != '/' ){ folder += "/"; }
+//    DIR *d;
+//    struct dirent *p;
+//    d = opendir(folder.c_str());
+//    if(d == NULL) {
+//        stream->printf("Could not open directory %s \r\n", folder.c_str() );
+//    }else{
+//        this->current_path = folder;
+//    }
 }
 
 // Output the contents of a file, first parameter is the filename, second is the limit ( in number of lines to output )
 void SimpleShell::cat_command( string parameters, StreamOutput* stream ){
     
-    // Get parameters ( filename and line limit ) 
-    string filename          = this->absolute_from_relative(shift_parameter( parameters ));
-    string limit_paramater   = shift_parameter( parameters );
-    int limit = -1;
-    if( limit_paramater != "" ){ limit = int(atof(limit_paramater.c_str())); }
-   
-    // Open file 
-    FILE *lp = fopen(filename.c_str(), "r");
-    string buffer;
-    int c;
-    int newlines = 0; 
-    
-    // Print each line of the file
-    while ((c = fgetc (lp)) != EOF){
-        if( char(c) == '\n' ){  newlines++; }
-        stream->printf("%c",c); 
-        if( newlines == limit ){ break; }
-    }; 
-    fclose(lp);
+//    // Get parameters ( filename and line limit )
+//    string filename          = this->absolute_from_relative(shift_parameter( parameters ));
+//    string limit_paramater   = shift_parameter( parameters );
+//    int limit = -1;
+//    if( limit_paramater != "" ){ limit = int(atof(limit_paramater.c_str())); }
+//
+//    // Open file
+//    FILE *lp = fopen(filename.c_str(), "r");
+//    string buffer;
+//    int c;
+//    int newlines = 0;
+//
+//    // Print each line of the file
+//    while ((c = fgetc (lp)) != EOF){
+//        if( char(c) == '\n' ){  newlines++; }
+//        stream->printf("%c",c);
+//        if( newlines == limit ){ break; }
+//    };
+//    fclose(lp);
 
 }
 
 // Play a gcode file by considering each line as if it was received on the serial console
 void SimpleShell::play_command( string parameters, StreamOutput* stream ){
-    // Get filename
-    this->current_file_handler = fopen( this->absolute_from_relative(shift_parameter( parameters )).c_str(), "r");
-    this->playing_file = true;
-    this->current_stream = stream;
+//    // Get filename
+//    this->current_file_handler = fopen( this->absolute_from_relative(shift_parameter( parameters )).c_str(), "r");
+//    this->playing_file = true;
+//    this->current_stream = stream;
 }
 void SimpleShell::on_main_loop(void* argument){
-
-    if( this->playing_file ){ 
-        string buffer;
-        int c;
-        // Print each line of the file
-        while ((c = fgetc(this->current_file_handler)) != EOF){
-            if (c == '\n'){
-                this->current_stream->printf("%s\n", buffer.c_str());
-                struct SerialMessage message; 
-                message.message = buffer;
-                message.stream = this->current_stream;
-                this->kernel->call_event(ON_CONSOLE_LINE_RECEIVED, &message); 
-                buffer.clear();
-                return;
-            }else{
-                buffer += c;
-            }
-        }; 
-
-        fclose(this->current_file_handler);
-        this->playing_file = false;
-    }
+//
+//    if( this->playing_file ){
+//        string buffer;
+//        int c;
+//        // Print each line of the file
+//        while ((c = fgetc(this->current_file_handler)) != EOF){
+//            if (c == '\n'){
+//                this->current_stream->printf("%s\n", buffer.c_str());
+//                struct SerialMessage message;
+//                message.message = buffer;
+//                message.stream = this->current_stream;
+//                this->kernel->call_event(ON_CONSOLE_LINE_RECEIVED, &message);
+//                buffer.clear();
+//                return;
+//            }else{
+//                buffer += c;
+//            }
+//        };
+//
+//        fclose(this->current_file_handler);
+//        this->playing_file = false;
+//    }
 }

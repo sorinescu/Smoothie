@@ -6,6 +6,7 @@
 #include "libs/Kernel.h"
 #include "libs/utils.h"
 #include <string>
+typedef int PinName;
 
 class Pin{
     public:

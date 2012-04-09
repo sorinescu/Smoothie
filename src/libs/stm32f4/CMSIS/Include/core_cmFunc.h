@@ -305,6 +305,8 @@ static __INLINE void __set_FPSCR(uint32_t fpscr)
   This function enables IRQ interrupts by clearing the I-bit in the CPSR.
   Can only be executed in Privileged modes.
  */
+#define __INLINE __attribute__((always_inline)) inline
+
 __attribute__( ( always_inline ) ) static __INLINE void __enable_irq(void)
 {
   __ASM volatile ("cpsie i");
@@ -316,6 +318,7 @@ __attribute__( ( always_inline ) ) static __INLINE void __enable_irq(void)
   This function disables IRQ interrupts by setting the I-bit in the CPSR.
   Can only be executed in Privileged modes.
  */
+
 __attribute__( ( always_inline ) ) static __INLINE void __disable_irq(void)
 {
   __ASM volatile ("cpsid i");

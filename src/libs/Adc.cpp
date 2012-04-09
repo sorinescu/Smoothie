@@ -15,35 +15,35 @@ using namespace std;
 #include "libs/Pin.h"
 
 Adc::Adc(){
-    this->adc = new ADC(1000, 1);
+//    this->adc = new ADC(1000, 1);
 }
 
-void Adc::enable_pin(Pin* pin){
-    PinName pin_name = this->_pin_to_pinname(pin);
-    this->adc->burst(1);
-    this->adc->setup(pin_name,1);
-    this->adc->interrupt_state(pin_name,1);
-}
+//void Adc::enable_pin(Pin* pin){
+//    PinName pin_name = this->_pin_to_pinname(pin);
+//    this->adc->burst(1);
+//    this->adc->setup(pin_name,1);
+//    this->adc->interrupt_state(pin_name,1);
+//}
 
-unsigned int Adc::read(Pin* pin){
-    return this->adc->read(this->_pin_to_pinname(pin));
-}
+//unsigned int Adc::read(Pin* pin){
+//    return this->adc->read(this->_pin_to_pinname(pin));
+//}
 
-PinName Adc::_pin_to_pinname(Pin* pin){
-    if( pin->port == LPC_GPIO0 && pin->pin == 23 ){ 
-        return p15;
-    }else if( pin->port == LPC_GPIO0 && pin->pin == 24 ){ 
-        return p16;
-    }else if( pin->port == LPC_GPIO0 && pin->pin == 25 ){ 
-        return p17;
-    }else if( pin->port == LPC_GPIO0 && pin->pin == 26 ){ 
-        return p18;
-    }else if( pin->port == LPC_GPIO1 && pin->pin == 30 ){ 
-        return p19;
-    }else if( pin->port == LPC_GPIO1 && pin->pin == 31 ){ 
-        return p20;
-    }else{
-        //TODO: Error
-    }
-}
+//PinName Adc::_pin_to_pinname(Pin* pin){
+//    if( pin->port == LPC_GPIO0 && pin->pin == 23 ){
+//        return p15;
+//    }else if( pin->port == LPC_GPIO0 && pin->pin == 24 ){
+//        return p16;
+//    }else if( pin->port == LPC_GPIO0 && pin->pin == 25 ){
+//        return p17;
+//    }else if( pin->port == LPC_GPIO0 && pin->pin == 26 ){
+//        return p18;
+//    }else if( pin->port == LPC_GPIO1 && pin->pin == 30 ){
+//        return p19;
+//    }else if( pin->port == LPC_GPIO1 && pin->pin == 31 ){
+//        return p20;
+//    }else{
+//        //TODO: Error
+//    }
+//}
 

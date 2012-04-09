@@ -47,27 +47,27 @@ Kernel::Kernel(){
     // Config first, because we need the baud_rate setting before we start serial 
     this->config         = new Config();
     // Serial second, because the other modules might want to say something
-    this->serial         = new SerialConsole(USBTX, USBRX, this->config->value(uart0_checksum,baud_rate_setting_ckeckusm)->by_default(9600)->as_number());
+//    this->serial         = new SerialConsole(USBTX, USBRX, this->config->value(uart0_checksum,baud_rate_setting_ckeckusm)->by_default(9600)->as_number());
 
     this->add_module( this->config );
     this->add_module( this->serial );
   
     // HAL stuff 
-    this->slow_ticker          = new SlowTicker();
-    this->step_ticker          = new StepTicker();
-    this->adc                  = new Adc();
+//    this->slow_ticker          = new SlowTicker();
+//    this->step_ticker          = new StepTicker();
+//    this->adc                  = new Adc();
 
     // LPC17xx-specific 
-    NVIC_SetPriority(TIMER0_IRQn, 1); 
-    NVIC_SetPriority(TIMER2_IRQn, 2); 
+//    NVIC_SetPriority(TIMER0_IRQn, 1);
+//    NVIC_SetPriority(TIMER2_IRQn, 2);
 
     // Core modules 
-    this->add_module( this->gcode_dispatch = new GcodeDispatch() );
-    this->add_module( this->robot          = new Robot()         );
-    this->add_module( this->stepper        = new Stepper()       );
-    this->add_module( this->planner        = new Planner()       );
-    this->add_module( this->player         = new Player()        );
-    this->add_module( this->pauser         = new Pauser()        );
+//    this->add_module( this->gcode_dispatch = new GcodeDispatch() );
+//    this->add_module( this->robot          = new Robot()         );
+//    this->add_module( this->stepper        = new Stepper()       );
+//    this->add_module( this->planner        = new Planner()       );
+//    this->add_module( this->player         = new Player()        );
+//    this->add_module( this->pauser         = new Pauser()        );
 }
 
 void Kernel::add_module(Module* module){
