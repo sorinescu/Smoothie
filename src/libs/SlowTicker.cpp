@@ -90,6 +90,7 @@ extern "C" void TIM2_IRQHandler(void){
 	{
 		TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
 		global_slow_ticker->tick();
+		TIM_SetCounter(TIM2, 0);
 //		capture = TIM_GetCapture1(TIM2);
 //		TIM_SetCompare1(TIM2, capture + );
 	}

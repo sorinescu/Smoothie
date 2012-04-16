@@ -101,6 +101,7 @@ extern "C" void TIM3_IRQHandler(void){
 	if(TIM_GetITStatus(TIM3, TIM_IT_CC2) != RESET) {
 		TIM_ClearITPendingBit(TIM2, TIM_IT_CC2);
 		global_step_ticker->reset_tick();
+		TIM_SetCounter(TIM3, 0);
 	}
 
 //    if((LPC_TIM0->IR >> 0) & 1){  // If interrupt register set for MR0
