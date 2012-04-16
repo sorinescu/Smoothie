@@ -14,11 +14,16 @@ using namespace std;
 #include "libs/Kernel.h"
 #include "StepTicker.h"
 
+//STM Sepcific
+#include "stm32f4xx_rcc.h"
+#include "stm32f4xx_tim.h"
 
 StepTicker* global_step_ticker;
 
 StepTicker::StepTicker(){
-//    global_step_ticker = this;
+
+	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+    global_step_ticker = this;
 //    LPC_TIM0->MR0 = 1000000;        // Initial dummy value for Match Register
 //    LPC_TIM0->MCR = 11;              // Match on MR0, reset on MR0, match on MR1
 //    LPC_TIM0->TCR = 1;              // Enable interrupt

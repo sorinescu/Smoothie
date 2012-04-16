@@ -16,42 +16,62 @@ using namespace std;
 //STM Sepcific
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_tim.h"
+#include "misc.h"
 
 SlowTicker* global_slow_ticker;
 TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+TIM_OCInitTypeDef  TIM_OCInitStructure;
+
+//__IO uint16_t CCR1_Val = 54618;
+uint16_t PrescalerValue = 0;
+uint16_t capture = 0;
 
 SlowTicker::SlowTicker(){
-    this->max_frequency = 1;
+	NVIC_InitTypeDef NVIC_InitStructure;
+
+	this->max_frequency = 1;
     global_slow_ticker = this;
-    // Enable timer 2
+
+    // TIM2 clock enable
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
 
-    TIM_TimeBaseStructure.TIM_Period = 65535;
-    TIM_TimeBaseStructure.TIM_Prescaler = 0;
-    TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+    NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
 
-    TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
+    TIM_TimeBaseStructure.TIM_Period = 65538;
+	TIM_TimeBaseStructure.TIM_Prescaler = 0;
+	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 
-    //Enable interupts
+	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
+
+	//TODO:  I copied this from an example...need to review this.
+	PrescalerValue = (uint16_t) ((SystemCoreClock / 2) / 500000) - 1;
+	TIM_PrescalerConfig(TIM2, PrescalerValue, TIM_PSCReloadMode_Immediate);
+
+    //Enable interrupt
     TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
 
+    //Enable Counter
+    TIM_Cmd(TIM2, ENABLE);
 
-
-//    LPC_SC->PCONP |= (1 << 22);     // Power Ticker ON
-//    LPC_TIM2->MR0 = 10000;        // Initial dummy value for Match Register
-//    LPC_TIM2->MCR = 3;              // Match on MR0, reset on MR0
-//    LPC_TIM2->TCR = 1;              // Enable interrupt
-//    NVIC_EnableIRQ(TIMER2_IRQn);    // Enable interrupt handler
+    /* Output Compare Timing Mode configuration: Channel1 */
+    TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Timing;
+    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+        TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+    TIM_OC1Init(TIM2, &TIM_OCInitStructure);
 
 }
 
 void SlowTicker::set_frequency( int frequency ){
+	//Not sure if I should be casting this to double...
+	TIM2->CCR1 = int(floor((double)(SystemCoreClock/4)/frequency));  // SystemCoreClock/4 = Timer increments in a second
 //    LPC_TIM2->MR0 = int(floor((SystemCoreClock/4)/frequency));  // SystemCoreClock/4 = Timer increments in a second
 //    LPC_TIM2->TCR = 3;  // Reset
 //    LPC_TIM2->TCR = 1;  // Reset
-
-	TIM_Cmd(TIM3, ENABLE);
 }
 
 void SlowTicker::tick(){
@@ -65,7 +85,16 @@ void SlowTicker::tick(){
     }
 }
 
-extern "C" void TIMER2_IRQHandler (void){
+extern "C" void TIM2_IRQHandler(void){
+	if(TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
+	{
+		TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
+		global_slow_ticker->tick();
+		capture = TIM_GetCapture1(TIM2);
+
+//		TIM_SetCompare1(TIM2, capture + );
+	}
+//Original Smoothie code:
 //    if((LPC_TIM2->IR >> 0) & 1){  // If interrupt register set for MR0
 //        LPC_TIM2->IR |= 1 << 0;   // Reset it
 //        global_slow_ticker->tick();
