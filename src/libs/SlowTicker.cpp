@@ -60,8 +60,8 @@ SlowTicker::SlowTicker(){
 
     /* Output Compare Timing Mode configuration: Channel1 */
     TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Timing;
-    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-        TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
+//    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+//    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
     TIM_OC1Init(TIM2, &TIM_OCInitStructure);
 
 }
@@ -90,8 +90,7 @@ extern "C" void TIM2_IRQHandler(void){
 	{
 		TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
 		global_slow_ticker->tick();
-		capture = TIM_GetCapture1(TIM2);
-
+//		capture = TIM_GetCapture1(TIM2);
 //		TIM_SetCompare1(TIM2, capture + );
 	}
 //Original Smoothie code:
