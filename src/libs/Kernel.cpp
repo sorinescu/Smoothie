@@ -50,7 +50,7 @@ Kernel::Kernel(){
 //    this->serial         = new SerialConsole(USBTX, USBRX, this->config->value(uart0_checksum,baud_rate_setting_ckeckusm)->by_default(9600)->as_number());
 
     this->add_module( this->config );
-    this->add_module( this->serial );
+//    this->add_module( this->serial );
   
     // HAL stuff 
     this->slow_ticker          = new SlowTicker();

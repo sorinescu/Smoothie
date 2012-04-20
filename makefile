@@ -33,7 +33,8 @@ STM32_INCLUDES = ./Libraries/STM32F4-Discovery \
 	./src/libs/stm32f4/STM32F4xx_StdPeriph_Driver/inc/ \
 	./src/libs/stm32f4/STM32_USB_Device_Library/Class/hid/inc \
 	./src/libs/stm32f4/STM32_USB_Device_Library/Core/inc/ \
-	./src/libs/stm32f4/STM32_USB_OTG_Driver/inc/
+	./src/libs/stm32f4/STM32_USB_OTG_Driver/inc/ \
+	./src/libs/stm32f4/ext
 
 INCDIRS += $(STM32_INCLUDES)	
 

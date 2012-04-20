@@ -10,10 +10,11 @@
 
 #include "libs/Module.h"
 #include "libs/Kernel.h"
+#include "serial.h"
+
 #include <vector>
 #include <string>
 using std::string;
-#include "SerialConsole.h"
 #include "libs/RingBuffer.h"
 #include "libs/StreamOutput.h"
 
@@ -29,10 +30,10 @@ class SerialConsole : public Module, public StreamOutput {
         bool has_char(char letter);
         int printf(const char* format, ...);
         
-        //string receive_buffer;                 // Received chars are stored here until a newline character is received
-        //vector<std::string> received_lines;    // Received lines are stored here until they are requested
+        string receive_buffer;                 // Received chars are stored here until a newline character is received
+        vector<std::string> received_lines;    // Received lines are stored here until they are requested
         RingBuffer<char,256> buffer;             // Receive buffer
-        //Serial* serial;
+        Serial* serial;
 };
 
 #endif

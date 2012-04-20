@@ -18,15 +18,24 @@ using namespace std;
 #include "stm32f4xx_tim.h"
 #include "misc.h"
 
+//REMOVE
+#include "stm32f4_discovery.h"
+
 SlowTicker* global_slow_ticker;
-TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-TIM_OCInitTypeDef  TIM_OCInitStructure;
 
 //__IO uint16_t CCR1_Val = 54618;
-uint16_t PrescalerValue = 0;
-uint16_t capture = 0;
+
+//uint16_t capture = 0;
 
 SlowTicker::SlowTicker(){
+//	REMOVE - just for testing
+	STM_EVAL_LEDInit(LED4);
+	STM_EVAL_LEDInit(LED3);
+
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+	TIM_OCInitTypeDef  TIM_OCInitStructure;
+	uint16_t PrescalerValue = 0;
+
 	NVIC_InitTypeDef NVIC_InitStructure;
 
 	this->max_frequency = 1;
@@ -49,7 +58,8 @@ SlowTicker::SlowTicker(){
 	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
 
 	//TODO:  I copied this from an example...need to review this.
-	PrescalerValue = (uint16_t) ((SystemCoreClock / 2) / 500000) - 1;
+	//PrescalerValue = (uint16_t) ((SystemCoreClock / 2) / 500000) - 1;
+	PrescalerValue = 1;
 	TIM_PrescalerConfig(TIM2, PrescalerValue, TIM_PSCReloadMode_Immediate);
 
     //Enable interrupt
@@ -68,7 +78,8 @@ SlowTicker::SlowTicker(){
 
 void SlowTicker::set_frequency( int frequency ){
 	//Not sure if I should be casting this to double...
-	TIM2->CCR1 = int(floor((double)(SystemCoreClock/4)/frequency));  // SystemCoreClock/4 = Timer increments in a second
+//	TIM2->CCR1 = int(floor((double)(SystemCoreClock/4)/frequency));  // SystemCoreClock/4 = Timer increments in a second
+	TIM2->CCR1 = 1;
 //    LPC_TIM2->MR0 = int(floor((SystemCoreClock/4)/frequency));  // SystemCoreClock/4 = Timer increments in a second
 //    LPC_TIM2->TCR = 3;  // Reset
 //    LPC_TIM2->TCR = 1;  // Reset
@@ -91,6 +102,9 @@ extern "C" void TIM2_IRQHandler(void){
 		TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
 		global_slow_ticker->tick();
 		TIM_SetCounter(TIM2, 0);
+
+		STM_EVAL_LEDToggle(LED4);
+		STM_EVAL_LEDToggle(LED3);
 //		capture = TIM_GetCapture1(TIM2);
 //		TIM_SetCompare1(TIM2, capture + );
 	}

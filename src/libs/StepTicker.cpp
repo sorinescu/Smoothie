@@ -20,19 +20,18 @@ using namespace std;
 #include "misc.h"
 
 StepTicker* global_step_ticker;
-TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-TIM_OCInitTypeDef  TIM_OCInitStructure;
+
 
 //__IO uint16_t CCR1_Val = 54618;
-uint16_t PrescalerValue = 0;
-uint16_t capture = 0;
+
+//uint16_t capture = 0;
 
 StepTicker::StepTicker(){
-
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+	TIM_OCInitTypeDef  TIM_OCInitStructure;
+	uint16_t PrescalerValue = 0;
 	global_step_ticker = this;
 	NVIC_InitTypeDef NVIC_InitStructure;
-
-	global_slow_ticker = this;
 
     // TIM3 clock enable
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
