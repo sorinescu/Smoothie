@@ -34,13 +34,15 @@ STM32_INCLUDES = ./Libraries/STM32F4-Discovery \
 	./src/libs/stm32f4/STM32_USB_Device_Library/Class/hid/inc \
 	./src/libs/stm32f4/STM32_USB_Device_Library/Core/inc/ \
 	./src/libs/stm32f4/STM32_USB_OTG_Driver/inc/ \
-	./src/libs/stm32f4/ext
+	./src/libs/stm32f4/ext/ \
+	./src/libs/stm32f4/STM32_USB_Device_Library/Class/cdc/inc
 
 INCDIRS += $(STM32_INCLUDES)	
 
 # DEFINEs to be used when building C/C++ code
 DEFINES = -DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DMANGUSTA_DISCOVERY\
-	   -DUSE_USB_OTG_FS -DHSE_VALUE=8000000
+	   -DUSE_USB_OTG_FS -DHSE_VALUE=8000000\
+	   # -DUSE_USB_OTG_HS
 
 # Libraries to be linked into final binary
 # TODO: need to make these work for ST if need be
@@ -59,7 +61,7 @@ MCFLAGS = -mcpu=$(MCU) -mthumb -mlittle-endian -mfpu=fpv4-sp-d16 -mfloat-abi=sof
  		  
 GPFLAGS = -O$(OPTIMIZATION) -gstabs+3 $(MCFLAGS) -fshort-wchar -ffunction-sections -fdata-sections \
  		  -Wall -Wextra -Wimplicit -Wcast-align -Wpointer-arith -Wredundant-decls \
- 		  -Wshadow -Wcast-qual -Wcast-align -fno-exceptions
+ 		  -Wshadow -Wcast-qual -Wcast-align -fno-exceptions -nostdlib
  		  
 GPFLAGS += $(patsubst %,-I%,$(INCDIRS))
 GPFLAGS += $(DEFINES)

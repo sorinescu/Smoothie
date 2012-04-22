@@ -30,7 +30,7 @@ SerialConsole::SerialConsole( PinName rx_pin, PinName tx_pin, int baud_rate ){
 // Called when the module has just been loaded
 void SerialConsole::on_module_loaded() {
     // We want to be called every time a new char is received
-//    this->serial->attach(this, &SerialConsole::on_serial_char_received, Serial::IrqType::RxIrq);
+    this->serial->attach(this, &SerialConsole::on_serial_char_received, Serial::IrqType::RxIrq);
 
     // We only call the command dispatcher in the main loop, nowhere else
     this->register_for_event(ON_MAIN_LOOP);
@@ -38,12 +38,12 @@ void SerialConsole::on_module_loaded() {
         
 // Called on Serial::RxIrq interrupt, meaning we have received a char
 void SerialConsole::on_serial_char_received(){
-//    if(this->serial->readable()){
-//        char received = this->serial->getc();
+   // if(this->serial->readable()){
+       char received = this->serial->getc();
 //        //On newline, we have received a line, else concatenate in buffer
-//        if( received == '\r' ){ return; }
-//        this->buffer.push_back(received);
-//    }
+       if( received == '\r' ){ return; }
+       this->buffer.push_back(received);
+   // }
 }
         
 // Actual event calling must happen in the main loop because if it happens in the interrupt we will loose data
