@@ -30,7 +30,7 @@ SerialConsole::SerialConsole( PinName rx_pin, PinName tx_pin, int baud_rate ){
 // Called when the module has just been loaded
 void SerialConsole::on_module_loaded() {
     // We want to be called every time a new char is received
-    this->serial->attach(this, &SerialConsole::on_serial_char_received, Serial::IrqType::RxIrq);
+    this->serial->attach(this, &SerialConsole::on_serial_char_received);
 
     // We only call the command dispatcher in the main loop, nowhere else
     this->register_for_event(ON_MAIN_LOOP);
