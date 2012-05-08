@@ -6,7 +6,12 @@
 #include "libs/Kernel.h"
 #include "libs/utils.h"
 #include <string>
+
+
 typedef int PinName;
+// enum PinName {
+// PIN1 = 1  
+// };
 
 class Pin{
     public:

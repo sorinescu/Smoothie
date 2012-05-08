@@ -118,6 +118,14 @@ extern USBD_Class_cb_TypeDef  USBD_CDC_cb;
   * @}
   */ 
 
+#define CALL_MEMBER_FN(object,ptrToMember)  ((object)->*(ptrToMember))
+
+// Extra callback for smoothie:
+template<typename T>
+extern void smoothie_callback_invoke(T* tptr, void (T::*mptr)(void)) {
+    CALL_MEMBER_FN(tptr, mptr)();
+};
+
 /** @defgroup USB_CORE_Exported_Functions
   * @{
   */

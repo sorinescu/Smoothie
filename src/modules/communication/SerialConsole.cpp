@@ -16,15 +16,13 @@ using std::string;
 #include "libs/SerialMessage.h"
 #include "libs/StreamOutput.h"
 
-// Added for STM port - this should be the same header for all implementations.
-
 // Serial reading module
 // Treats every received line as a command and passes it ( via event call ) to the command dispatcher. 
 // The command dispatcher will then ask other modules if they can do something with it
 
 SerialConsole::SerialConsole( PinName rx_pin, PinName tx_pin, int baud_rate ){
     this->serial = new  Serial( rx_pin, tx_pin );
-//    this->serial->baud(baud_rate);
+    this->serial->baud(baud_rate);
 }  
 
 // Called when the module has just been loaded
@@ -38,12 +36,12 @@ void SerialConsole::on_module_loaded() {
         
 // Called on Serial::RxIrq interrupt, meaning we have received a char
 void SerialConsole::on_serial_char_received(){
-   // if(this->serial->readable()){
+   if(this->serial->readable()){
        char received = this->serial->getc();
-//        //On newline, we have received a line, else concatenate in buffer
+       //On newline, we have received a line, else concatenate in buffer
        if( received == '\r' ){ return; }
        this->buffer.push_back(received);
-   // }
+   }
 }
         
 // Actual event calling must happen in the main loop because if it happens in the interrupt we will loose data
@@ -71,12 +69,13 @@ void SerialConsole::on_main_loop(void * argument){
 int SerialConsole::printf(const char* format, ...){
     va_list args;
     int result; 
+    char buf[255];
     va_start (args, format);
-//    result = vfprintf( this->serial->_file, format, args);
+    result = vsprintf(buf, format, args);
+    serial->puts(buf);
     va_end (args);
     return result;
 }
-
 
 bool SerialConsole::has_char(char letter){
     int index = this->buffer.head;
