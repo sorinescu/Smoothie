@@ -4,10 +4,6 @@ ifndef SRC
 SRC=.
 endif
 
-# Default the init of stdio/stdout/stderr to occur before global constructors.
-ifndef GCC4MBED_DELAYED_STDIO_INIT
-GCC4MBED_DELAYED_STDIO_INIT=0
-endif
 
 # List of sources to be compiled/assembled
 CSRCS = $(wildcard $(SRC)/*.c $(SRC)/*/*.c $(SRC)/*/*/*.c $(SRC)/*/*/*/*.c $(SRC)/*/*/*/*/*.c $(SRC)/*/*/*/*/*/*.c)
@@ -31,7 +27,6 @@ STM32_INCLUDES = ./Libraries/STM32F4-Discovery \
 	./src/libs/stm32f4/CMSIS/ST/STM32F4xx/Include/ \
 	./src/libs/stm32f4/CMSIS/Include/ \
 	./src/libs/stm32f4/STM32F4xx_StdPeriph_Driver/inc/ \
-	./src/libs/stm32f4/STM32_USB_Device_Library/Class/hid/inc \
 	./src/libs/stm32f4/STM32_USB_Device_Library/Core/inc/ \
 	./src/libs/stm32f4/STM32_USB_OTG_Driver/inc/ \
 	./src/libs/stm32f4/ext/ \
@@ -40,15 +35,17 @@ STM32_INCLUDES = ./Libraries/STM32F4-Discovery \
 INCDIRS += $(STM32_INCLUDES)	
 
 # DEFINEs to be used when building C/C++ code
-DEFINES = -DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DMANGUSTA_DISCOVERY\
-	   -DUSE_USB_OTG_FS=1 -DHSE_VALUE=8000000\
+# DEFINES = -DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DMANGUSTA_DISCOVERY\
+# 	   -DUSE_USB_OTG_FS=1 -DHSE_VALUE=8000000\
+
+DEFINES = -DUSE_USB_OTG_FS=1 -DUSE_STDPERIPH_DRIVER 
 
 # Optimization level
 OPTIMIZATION = 0
 
 #  Compiler Options
 MCU = cortex-m4
-MCFLAGS = -mcpu=$(MCU) -mthumb -mlittle-endian -mfpu=fpv4-sp-d16 -mfloat-abi=soft -mthumb-interwork
+MCFLAGS = -mcpu=$(MCU) -mthumb -mlittle-endian -mfpu=fpv4-sp-d16 
 
 #GPFLAGS = -O$(OPTIMIZATION) -gstabs+3 $(MCFLAGS) -fshort-wchar -ffunction-sections -fdata-sections \
  		  -fpromote-loop-indices -Wall -Wextra -Wimplicit -Wcast-align -Wpointer-arith -Wredundant-decls \
@@ -56,7 +53,7 @@ MCFLAGS = -mcpu=$(MCU) -mthumb -mlittle-endian -mfpu=fpv4-sp-d16 -mfloat-abi=sof
  		  
 GPFLAGS = -O$(OPTIMIZATION) -gstabs+3 $(MCFLAGS) -fshort-wchar -ffunction-sections -fdata-sections \
  		  -Wall -Wextra -Wimplicit -Wcast-align -Wpointer-arith -Wredundant-decls \
- 		  -Wshadow -Wcast-qual -Wcast-align -fno-exceptions -nostdlib -fpermissive
+ 		  -Wshadow -Wcast-qual -Wcast-align -fno-exceptions -nostdlib -fpermissive -ffreestanding 
  		  
 GPFLAGS += $(patsubst %,-I%,$(INCDIRS))
 GPFLAGS += $(DEFINES)

@@ -1,3 +1,3 @@
-target extended localhost:4242
+target extended localhost:61234
 load Smoothie.elf
 file Smoothie.elf

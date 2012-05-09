@@ -4,7 +4,7 @@
   * @author    MCD Application Team
   * @version   V1.0.0
   * @date      30-September-2011
-  * @brief     STM32F4xx Devices vector table for Atollic TrueSTUDIO toolchain. 
+  * @brief     STM32F4xx Devices vector table for RIDE7 toolchain. 
   *            This module performs:
   *                - Set the initial SP
   *                - Set the initial PC == Reset_Handler,
@@ -95,8 +95,6 @@ LoopFillZerobss:
 
 /* Call the clock system intitialization function.*/
   bl  SystemInit   
-/* Call static constructors */
-    bl __libc_init_array
 /* Call the application's entry point.*/
   bl  main
   bx  lr    
@@ -226,8 +224,7 @@ g_pfnVectors:
   .word     DCMI_IRQHandler                   /* DCMI                         */                   
   .word     CRYP_IRQHandler                   /* CRYP crypto                  */                   
   .word     HASH_RNG_IRQHandler               /* Hash and Rng                 */
-  .word     FPU_IRQHandler                    /* FPU                          */
-                         
+  .word     FPU_IRQHandler                    /* FPU                          */                         
                          
 /*******************************************************************************
 *
@@ -464,7 +461,7 @@ g_pfnVectors:
    .weak      CAN2_SCE_IRQHandler                  
    .thumb_set CAN2_SCE_IRQHandler,Default_Handler
                            
-   .weak      OTG_FS_IRQHandler      
+   # .weak      OTG_FS_IRQHandler      
    .thumb_set OTG_FS_IRQHandler,Default_Handler
                      
    .weak      DMA2_Stream5_IRQHandler               
@@ -508,5 +505,5 @@ g_pfnVectors:
 
    .weak      FPU_IRQHandler                  
    .thumb_set FPU_IRQHandler,Default_Handler  
-
+   
 /*******************   (C)   COPYRIGHT   2011   STMicroelectronics   *****END   OF   FILE****/

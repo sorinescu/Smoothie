@@ -128,7 +128,7 @@ static uint16_t VCP_Ctrl (uint32_t Cmd, uint8_t* Buf, uint32_t Len)
     break;
 
   case SET_LINE_CODING:
-	/* Not  needed for this driver */ 
+  /* Not  needed for this driver */ 
     break;
 
   case GET_LINE_CODING:
@@ -166,17 +166,17 @@ static uint16_t VCP_Ctrl (uint32_t Cmd, uint8_t* Buf, uint32_t Len)
 
 void VCP_put_char(uint8_t buf)
 {
-	VCP_DataTx(&buf,1);
+  VCP_DataTx(&buf,1);
 }
 
 void VCP_send_str(uint8_t* buf)
 {
-	uint32_t i=0;
-	while(*(buf + i))
-	{
-		i++;
-	}
-	VCP_DataTx(buf, i);
+  uint32_t i=0;
+  while(*(buf + i))
+  {
+    i++;
+  }
+  VCP_DataTx(buf, i);
 }
 
 /**
@@ -189,19 +189,19 @@ void VCP_send_str(uint8_t* buf)
   */
 static uint16_t VCP_DataTx (uint8_t* Buf, uint32_t Len)
 {
-	uint32_t i=0;
-	while(i < Len)
-	{
-		APP_Rx_Buffer[APP_Rx_ptr_in] = *(Buf + i);
-		APP_Rx_ptr_in++;
-  		i++;
-		/* To avoid buffer overflow */
-		if(APP_Rx_ptr_in == APP_RX_DATA_SIZE)
-		{
-			APP_Rx_ptr_in = 0;
-		}  
-	}
-	
+  uint32_t i=0;
+  while(i < Len)
+  {
+    APP_Rx_Buffer[APP_Rx_ptr_in] = *(Buf + i);
+    APP_Rx_ptr_in++;
+      i++;
+    /* To avoid buffer overflow */
+    if(APP_Rx_ptr_in == APP_RX_DATA_SIZE)
+    {
+      APP_Rx_ptr_in = 0;
+    }  
+  }
+  
   return USBD_OK;
 }
 
@@ -233,55 +233,55 @@ static uint16_t VCP_DataRx (uint8_t* Buf, uint32_t Len)
 
   for (i = 0; i < Len; i++)
   {
-	 APP_Tx_Buffer[APP_tx_ptr_head] = *(Buf + i);
-	 APP_tx_ptr_head++;
-	  if(APP_tx_ptr_head == APP_TX_BUF_SIZE)
-		 APP_tx_ptr_head = 0;
+   APP_Tx_Buffer[APP_tx_ptr_head] = *(Buf + i);
+   APP_tx_ptr_head++;
+    if(APP_tx_ptr_head == APP_TX_BUF_SIZE)
+     APP_tx_ptr_head = 0;
 
-	  if(APP_tx_ptr_head == APP_tx_ptr_tail)
-		 return USBD_FAIL;
+    if(APP_tx_ptr_head == APP_tx_ptr_tail)
+     return USBD_FAIL;
   } 
-	
+  
   return USBD_OK;
 }
 
 uint8_t VCP_get_char(uint8_t *buf)
 {
  if(APP_tx_ptr_head == APP_tx_ptr_tail)
- 	return 0;
-	
+  return 0;
+  
  *buf = APP_Tx_Buffer[APP_tx_ptr_tail];
  APP_tx_ptr_tail++;
  if(APP_tx_ptr_tail == APP_TX_BUF_SIZE)
   APP_tx_ptr_tail = 0;
-	
+  
  return 1;
 }
 
 uint8_t VCP_get_string(uint8_t *buf)
 {
  if(APP_tx_ptr_head == APP_tx_ptr_tail)
- 	return 0;
-	
+  return 0;
+  
  while(!APP_Tx_Buffer[APP_tx_ptr_tail] || APP_Tx_Buffer[APP_tx_ptr_tail] == '\n' || APP_Tx_Buffer[APP_tx_ptr_tail] == '\r')
-	{
-		APP_tx_ptr_tail++;
-		if(APP_tx_ptr_tail == APP_TX_BUF_SIZE)
-   			APP_tx_ptr_tail = 0;
-		if(APP_tx_ptr_head == APP_tx_ptr_tail)
- 			return 0;
-	}
+  {
+    APP_tx_ptr_tail++;
+    if(APP_tx_ptr_tail == APP_TX_BUF_SIZE)
+        APP_tx_ptr_tail = 0;
+    if(APP_tx_ptr_head == APP_tx_ptr_tail)
+      return 0;
+  }
        
  int i=0;
  do
   {
   *(buf+i) = APP_Tx_Buffer[i+APP_tx_ptr_tail];
   i++;
-	  
+    
   if((APP_tx_ptr_tail+i) == APP_TX_BUF_SIZE)
    i = -APP_tx_ptr_tail;
   if(APP_tx_ptr_head == (APP_tx_ptr_tail+i))
- 	return 0;
+  return 0;
 
  }while(APP_Tx_Buffer[APP_tx_ptr_tail+i] && APP_Tx_Buffer[APP_tx_ptr_tail+i] != '\n' && APP_Tx_Buffer[APP_tx_ptr_tail+i] != '\r');
 
@@ -301,7 +301,7 @@ uint8_t VCP_get_string(uint8_t *buf)
   */
 static uint16_t VCP_COMConfig(uint8_t Conf)
 {
-	// printf("test");
+  printf("test");
   return USBD_OK;
 }
 
@@ -317,22 +317,22 @@ void EVAL_COM_IRQHandler(void)
 }
 #if 0
 int _write_r(void *reent, uint16_t fd, const char *ptr, uint32_t len) {
-  		uint32_t counter = len;
+      uint32_t counter = len;
 #define STDERR_FILENO 2
 #define STDOUT_FILENO 1 
         if(fd != STDOUT_FILENO && fd != STDERR_FILENO ) {                       // stdout goes to UARTx                              // stderr goes to UARTd
                 return len;
         }
-	
+  
         while(counter-- > 0) {                          // Send the character from the buffer to UART
-        	APP_Rx_Buffer[APP_Rx_ptr_in]= (*ptr++);
-	 		APP_Rx_ptr_in++;
+          APP_Rx_Buffer[APP_Rx_ptr_in]= (*ptr++);
+      APP_Rx_ptr_in++;
 
-			/* To avoid buffer overflow */
-			if(APP_Rx_ptr_in == APP_RX_DATA_SIZE)
-			{
-				APP_Rx_ptr_in = 0;
-			}
+      /* To avoid buffer overflow */
+      if(APP_Rx_ptr_in == APP_RX_DATA_SIZE)
+      {
+        APP_Rx_ptr_in = 0;
+      }
         }
         return len;
 }
