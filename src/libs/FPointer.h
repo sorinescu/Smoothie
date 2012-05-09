@@ -115,6 +115,7 @@ public:
         method_callback = (uint32_t (FPointerDummy::*)(uint32_t))method;
     }
 
+    
     /** call - Overloaded callback initiator.
 *
 * call the callback function.

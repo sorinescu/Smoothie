@@ -25,6 +25,7 @@
 #define __USB_CDC_CORE_H_
 
 #include  "usbd_ioreq.h"
+
 #include "serial.h"
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @{
@@ -98,6 +99,8 @@ CDC_IF_Prop_TypeDef;
 /**
   * @}
   */ 
+
+
 
 /** @defgroup USBD_CORE_Exported_Macros
   * @{

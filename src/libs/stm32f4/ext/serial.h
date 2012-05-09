@@ -9,14 +9,15 @@
 #include "usbd_cdc_vcp.h"
 #include "usbd_conf.h"
 
-
+#include "fpointer.h"
 
 class Serial {
 	public:
 		Serial(int tx, int rx);
-		
-		void * callbackObject;
+		FPointer *callbackFptr;
 
+		static Serial* g_Serial;
+		
 		void baud(int);
 
 		char getc();
@@ -26,12 +27,12 @@ class Serial {
 		// void attach(void *called, void (*fptr)());
 
 		template<typename T>
-    	void attach(T* tptr, void (T::*mptr)(void)) {
+    	void attach(T* tptr, uint32_t (T::*mptr)(uint32_t)) {
 	        if((mptr != NULL) && (tptr != NULL)) {
-	            
+	            callbackFptr = new FPointer();
+	            callbackFptr->attach(tptr, mptr);
 	        }
     	};
-
 		
 		// readable - says if getc() will return anything, I think
 		bool readable();
@@ -39,5 +40,6 @@ class Serial {
 
 };
 
+extern "C" void g_Serial_callback();
 
 #endif

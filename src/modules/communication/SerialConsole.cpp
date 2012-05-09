@@ -35,7 +35,7 @@ void SerialConsole::on_module_loaded() {
 }
         
 // Called on Serial::RxIrq interrupt, meaning we have received a char
-void SerialConsole::on_serial_char_received(){
+uint32_t SerialConsole::on_serial_char_received(uint32_t i = NULL){
    if(this->serial->readable()){
        char received = this->serial->getc();
        //On newline, we have received a line, else concatenate in buffer

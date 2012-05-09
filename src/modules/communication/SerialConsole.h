@@ -27,7 +27,7 @@ class SerialConsole : public Module, public StreamOutput {
         SerialConsole( PinName rx_pin, PinName tx_pin, int baud_rate );
         
         virtual void on_module_loaded();
-        void on_serial_char_received();
+        uint32_t on_serial_char_received(uint32_t);
         virtual void on_main_loop(void * argument);
         bool has_char(char letter);
         int printf(const char* format, ...);
