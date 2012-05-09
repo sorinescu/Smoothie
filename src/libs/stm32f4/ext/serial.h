@@ -23,9 +23,6 @@ class Serial {
 		char getc();
 		void puts(char *);
 		
-		// this->serial->attach(this, &SerialConsole::on_serial_char_received);
-		// void attach(void *called, void (*fptr)());
-
 		template<typename T>
     	void attach(T* tptr, uint32_t (T::*mptr)(uint32_t)) {
 	        if((mptr != NULL) && (tptr != NULL)) {
