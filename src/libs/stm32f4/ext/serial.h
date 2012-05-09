@@ -16,7 +16,6 @@ class Serial {
 		Serial(int tx, int rx);
 		
 		void * callbackObject;
-		typedef void (<typename T>::*callback_fn)();
 
 		void baud(int);
 
@@ -37,12 +36,8 @@ class Serial {
 		// readable - says if getc() will return anything, I think
 		bool readable();
 
-		void handleCallbacks();
-
-		static Serial *g_Serial;
 
 };
 
-extern "C" void Serial_memberFn_wrapper();
 
 #endif

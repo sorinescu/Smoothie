@@ -8,8 +8,6 @@
 __IO uint32_t TimingDelay;
 
 
-Serial* Serial::g_Serial = 0;
-
 Serial::Serial(int tx, int rx){
    __IO uint32_t i = 0;  
    uint8_t buf[255];
@@ -19,9 +17,6 @@ Serial::Serial(int tx, int rx){
     &USR_desc, 
     &USBD_CDC_cb, 
     &USR_cb);
-
-   Serial::g_Serial = this;
-
 };
 
 void Serial::baud(int b) {
@@ -42,18 +37,10 @@ bool Serial::readable() {
     return false;
 };
 
-void Serial::handleCallbacks() {
 
-};
+// extern "C" {
+//     void EVAL_COM_IRQHandler() {
 
+//     };
 
-extern "C" {
-    void EVAL_COM_IRQHandler() {
-
-    };
-
-    void Serial_memberFn_wrapper() {
-    	if(Serial::g_Serial)
-    	 	Serial::g_Serial->handleCallbacks();
-    };
-}
+// }
