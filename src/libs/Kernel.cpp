@@ -47,10 +47,10 @@ Kernel::Kernel(){
     // Config first, because we need the baud_rate setting before we start serial 
     this->config         = new Config();
     // Serial second, because the other modules might want to say something
-//    this->serial         = new SerialConsole(USBTX, USBRX, this->config->value(uart0_checksum,baud_rate_setting_ckeckusm)->by_default(9600)->as_number());
+    this->serial         = new SerialConsole(NULL, NULL, NULL);
 
     this->add_module( this->config );
-//    this->add_module( this->serial );
+    this->add_module( this->serial );
   
     // HAL stuff 
     this->slow_ticker          = new SlowTicker();

@@ -3,10 +3,12 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 
-__ALIGN_BEGIN USB_OTG_CORE_HANDLE  USB_OTG_dev __ALIGN_END;
+ __ALIGN_BEGIN USB_OTG_CORE_HANDLE  USB_OTG_dev __ALIGN_END;
 
 __IO uint32_t TimingDelay;
 
+
+Serial* Serial::g_Serial = 0;
 
 Serial::Serial(int tx, int rx){
    __IO uint32_t i = 0;  
@@ -17,6 +19,9 @@ Serial::Serial(int tx, int rx){
     &USR_desc, 
     &USBD_CDC_cb, 
     &USR_cb);
+
+   Serial::g_Serial = this;
+
 };
 
 void Serial::baud(int b) {
@@ -37,9 +42,18 @@ bool Serial::readable() {
     return false;
 };
 
+void Serial::handleCallbacks() {
+
+};
+
 
 extern "C" {
     void EVAL_COM_IRQHandler() {
 
-    }
+    };
+
+    void Serial_memberFn_wrapper() {
+    	if(Serial::g_Serial)
+    	 	Serial::g_Serial->handleCallbacks();
+    };
 }

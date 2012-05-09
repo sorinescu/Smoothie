@@ -20,6 +20,8 @@ using std::string;
 
 #define baud_rate_setting_ckeckusm 10922
 
+// Serial *MainSerial = NULL;
+
 class SerialConsole : public Module, public StreamOutput {
     public:
         SerialConsole( PinName rx_pin, PinName tx_pin, int baud_rate );

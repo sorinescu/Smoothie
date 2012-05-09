@@ -43,10 +43,6 @@ INCDIRS += $(STM32_INCLUDES)
 DEFINES = -DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DMANGUSTA_DISCOVERY\
 	   -DUSE_USB_OTG_FS=1 -DHSE_VALUE=8000000\
 
-# Libraries to be linked into final binary
-# TODO: need to make these work for ST if need be
-# LIBS = $(LIBS_PREFIX) $(GCC4MBED_DIR)/mri/mri.ar $(EXTERNAL_DIR)/mbed/LPC1768/mbed.ar $(EXTERNAL_DIR)/mbed/LPC1768/capi.ar $(EXTERNAL_DIR)/FATFileSystem/LPC1768/FATFileSystem.ar $(LIBS_SUFFIX)
-
 # Optimization level
 OPTIMIZATION = 0
 
@@ -60,7 +56,7 @@ MCFLAGS = -mcpu=$(MCU) -mthumb -mlittle-endian -mfpu=fpv4-sp-d16 -mfloat-abi=sof
  		  
 GPFLAGS = -O$(OPTIMIZATION) -gstabs+3 $(MCFLAGS) -fshort-wchar -ffunction-sections -fdata-sections \
  		  -Wall -Wextra -Wimplicit -Wcast-align -Wpointer-arith -Wredundant-decls \
- 		  -Wshadow -Wcast-qual -Wcast-align -fno-exceptions -nostdlib
+ 		  -Wshadow -Wcast-qual -Wcast-align -fno-exceptions -nostdlib -fpermissive
  		  
 GPFLAGS += $(patsubst %,-I%,$(INCDIRS))
 GPFLAGS += $(DEFINES)
