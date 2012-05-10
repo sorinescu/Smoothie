@@ -212,7 +212,7 @@ uint32_t USBD_OTG_EP1IN_ISR_Handler (USB_OTG_CORE_HANDLE *pdev)
 * @param  pdev: device instance
 * @retval status
 */
-uint32_t USBD_OTG_ISR_Handler (USB_OTG_CORE_HANDLE *pdev)
+extern "C" uint32_t USBD_OTG_ISR_Handler (USB_OTG_CORE_HANDLE *pdev)
 {
   USB_OTG_GINTSTS_TypeDef  gintr_status;
   uint32_t retval = 0;
