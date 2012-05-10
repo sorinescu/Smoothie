@@ -5,17 +5,17 @@
       You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>. 
 */
 
-// #include "libs/Kernel.h"
-//#include "modules/tools/laser/Laser.h"
+#include "libs/Kernel.h"
+// #include "modules/tools/laser/Laser.h"
 // #include "modules/tools/extruder/Extruder.h"
 // #include "modules/tools/temperaturecontrol/TemperatureControlPool.h"
 // #include "modules/robot/Player.h"
-// #include "modules/utils/simpleshell/SimpleShell.h"
-// #include "modules/utils/pausebutton/PauseButton.h"
+#include "modules/utils/simpleshell/SimpleShell.h"
+#include "modules/utils/pausebutton/PauseButton.h"
 //#include "libs/ChaNFSSD/SDFileSystem.h"
-// #include "libs/Config.h"
-// #include "libs/nuts_bolts.h"
-// #include "libs/utils.h"
+#include "libs/Config.h"
+#include "libs/nuts_bolts.h"
+#include "libs/utils.h"
 
 #include "main.h"
 #include "usbd_cdc_core.h"
@@ -41,9 +41,8 @@ int main() {
     &USBD_CDC_cb, 
     &USR_cb);
 
-    // Kernel* kernel = new Kernel();
-
-    // kernel->serial->printf("Smoothie ( grbl port ) version 0.6 \r\nstart\r\n");
+    Kernel* kernel = new Kernel();
+    kernel->serial->printf("Smoothie ( grbl port ) version 0.6 \r\nstart\r\n");
 
 //    kernel->add_module( new Laser(p21) );
 //    kernel->add_module( new Extruder(p26,p27) );
@@ -54,7 +53,8 @@ int main() {
 //    kernel->add_module( &cdcmsc );
 
     while(1){
-        // kernel->call_event(ON_MAIN_LOOP);
+      kernel->call_event(ON_MAIN_LOOP);
+      kernel->serial->printf("Smoothie ( grbl port ) version 0.6 \r\nstart\r\n");
     }
 }
 
