@@ -23,50 +23,41 @@ using namespace std;
 
 SlowTicker* global_slow_ticker;
 
-//__IO uint16_t CCR1_Val = 54618;
-
-//uint16_t capture = 0;
-
 SlowTicker::SlowTicker(){
-//	REMOVE - just for testing
-    
+//	REMOVE LED Stuff - just for testing 
 
 	STM_EVAL_LEDInit(LED4);
 	STM_EVAL_LEDInit(LED3);
+    STM_EVAL_LEDToggle(LED4);
 
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 	TIM_OCInitTypeDef  TIM_OCInitStructure;
 	uint16_t PrescalerValue = 0;
 
-    // NVIC Init Structure - this is used to pass our config 
 	NVIC_InitTypeDef NVIC_InitStructure;
 
+    // What does this do???
 	this->max_frequency = 1;
     global_slow_ticker = this;
 
-    // TIM2 clock enable - we are using RCC for TIM2 which is the internal clock
+    // TIM2 clock enable - we are using RCC for TIM2 which is an internal clock of 48MHz I believe
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
 
     NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 
-    // (gdb) print SystemCoreClock 
-    // $5 = 168000000
-    PrescalerValue = (uint16_t) (SystemCoreClock / 10000) - 1;
-    //  = 16799
+    // Since we are dealing with the 48MHz domain for RCC_APB1 - we should be 2x which is 84MHz.  We can get there 
+    // from our system clock of 168MHz / 2
+    // PrescalerValue = (uint16_t) ((SystemCoreClock / 2) / 100000) - 1; //  This + a TIM_Period of 100000 makes it tick every second.
     TIM_PrescalerConfig(TIM2, PrescalerValue, TIM_PSCReloadMode_Immediate);
-
-    TIM_TimeBaseStructure.TIM_Period = 1000;
+    TIM_TimeBaseStructure.TIM_Period = SystemCoreClock / 2; // default to 1Hz
 	TIM_TimeBaseStructure.TIM_Prescaler = PrescalerValue;
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
-
-	//TODO:  I copied this from an example...need to review this.
-	//PrescalerValue = (uint16_t) ((SystemCoreClock / 2) / 500000) - 1;
 
     //Enable interrupt
     TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
@@ -96,13 +87,11 @@ void SlowTicker::set_frequency( int frequency ){
     // PSC = 16-bit prescaler register
     // ARR = 16/32-bit Autoreload register
     // RCR = 16-bit repetition counter
-
-	//Not sure if I should be casting this to double...
-//	TIM2->CCR1 = int(floor((double)(SystemCoreClock/4)/frequency));  // SystemCoreClock/4 = Timer increments in a second
-	TIM2->CCR1 = 64000;
-//    LPC_TIM2->MR0 = int(floor((SystemCoreClock/4)/frequency));  // SystemCoreClock/4 = Timer increments in a second
-//    LPC_TIM2->TCR = 3;  // Reset
-//    LPC_TIM2->TCR = 1;  // Reset
+    
+    // TODO - do I need to set this->frequency?
+    TIM_Cmd(TIM2, DISABLE);
+    TIM2->ARR = (SystemCoreClock/2)/frequency;
+    TIM_Cmd(TIM2, ENABLE);
 }
 
 void SlowTicker::tick(){
@@ -114,7 +103,7 @@ void SlowTicker::tick(){
             hook->call();
         }
     }
-    // this->kernel->serial->printf("tick\r\n");
+    
 }
 
 extern "C" void TIM2_IRQHandler(void){
@@ -123,7 +112,7 @@ extern "C" void TIM2_IRQHandler(void){
 		TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
 		global_slow_ticker->tick();
 		
-        TIM_SetCounter(TIM2, 0);
+        // TIM_SetCounter(TIM2, 0);
 
 		STM_EVAL_LEDToggle(LED4);
 		STM_EVAL_LEDToggle(LED3);

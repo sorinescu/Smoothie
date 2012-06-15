@@ -54,12 +54,18 @@ Kernel::Kernel(){
   
     // HAL stuff 
     this->slow_ticker          = new SlowTicker();
-//    this->step_ticker          = new StepTicker();
+    this->slow_ticker->kernel = this; // DEBUG: To remove
+    this->slow_ticker->set_frequency(16);
+    this->step_ticker          = new StepTicker();
+    this->step_ticker->kernel = this; // DEBUG: To remove
+    // this->step_ticker->set_frequency(1);
 //    this->adc                  = new Adc();
 
     // LPC17xx-specific 
-//    NVIC_SetPriority(TIMER0_IRQn, 1);
-//    NVIC_SetPriority(TIMER2_IRQn, 2);
+    // This is the stepper interrupt
+    // NVIC_SetPriority(TIM3_IRQn, 1);
+    // this is the slow interrupt
+    // NVIC_SetPriority(TIM2_IRQn, 2);
 
     // Core modules 
 //    this->add_module( this->gcode_dispatch = new GcodeDispatch() );

@@ -17,7 +17,7 @@ using namespace std;
 #include "libs/Kernel.h"
 
 
-class StepTicker{
+class StepTicker : public Module {
     public:
         StepTicker();
         void set_frequency( double frequency );
