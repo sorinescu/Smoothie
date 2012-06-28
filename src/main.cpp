@@ -54,7 +54,8 @@ int main() {
 
     while(1){
       kernel->call_event(ON_MAIN_LOOP);
-      kernel->serial->printf("Smoothie ( grbl port ) version 0.6 \r\nstart\r\n");
+      // kernel->serial->printf("Smoothie ( grbl port ) version 0.6 \r\nstart\r\n");
+      // kernel->serial->printf("Smoothie ( grbl port ) version 0.6 \r\nstart\r\n");
     }
 }
 

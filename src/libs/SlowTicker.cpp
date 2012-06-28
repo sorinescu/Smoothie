@@ -23,14 +23,12 @@ using namespace std;
 
 SlowTicker* global_slow_ticker;
 
-//__IO uint16_t CCR1_Val = 54618;
-
-//uint16_t capture = 0;
-
 SlowTicker::SlowTicker(){
-//	REMOVE - just for testing
+//	REMOVE LED Stuff - just for testing 
+
 	STM_EVAL_LEDInit(LED4);
 	STM_EVAL_LEDInit(LED3);
+    STM_EVAL_LEDToggle(LED4);
 
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 	TIM_OCInitTypeDef  TIM_OCInitStructure;
@@ -38,29 +36,28 @@ SlowTicker::SlowTicker(){
 
 	NVIC_InitTypeDef NVIC_InitStructure;
 
+    // What does this do???
 	this->max_frequency = 1;
     global_slow_ticker = this;
 
-    // TIM2 clock enable
+    // TIM2 clock enable - we are using RCC for TIM2 which is an internal clock of 48MHz I believe
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
 
     NVIC_InitStructure.NVIC_IRQChannel = TIM2_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 3;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 
-    TIM_TimeBaseStructure.TIM_Period = 65538;
-	TIM_TimeBaseStructure.TIM_Prescaler = 0;
+    // Since we are dealing with the 48MHz domain for RCC_APB1 - we should be 2x which is 84MHz.  We can get there 
+    // from our system clock of 168MHz / 2
+    // PrescalerValue = (uint16_t) ((SystemCoreClock / 2) / 100000) - 1; //  This + a TIM_Period of 100000 makes it tick every second.
+    TIM_PrescalerConfig(TIM2, PrescalerValue, TIM_PSCReloadMode_Immediate);
+    TIM_TimeBaseStructure.TIM_Period = SystemCoreClock / 2; // default to 1Hz
+	TIM_TimeBaseStructure.TIM_Prescaler = PrescalerValue;
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-
 	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
-
-	//TODO:  I copied this from an example...need to review this.
-	//PrescalerValue = (uint16_t) ((SystemCoreClock / 2) / 500000) - 1;
-	PrescalerValue = 1;
-	TIM_PrescalerConfig(TIM2, PrescalerValue, TIM_PSCReloadMode_Immediate);
 
     //Enable interrupt
     TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
@@ -70,19 +67,31 @@ SlowTicker::SlowTicker(){
 
     /* Output Compare Timing Mode configuration: Channel1 */
     TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Timing;
-//    TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-//    TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
     TIM_OC1Init(TIM2, &TIM_OCInitStructure);
+
 
 }
 
 void SlowTicker::set_frequency( int frequency ){
-	//Not sure if I should be casting this to double...
-//	TIM2->CCR1 = int(floor((double)(SystemCoreClock/4)/frequency));  // SystemCoreClock/4 = Timer increments in a second
-	TIM2->CCR1 = 1;
-//    LPC_TIM2->MR0 = int(floor((SystemCoreClock/4)/frequency));  // SystemCoreClock/4 = Timer increments in a second
-//    LPC_TIM2->TCR = 3;  // Reset
-//    LPC_TIM2->TCR = 1;  // Reset
+    // Take from st docs:
+    // The update event period is calculated as follows:
+    // Update_event = TIM_CLK/((PSC + 1)*(ARR + 1)*(RCR + 1))
+
+    // TIM_CLK = 72 MHz
+    // Prescaler = 1
+    // Auto reload = 65535
+    // No repetition counter RCR = 0
+    // Update_event = 72*106/((1 + 1)*(65535 + 1)*(1))
+    // Update_event = 549.3 Hz
+    // Where: TIM_CLK = timer clock input
+    // PSC = 16-bit prescaler register
+    // ARR = 16/32-bit Autoreload register
+    // RCR = 16-bit repetition counter
+    
+    // TODO - do I need to set this->frequency?
+    TIM_Cmd(TIM2, DISABLE);
+    TIM2->ARR = (SystemCoreClock/2)/frequency;
+    TIM_Cmd(TIM2, ENABLE);
 }
 
 void SlowTicker::tick(){
@@ -94,6 +103,7 @@ void SlowTicker::tick(){
             hook->call();
         }
     }
+    
 }
 
 extern "C" void TIM2_IRQHandler(void){
@@ -101,7 +111,8 @@ extern "C" void TIM2_IRQHandler(void){
 	{
 		TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
 		global_slow_ticker->tick();
-		TIM_SetCounter(TIM2, 0);
+		
+        // TIM_SetCounter(TIM2, 0);
 
 		STM_EVAL_LEDToggle(LED4);
 		STM_EVAL_LEDToggle(LED3);
