@@ -16,7 +16,8 @@ void Serial::baud(int b) {
 
 char Serial::getc() {
     uint8_t c;
-    return VCP_get_char(&c);
+    VCP_get_char(&c);
+    return c;
 };
 
 void Serial::puts(char *buf) {
@@ -25,7 +26,7 @@ void Serial::puts(char *buf) {
 
 
 bool Serial::readable() {
-    return false;
+    return true;
 };
 
 

@@ -46,6 +46,8 @@ extern uint32_t USBD_OTG_EP1IN_ISR_Handler (USB_OTG_CORE_HANDLE *pdev);
 extern uint32_t USBD_OTG_EP1OUT_ISR_Handler (USB_OTG_CORE_HANDLE *pdev);
 #endif
 
+extern "C" {
+
 /******************************************************************************/
 /*            Cortex-M3 Processor Exceptions Handlers                         */
 /******************************************************************************/
@@ -223,7 +225,7 @@ extern "C" void OTG_HS_EP1_OUT_IRQHandler(void)
 }
 #endif
 
-
+}
 /******************************************************************************/
 /*                 STM32Fxxx Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */

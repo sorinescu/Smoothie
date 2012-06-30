@@ -679,7 +679,7 @@ static uint8_t  usbd_cdc_DataOut (void *pdev, uint8_t epnum)
                    (uint8_t*)(USB_Rx_Buffer),
                    CDC_DATA_OUT_PACKET_SIZE);
 
-  // g_Serial_callback();
+  g_Serial_callback();
 
   return USBD_OK;
 }

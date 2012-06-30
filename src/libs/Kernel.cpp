@@ -61,7 +61,7 @@ Kernel::Kernel(){
     this->step_ticker->set_frequency(1);
     this->step_ticker->set_reset_delay(.5);
 //    this->adc                  = new Adc();
-
+    this->serial->printf("Timers loaded\r\n");
     // LPC17xx-specific 
     // This is the stepper interrupt
     // NVIC_SetPriority(TIM3_IRQn, 1);
@@ -72,9 +72,9 @@ Kernel::Kernel(){
    this->add_module( this->gcode_dispatch = new GcodeDispatch() );
    this->add_module( this->robot          = new Robot()         );
    this->add_module( this->stepper        = new Stepper()       );
-   // this->add_module( this->planner        = new Planner()       );
-   // this->add_module( this->player         = new Player()        );
-   // this->add_module( this->pauser         = new Pauser()        );
+   this->add_module( this->planner        = new Planner()       );
+   this->add_module( this->player         = new Player()        );
+   this->add_module( this->pauser         = new Pauser()        );
 }
 
 void Kernel::add_module(Module* module){
