@@ -6,7 +6,8 @@
 #include "libs/Kernel.h"
 #include "libs/utils.h"
 #include <string>
-
+#include <math.h>
+#include <cstdlib>
 
 typedef int PinName;
 // enum PinName {
@@ -18,44 +19,48 @@ class Pin{
         Pin(){ }
 
         Pin* from_string(std::string value){
-//            LPC_GPIO_TypeDef* gpios[5] ={LPC_GPIO0,LPC_GPIO1,LPC_GPIO2,LPC_GPIO3,LPC_GPIO4};
-//            this->port = gpios[ atoi(value.substr(0,1).c_str()) ];
-//            this->inverting = ( value.find_first_of("!")!=string::npos ? true : false );
-//            this->pin  = atoi( value.substr(2, value.size()-2-(this->inverting?1:0)).c_str() );
-//            return this;
+           GPIO_TypeDef* gpios[4] ={ };
+           
+           this->port_number = atoi(value.substr(0,1).c_str());
+           this->port = gpios[ this->port_number ];
+
+           this->inverting = ( value.find_first_of("!")!=string::npos ? true : false );
+           this->pin  = atoi( value.substr(2, value.size()-2-(this->inverting?1:0)).c_str() );
+           return this;
         }
 
         inline Pin*  as_output(){
-//            this->port->FIODIR |= 1<<this->pin;
-//            return this;
+            GPIOA->MODER |= 1 << this->pin*2;
+            return this;
         }  
 
         inline Pin*  as_input(){
-//            this->port->FIODIR &= ~(1<<this->pin);
-//            return this;
+            GPIOA->MODER &= ~(1 << (this->pin*2));
+            return this;
         }  
 
         inline bool get(){
-//            if( this->inverting ){
-//               return ~(( this->port->FIOPIN >> this->pin ) & 1);
-//            }else{
-//               return  (( this->port->FIOPIN >> this->pin ) & 1);
-//            }
+           if( this->inverting ){
+              return ~(1 & GPIOA->ODR << this->pin);
+           }else{
+              return 1 & GPIOA->ODR << this->pin;
+           }
         }
 
         inline void set(bool value){
 //            // TODO : This should be bitmath
-//            if( this->inverting ){ value = !value; }
-//            if( value ){
-//                this->port->FIOSET = 1 << this->pin;
-//            }else{
-//                this->port->FIOCLR = 1 << this->pin;
-//            }
+           if( this->inverting ){ value = !value; }
+           if( value ){
+               GPIOA->BSRRL |= 1 << this->pin;
+           }else{
+               GPIOA->BSRRH |= 1 << this->pin;
+           }
         }
 
-//        bool inverting;
-//        LPC_GPIO_TypeDef* port;
-//        char pin;
+        bool inverting;
+        GPIO_TypeDef* port;
+        char pin;
+        char port_number;
 };
 
 

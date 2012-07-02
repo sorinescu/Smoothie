@@ -26,9 +26,9 @@ SlowTicker* global_slow_ticker;
 SlowTicker::SlowTicker(){
 //	REMOVE LED Stuff - just for testing 
 
-	STM_EVAL_LEDInit(LED4);
-	STM_EVAL_LEDInit(LED3);
-    STM_EVAL_LEDToggle(LED4);
+	// STM_EVAL_LEDInit(LED4);
+	// STM_EVAL_LEDInit(LED3);
+ //    STM_EVAL_LEDToggle(LED4);
 
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 	TIM_OCInitTypeDef  TIM_OCInitStructure;
@@ -114,8 +114,8 @@ extern "C" void TIM2_IRQHandler(void){
 		
         // TIM_SetCounter(TIM2, 0);
 
-		STM_EVAL_LEDToggle(LED4);
-		STM_EVAL_LEDToggle(LED3);
+		// STM_EVAL_LEDToggle(LED4);
+		// STM_EVAL_LEDToggle(LED3);
 //		capture = TIM_GetCapture1(TIM2);
 //		TIM_SetCompare1(TIM2, capture + );
 	}
