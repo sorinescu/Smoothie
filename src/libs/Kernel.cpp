@@ -62,6 +62,19 @@ Kernel::Kernel(){
     this->step_ticker->set_reset_delay(.5);
 //    this->adc                  = new Adc();
     this->serial->printf("Timers loaded\r\n");
+
+    this->serial->printf("pow(10,2):\r\n");
+    int x = pow(10,2);
+    this->serial->printf("%u\r\n", x);
+
+    this->serial->printf("sqrt(100):\r\n");
+    x = sqrt(100);
+    this->serial->printf("%u\r\n", x);
+
+    this->serial->printf("sqrt(pow(10,2)):\r\n");
+    x = sqrt(pow(10,2));
+    this->serial->printf("%u\r\n", x);
+
     // LPC17xx-specific 
     // This is the stepper interrupt
     // NVIC_SetPriority(TIM3_IRQn, 1);

@@ -154,7 +154,7 @@ void Robot::append_milestone( double target[], double rate ){
 
 void Robot::append_line(Gcode* gcode, double target[], double rate ){
 
-
+    
     // We cut the line into smaller segments. This is not usefull in a cartesian robot, but necessary for robots with rotational axes. 
     // In cartesian robot, a high "mm_per_line_segment" setting will prevent waste.
     gcode->millimeters_of_travel = sqrt( pow( target[X_AXIS]-this->current_position[X_AXIS], 2 ) +  pow( target[Y_AXIS]-this->current_position[Y_AXIS], 2 ) +  pow( target[Z_AXIS]-this->current_position[Z_AXIS], 2 ) ); 

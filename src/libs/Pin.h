@@ -6,7 +6,7 @@
 #include "libs/Kernel.h"
 #include "libs/utils.h"
 #include <string>
-#include <math.h>
+#include <cmath>
 #include <cstdlib>
 
 typedef int PinName;
@@ -19,7 +19,7 @@ class Pin{
         Pin(){ }
 
         Pin* from_string(std::string value){
-           GPIO_TypeDef* gpios[4] ={ };
+           GPIO_TypeDef* gpios[4] ={ GPIOA, GPIOB, GPIOC, GPIOD };
            
            this->port_number = atoi(value.substr(0,1).c_str());
            this->port = gpios[ this->port_number ];
@@ -30,20 +30,20 @@ class Pin{
         }
 
         inline Pin*  as_output(){
-            GPIOA->MODER |= 1 << this->pin*2;
+            this->port->MODER |= 1 << this->pin*2;
             return this;
         }  
 
         inline Pin*  as_input(){
-            GPIOA->MODER &= ~(1 << (this->pin*2));
+            this->port->MODER &= ~(1 << (this->pin*2));
             return this;
         }  
 
         inline bool get(){
            if( this->inverting ){
-              return ~(1 & GPIOA->ODR << this->pin);
+              return ~(1 & this->port->ODR << this->pin);
            }else{
-              return 1 & GPIOA->ODR << this->pin;
+              return 1 & this->port->ODR << this->pin;
            }
         }
 
@@ -51,9 +51,9 @@ class Pin{
 //            // TODO : This should be bitmath
            if( this->inverting ){ value = !value; }
            if( value ){
-               GPIOA->BSRRL |= 1 << this->pin;
+               this->port->BSRRL |= 1 << this->pin;
            }else{
-               GPIOA->BSRRH |= 1 << this->pin;
+               this->port->BSRRH |= 1 << this->pin;
            }
         }
 
