@@ -26,6 +26,8 @@ Stepper::Stepper(){
 //Called when the module has just been loaded
 void Stepper::on_module_loaded(){
     stepper = this;
+
+
     this->register_for_event(ON_BLOCK_BEGIN);
     this->register_for_event(ON_BLOCK_END);
     this->register_for_event(ON_PLAY);
@@ -42,6 +44,7 @@ void Stepper::on_module_loaded(){
     this->kernel->step_ticker->attach( this, &Stepper::main_interrupt );   
     this->kernel->step_ticker->reset_attach( this, &Stepper::reset_step_pins );
 
+
 }
 
 // Get configuration from the config file
@@ -50,7 +53,7 @@ void Stepper::on_config_reload(void* argument){
     this->microseconds_per_step_pulse   =  this->kernel->config->value(microseconds_per_step_pulse_ckeckusm  )->by_default(5     )->as_number();
     this->acceleration_ticks_per_second =  this->kernel->config->value(acceleration_ticks_per_second_checksum)->by_default(100   )->as_number();
     this->minimum_steps_per_minute      =  this->kernel->config->value(minimum_steps_per_minute_checksum     )->by_default(1200  )->as_number();
-    this->base_stepping_frequency       =  this->kernel->config->value(base_stepping_frequency_checksum      )->by_default(100000)->as_number();
+    this->base_stepping_frequency       =  this->kernel->config->value(base_stepping_frequency_checksum      )->by_default(10000)->as_number();
     this->alpha_step_pin                =  this->kernel->config->value(alpha_step_pin_checksum               )->by_default("3.12"     )->as_pin()->as_output();
     this->beta_step_pin                 =  this->kernel->config->value(beta_step_pin_checksum                )->by_default("3.13"     )->as_pin()->as_output();
     this->gamma_step_pin                =  this->kernel->config->value(gamma_step_pin_checksum               )->by_default("3.14!"    )->as_pin()->as_output();
@@ -59,8 +62,9 @@ void Stepper::on_config_reload(void* argument){
     this->gamma_dir_pin                 =  this->kernel->config->value(gamma_dir_pin_checksum                )->by_default("3.10"     )->as_pin()->as_output();
 
     // Set the Timer interval for Match Register 1, 
-    this->kernel->step_ticker->set_reset_delay( this->microseconds_per_step_pulse / 1000000 );
+    
     this->kernel->step_ticker->set_frequency( this->base_stepping_frequency );
+    this->kernel->step_ticker->set_reset_delay( double(this->microseconds_per_step_pulse) / 1000000 );
 }
 
 // When the play/pause button is set to pause, or a module calls the ON_PAUSE event

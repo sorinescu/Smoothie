@@ -52,10 +52,13 @@ int main() {
 //
 //    kernel->add_module( &cdcmsc );
 
+    // REMOVE THIS LATER -> Just for debugging...
+    // kernel->stepper->alpha_step_pin->set(1);
+    // kernel->stepper->beta_step_pin->set(1);
+    // kernel->stepper->gamma_step_pin->set(0);
+
     while(1){
       kernel->call_event(ON_MAIN_LOOP);
-      // kernel->serial->printf("Smoothie ( grbl port ) version 0.6 \r\nstart\r\n");
-      // kernel->serial->printf("Smoothie ( grbl port ) version 0.6 \r\nstart\r\n");
     }
 }
 

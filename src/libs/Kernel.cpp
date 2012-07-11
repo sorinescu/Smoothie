@@ -55,25 +55,14 @@ Kernel::Kernel(){
     // HAL stuff 
     this->slow_ticker          = new SlowTicker();
     this->slow_ticker->kernel = this; // DEBUG: To remove
-    this->slow_ticker->set_frequency(16);
+    // this->slow_ticker->set_frequency(16);
     this->step_ticker          = new StepTicker();
     this->step_ticker->kernel = this; // DEBUG: To remove
-    this->step_ticker->set_frequency(1);
-    this->step_ticker->set_reset_delay(.5);
+    // this->step_ticker->set_frequency(1);
+    // this->step_ticker->set_reset_delay(.5);
 //    this->adc                  = new Adc();
-    this->serial->printf("Timers loaded\r\n");
+    
 
-    this->serial->printf("pow(10,2):\r\n");
-    int x = pow(10,2);
-    this->serial->printf("%u\r\n", x);
-
-    this->serial->printf("sqrt(100):\r\n");
-    x = sqrt(100);
-    this->serial->printf("%u\r\n", x);
-
-    this->serial->printf("sqrt(pow(10,2)):\r\n");
-    x = sqrt(pow(10,2));
-    this->serial->printf("%u\r\n", x);
 
     // LPC17xx-specific 
     // This is the stepper interrupt
