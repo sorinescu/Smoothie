@@ -49,6 +49,7 @@ SlowTicker::SlowTicker(){
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 
+
     // Since we are dealing with the 48MHz domain for RCC_APB1 - we should be 2x which is 84MHz.  We can get there 
     // from our system clock of 168MHz / 2
     // PrescalerValue = (uint16_t) ((SystemCoreClock / 2) / 100000) - 1; //  This + a TIM_Period of 100000 makes it tick every second.
@@ -68,8 +69,6 @@ SlowTicker::SlowTicker(){
     /* Output Compare Timing Mode configuration: Channel1 */
     TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_Timing;
     TIM_OC1Init(TIM2, &TIM_OCInitStructure);
-
-
 }
 
 void SlowTicker::set_frequency( int frequency ){
@@ -95,6 +94,7 @@ void SlowTicker::set_frequency( int frequency ){
 }
 
 void SlowTicker::tick(){
+    // this->kernel->serial->printf("SlowTicker::tick()\n");
     for (int i=0; i<this->hooks.size(); i++){
         Hook* hook = this->hooks.at(i);
         hook->counter += ( hook->frequency / this->max_frequency );
@@ -103,7 +103,6 @@ void SlowTicker::tick(){
             hook->call();
         }
     }
-    
 }
 
 extern "C" void TIM2_IRQHandler(void){
@@ -111,18 +110,6 @@ extern "C" void TIM2_IRQHandler(void){
 	{
 		TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
 		global_slow_ticker->tick();
-		
-        // TIM_SetCounter(TIM2, 0);
-
-		// STM_EVAL_LEDToggle(LED4);
-		// STM_EVAL_LEDToggle(LED3);
-//		capture = TIM_GetCapture1(TIM2);
-//		TIM_SetCompare1(TIM2, capture + );
 	}
-//Original Smoothie code:
-//    if((LPC_TIM2->IR >> 0) & 1){  // If interrupt register set for MR0
-//        LPC_TIM2->IR |= 1 << 0;   // Reset it
-//        global_slow_ticker->tick();
-//    }
 }
 

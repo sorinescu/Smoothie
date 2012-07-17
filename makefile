@@ -41,7 +41,7 @@ INCDIRS += $(STM32_INCLUDES)
 DEFINES = -DUSE_USB_OTG_FS=1 -DUSE_STDPERIPH_DRIVER 
 
 # Optimization level
-OPTIMIZATION = 0
+OPTIMIZATION = 3
 
 #  Compiler Options
 MCU = cortex-m4

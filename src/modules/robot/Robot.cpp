@@ -132,10 +132,11 @@ void Robot::append_milestone( double target[], double rate ){
     for(int axis=X_AXIS;axis<=Z_AXIS;axis++){deltas[axis]=target[axis]-this->last_milestone[axis];}
 
     
-    double millimeters_of_travel = sqrt( pow( deltas[X_AXIS], 2 ) +  pow( deltas[Y_AXIS], 2 ) +  pow( deltas[Z_AXIS], 2 ) );      
-    
+    double millimeters_of_travel = sqrt( pow( deltas[X_AXIS], 2 ) +  pow( deltas[Y_AXIS], 2 ) +  pow( deltas[Z_AXIS], 2 ) );
+    // this->kernel->serial->printf("millimeters_of_travel %f\n", millimeters_of_travel);
     double duration = 0;
     if( rate > 0 ){ duration = millimeters_of_travel / rate; }
+    // this->kernel->serial->printf("duration %f\n", duration);
 
     for(int axis=X_AXIS;axis<=Z_AXIS;axis++){
         if( this->max_speeds[axis] > 0 ){ 
@@ -147,7 +148,7 @@ void Robot::append_milestone( double target[], double rate ){
     }
 
     this->kernel->planner->append_block( steps, rate*60, millimeters_of_travel, deltas ); 
-
+    
     memcpy(this->last_milestone, target, sizeof(double)*3); // this->last_milestone[] = target[]; 
 
 }

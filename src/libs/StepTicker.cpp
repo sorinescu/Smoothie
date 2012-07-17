@@ -41,14 +41,14 @@ StepTicker::StepTicker(){
 
     NVIC_InitStructure.NVIC_IRQChannel = TIM3_IRQn;
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 4;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 
     // Since we are dealing with the 48MHz domain for RCC_APB1 - we should be 2x which is 84MHz.  We can get there 
     // from our system clock of 168MHz / 2
-    // PrescalerValue = 10000;
     PrescalerValue = 0;
+    // PrescalerValue = 0;
     TIM_PrescalerConfig(TIM3, PrescalerValue, TIM_PSCReloadMode_Immediate);
     // TIM_TimeBaseStructure.TIM_Period = SystemCoreClock / 2; // default to 1Hz
     // TIM_TimeBaseStructure.TIM_Period = 100000; // default to 1Hz
@@ -79,6 +79,7 @@ void StepTicker::set_frequency( double frequency ){
     this->frequency = frequency;
     TIM_Cmd(TIM3, DISABLE);
     TIM3->ARR = (SystemCoreClock/2)/frequency;
+    TIM3->CCR1 = TIM3->ARR - 1;
     TIM_Cmd(TIM3, ENABLE);
 }
 
@@ -89,46 +90,33 @@ void StepTicker::set_reset_delay( double seconds ){
     TIM3->ARR = (SystemCoreClock/2)/this->frequency;
     double d_tmp = seconds * 84000000.0;
     int delay_val = int(floor(d_tmp));
+    TIM3->CCR1 = TIM3->ARR - 1;
     TIM3->CCR2 = delay_val;
     TIM_Cmd(TIM3, ENABLE);
-
 }
 
 void StepTicker::tick(){
-    int tmp_cnt = TIM3->CNT;
     for (int i=0; i<this->hooks.size(); i++){ 
         this->hooks.at(i)->call();
     }
-    tmp_cnt = TIM3->CNT;
 }
 
 void StepTicker::reset_tick(){
-    int tmp_cnt = TIM3->CNT;
     for (int i=0; i<this->reset_hooks.size(); i++){ 
         this->reset_hooks.at(i)->call();
     }
-    tmp_cnt = TIM3->CNT;
 }
 
 extern "C" void TIM3_IRQHandler(void){
-    // global_step_ticker->kernel->serial->printf("IRQ hit at count: %u\r\n", TIM3->CNT);
-
-	if(TIM_GetITStatus(TIM3, TIM_IT_CC1) != RESET) {
-        // global_step_ticker->kernel->serial->printf(" CC1 hit at count: %u\r\n", TIM3->CNT);
+    if(TIM_GetITStatus(TIM3, TIM_IT_CC1) != RESET) {
 		TIM_ClearITPendingBit(TIM3, TIM_IT_CC1);
-		global_step_ticker->tick();
-        // TIM_SetCounter(TIM3, 0);
-        // STM_EVAL_LEDToggle(LED5);
-        // STM_EVAL_LEDToggle(LED6);
-	}
+	    global_step_ticker->tick();
+    }
 
 	if(TIM_GetITStatus(TIM3, TIM_IT_CC2) != RESET) {
-        // global_step_ticker->kernel->serial->printf(" CC2 hit at count: %u\r\n", TIM3->CNT);
 		TIM_ClearITPendingBit(TIM3, TIM_IT_CC2);
-		global_step_ticker->reset_tick();
-		// TIM_SetCounter(TIM3, 0);
-        // STM_EVAL_LEDToggle(LED6);
-	}
+    	global_step_ticker->reset_tick();
+    }
 }
 
 

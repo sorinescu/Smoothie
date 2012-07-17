@@ -43,6 +43,7 @@ const ModuleCallback kernel_callback_functions[NUMBER_OF_DEFINED_EVENTS] = {
 
 // The kernel is the central point in Smoothie : it stores modules, and handles event calls
 Kernel::Kernel(){
+    
 
     // Config first, because we need the baud_rate setting before we start serial 
     this->config         = new Config();
@@ -61,7 +62,7 @@ Kernel::Kernel(){
     // this->step_ticker->set_frequency(1);
     // this->step_ticker->set_reset_delay(.5);
 //    this->adc                  = new Adc();
-    
+    this->stepper->alpha_step_pin->set(1);
 
 
     // LPC17xx-specific 
