@@ -5,17 +5,26 @@
       You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CONFIG_H
-#define CONFIG_H
-#include "platform/Platform.h"
+#ifndef PLATFORM_CONFIG_H
+#define PLATFORM_CONFIG_H
 
-class Config : public PlatformConfig {
+#include "libs/Kernel.h"
+#include "libs/utils.h"
+#include "libs/Pin.h"
+
+#define config_get_checksum        46310
+#define config_set_checksum        55538
+#define config_load_checksum       3143
+
+class PlatformConfig : public BaseConfig {
 public:
-    void on_module_loaded();
+    PlatformConfig();
 
-    ConfigValue* value(uint16_t check_sum);
-    ConfigValue* value(uint16_t check_sum_a, uint16_t check_sum_b);
-    ConfigValue* value(uint16_t check_sum_a, uint16_t check_sum_b, uint16_t check_sum_c );
+    ConfigValue* value(vector<uint16_t> check_sums );
+
+protected:
+    void on_console_line_received( void* argument );
+    void get_module_list(vector<uint16_t>* list, uint16_t family);
 };
 
 #endif

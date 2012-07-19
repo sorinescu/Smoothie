@@ -5,33 +5,32 @@
       You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>.
 */
 
+
 using namespace std;
 #include <vector>
-#include "libs/Config.h"
+#include <string>
+#include <stdio.h>
+#include "libs/Kernel.h"
+#include "PlatformConfig.h"
+#include "libs/nuts_bolts.h"
+#include "libs/utils.h"
 
-void Config::on_module_loaded(){
-    register_for_event(ON_CONSOLE_LINE_RECEIVED);
+PlatformConfig::PlatformConfig(){
 }
 
-ConfigValue* Config::value(uint16_t check_sum_a, uint16_t check_sum_b, uint16_t check_sum_c ){
-    vector<uint16_t> check_sums;
-    check_sums.push_back(check_sum_a);
-    check_sums.push_back(check_sum_b);
-    check_sums.push_back(check_sum_c);
-    return value(check_sums);
+void PlatformConfig::on_console_line_received( void* argument ){
+    // not needed - static configuration
 }
 
-ConfigValue* Config::value(uint16_t check_sum_a, uint16_t check_sum_b){
-    vector<uint16_t> check_sums;
-    check_sums.push_back(check_sum_a);
-    check_sums.push_back(check_sum_b);
-    return value(check_sums);
+// Get a value from the configuration
+ConfigValue* PlatformConfig::value(vector<uint16_t> check_sums){
+    ConfigValue* result = new ConfigValue;
+
+    //TODO: there should be a static configuration (from a configuration header file?)
+    return result;
 }
 
-ConfigValue* Config::value(uint16_t check_sum){
-    vector<uint16_t> check_sums;
-    check_sums.push_back(check_sum);
-    return value(check_sums);
+void PlatformConfig::get_module_list(vector<uint16_t>* list, uint16_t family){
+    // TODO: there should be a static list of modules (from a configuration header file?)
 }
-
 
