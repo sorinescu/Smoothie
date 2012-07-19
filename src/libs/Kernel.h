@@ -57,6 +57,7 @@ class Kernel : public PlatformKernel {
         void call_event(unsigned int id_event);
         void call_event(unsigned int id_event, void * argument);
 
+        void delay_us(uint16_t);
         // These modules are aviable to all other modules
         SerialConsole*    serial;
         GcodeDispatch*    gcode_dispatch;
