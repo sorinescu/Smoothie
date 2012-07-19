@@ -1,8 +1,8 @@
-/*  
+/*
       This file is part of Smoothie (http://smoothieware.org/). The motion control part is heavily based on Grbl (https://github.com/simen/grbl) with additions from Sungeun K. Jeon (https://github.com/chamnit/grbl)
       Smoothie is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
       Smoothie is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-      You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>. 
+      You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>.
 */
 
 using namespace std;
@@ -14,9 +14,9 @@ using namespace std;
 #include "libs/Kernel.h"
 #include "Block.h"
 #include "Planner.h"
-#include "Player.h" 
+#include "Player.h"
 
-#define SYS_CLK 84000000    /* SystemCoreClock / 2 */ 
+#define SYS_CLK 84000000    /* SystemCoreClock / 2 */
 #define DELAY_TIM_FREQUENCY 1000000 /* = 1MHZ -> timer runs in microseconds */
 
 Planner::Planner(){
@@ -27,10 +27,10 @@ Planner::Planner(){
 
   /* Enable timer clock  - use TIMER5 */
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);
-  
+
   /* Time base configuration */
   TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-  TIM_TimeBaseStructInit(&TIM_TimeBaseStructure); 
+  TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
   TIM_TimeBaseStructure.TIM_Prescaler = (SYS_CLK / DELAY_TIM_FREQUENCY) - 1;
   TIM_TimeBaseStructure.TIM_Period = 65535;
   TIM_TimeBaseStructure.TIM_ClockDivision = 0;
@@ -47,12 +47,12 @@ void Planner::on_module_loaded(){
 }
 
 void Planner::on_config_reload(void* argument){
-    this->acceleration =       this->kernel->config->value(acceleration_checksum       )->by_default(100 )->as_number();
-    this->max_jerk =           this->kernel->config->value(max_jerk_checksum           )->by_default(100 )->as_number();
-    this->junction_deviation = this->kernel->config->value(junction_deviation_checksum )->by_default(0.05)->as_number(); 
+    this->acceleration =       this->kernel->config->value(acceleration_checksum       )->by_default(100 )->as_double();
+    this->max_jerk =           this->kernel->config->value(max_jerk_checksum           )->by_default(100 )->as_double();
+    this->junction_deviation = this->kernel->config->value(junction_deviation_checksum )->by_default(0.05)->as_double();
 }
 
-void Planner::delay_us( uint16_t uSecs ) 
+void Planner::delay_us( uint16_t uSecs )
 {
   uint16_t start = TIM5->CNT;
   /* use 16 bit count wrap around */
@@ -63,7 +63,7 @@ void Planner::delay_us( uint16_t uSecs )
 
 // Append a block to the queue, compute it's speed factors
 void Planner::append_block( int target[], double feed_rate, double distance, double deltas[] ){
-   
+
     // Stall here if the queue is ful
     bool is_full = this->kernel->player->queue.size() >= this->kernel->player->queue.capacity()-2;
     while( is_full ){
@@ -72,29 +72,29 @@ void Planner::append_block( int target[], double feed_rate, double distance, dou
     }
 
     Block* block = this->kernel->player->new_block();
-    block->planner = this;   
+    block->planner = this;
 
     // Direction bits
-    block->direction_bits = 0; 
-    for( int stepper=ALPHA_STEPPER; stepper<=GAMMA_STEPPER; stepper++){ 
-        if( target[stepper] < position[stepper] ){ block->direction_bits |= (1<<stepper); } 
+    block->direction_bits = 0;
+    for( int stepper=ALPHA_STEPPER; stepper<=GAMMA_STEPPER; stepper++){
+        if( target[stepper] < position[stepper] ){ block->direction_bits |= (1<<stepper); }
     }
-    
+
     // Number of steps for each stepper
-    for( int stepper=ALPHA_STEPPER; stepper<=GAMMA_STEPPER; stepper++){ block->steps[stepper] = labs(target[stepper] - this->position[stepper]); } 
-    
+    for( int stepper=ALPHA_STEPPER; stepper<=GAMMA_STEPPER; stepper++){ block->steps[stepper] = labs(target[stepper] - this->position[stepper]); }
+
     // Max number of steps, for all axes
     block->steps_event_count = max( block->steps[ALPHA_STEPPER], max( block->steps[BETA_STEPPER], block->steps[GAMMA_STEPPER] ) );
     //if( block->steps_event_count == 0 ){ this->computing = false; return; }
 
     block->millimeters = distance;
-    double inverse_millimeters = 0; 
+    double inverse_millimeters = 0;
     if( distance > 0 ){ inverse_millimeters = 1.0/distance; }
 
     // Calculate speed in mm/minute for each axis. No divide by zero due to previous checks.
     // NOTE: Minimum stepper speed is limited by MINIMUM_STEPS_PER_MINUTE in stepper.c
     double inverse_minute = feed_rate * inverse_millimeters;
-    if( distance > 0 ){ 
+    if( distance > 0 ){
         block->nominal_speed = block->millimeters * inverse_minute;           // (mm/min) Always > 0
         block->nominal_rate = ceil(block->steps_event_count * inverse_minute); // (step/min) Always > 0
     }else{
@@ -103,7 +103,7 @@ void Planner::append_block( int target[], double feed_rate, double distance, dou
     }
 
     //this->kernel->serial->printf("nom_speed: %f nom_rate: %u step_event_count: %u block->steps_z: %u \r\n", block->nominal_speed, block->nominal_rate, block->steps_event_count, block->steps[2]  );
-    
+
     // Compute the acceleration rate for the trapezoid generator. Depending on the slope of the line
     // average travel per step event changes. For a line along one axis the travel per step event
     // is equal to the travel/step in the particular axis. For a 45 degree line the steppers of both
@@ -118,7 +118,7 @@ void Planner::append_block( int target[], double feed_rate, double distance, dou
     unit_vec[X_AXIS] = deltas[X_AXIS]*inverse_millimeters;
     unit_vec[Y_AXIS] = deltas[Y_AXIS]*inverse_millimeters;
     unit_vec[Z_AXIS] = deltas[Z_AXIS]*inverse_millimeters;
-  
+
     // Compute maximum allowable entry speed at junction by centripetal acceleration approximation.
     // Let a circle be tangent to both previous and current path line segments, where the junction
     // deviation is defined as the distance from the junction to the closest edge of the circle,
@@ -136,7 +136,7 @@ void Planner::append_block( int target[], double feed_rate, double distance, dou
       double cos_theta = - this->previous_unit_vec[X_AXIS] * unit_vec[X_AXIS]
                          - this->previous_unit_vec[Y_AXIS] * unit_vec[Y_AXIS]
                          - this->previous_unit_vec[Z_AXIS] * unit_vec[Z_AXIS] ;
-                           
+
       // Skip and use default max junction speed for 0 degree acute junction.
       if (cos_theta < 0.95) {
         vmax_junction = min(this->previous_nominal_speed,block->nominal_speed);
@@ -145,12 +145,12 @@ void Planner::append_block( int target[], double feed_rate, double distance, dou
           // Compute maximum junction velocity based on maximum acceleration and junction deviation
           double sin_theta_d2 = sqrt(0.5*(1.0-cos_theta)); // Trig half angle identity. Always positive.
           vmax_junction = min(vmax_junction,
-            sqrt(this->acceleration*60*60 * this->junction_deviation * sin_theta_d2/(1.0-sin_theta_d2)) ); 
+            sqrt(this->acceleration*60*60 * this->junction_deviation * sin_theta_d2/(1.0-sin_theta_d2)) );
         }
       }
     }
     block->max_entry_speed = vmax_junction;
-   
+
     // Initialize block entry speed. Compute based on deceleration to user-defined MINIMUM_PLANNER_SPEED.
     double v_allowable = this->max_allowable_speed(-this->acceleration,0.0,block->millimeters); //TODO: Get from config
     block->entry_speed = min(vmax_junction, v_allowable);
@@ -166,18 +166,18 @@ void Planner::append_block( int target[], double feed_rate, double distance, dou
     if (block->nominal_speed <= v_allowable) { block->nominal_length_flag = true; }
     else { block->nominal_length_flag = false; }
     block->recalculate_flag = true; // Always calculate trapezoid for new block
- 
+
     // Update previous path unit_vector and nominal speed
     memcpy(this->previous_unit_vec, unit_vec, sizeof(unit_vec)); // previous_unit_vec[] = unit_vec[]
     this->previous_nominal_speed = block->nominal_speed;
-    
+
     // Update current position
     memcpy(this->position, target, sizeof(int)*3);
 
-    // Math-heavy re-computing of the whole queue to take the new 
+    // Math-heavy re-computing of the whole queue to take the new
     this->recalculate();
-    
-    // The block can now be used 
+
+    // The block can now be used
     block->ready();
 
 }
@@ -222,14 +222,14 @@ void Planner::reverse_pass(){
         if( blocks[1] == NULL ){ continue; }
         blocks[1]->reverse_pass(blocks[2], blocks[0]);
     }
-    
+
 }
 
 // Planner::recalculate() needs to go over the current plan twice. Once in reverse and once forward. This
 // implements the forward pass.
 void Planner::forward_pass() {
     // For each block
-    int block_index = this->kernel->player->queue.head; 
+    int block_index = this->kernel->player->queue.head;
     Block* blocks[3] = {NULL,NULL,NULL};
 
     while(block_index!=this->kernel->player->queue.tail){
@@ -239,8 +239,8 @@ void Planner::forward_pass() {
         if( blocks[0] == NULL ){ continue; }
         blocks[1]->forward_pass(blocks[0],blocks[2]);
         block_index = this->kernel->player->queue.next_block_index( block_index );
-    } 
-    blocks[2]->forward_pass(blocks[1],NULL);   
+    }
+    blocks[2]->forward_pass(blocks[1],NULL);
 
 }
 
@@ -265,7 +265,7 @@ void Planner::recalculate_trapezoids() {
                 current->recalculate_flag = false;
             }
         }
-        block_index = this->kernel->player->queue.next_block_index( block_index ); 
+        block_index = this->kernel->player->queue.next_block_index( block_index );
     }
 
     // Last/newest block in buffer. Exit speed is set with MINIMUM_PLANNER_SPEED. Always recalculated.
@@ -279,7 +279,7 @@ void Planner::dump_queue(){
     for( int index = 0; index <= this->kernel->player->queue.size()-1; index++ ){
        if( index > 10 && index < this->kernel->player->queue.size()-10 ){ continue; }
        this->kernel->serial->printf("block %03d > ", index);
-       this->kernel->player->queue.get_ref(index)->debug(this->kernel); 
+       this->kernel->player->queue.get_ref(index)->debug(this->kernel);
     }
 }
 
