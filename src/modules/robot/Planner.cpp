@@ -22,7 +22,6 @@ Planner::Planner(){
   clear_vector_double(this->previous_unit_vec);
   this->previous_nominal_speed = 0.0;
   this->has_deleted_block = false;
-
 }
 
 
@@ -39,13 +38,8 @@ void Planner::on_config_reload(void* argument){
 // Append a block to the queue, compute it's speed factors
 void Planner::append_block( int target[], double feed_rate, double distance, double deltas[] ){
    
-    // Stall here if the queue is ful
+    // Stall here if the queue is full
     while( this->kernel->player->queue.size() >= this->kernel->player->queue.capacity()-2 ){
-    	//TODO: implement this wait for STM
-      // this->kernel->serial->printf(".");
-      // this->__current_queue_size = this->kernel->player->queue.size();
-      // this->__current_queue_cap  = this->kernel->player->queue.capacity();
-      // this->__num_of_delays++;
       this->kernel->delay_us(500);
     }
 
