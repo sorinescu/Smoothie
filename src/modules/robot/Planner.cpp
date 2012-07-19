@@ -20,6 +20,10 @@ using namespace std;
 #define DELAY_TIM_FREQUENCY 1000000 /* = 1MHZ -> timer runs in microseconds */
 
 Planner::Planner(){
+  //TODO: Delete these 2 variables - they are just for debugging.
+  // foo = 0;
+  // lastCNTValue = 0;
+
   clear_vector(this->position);
   clear_vector_double(this->previous_unit_vec);
   this->previous_nominal_speed = 0.0;
@@ -56,8 +60,9 @@ void Planner::delay_us( uint16_t uSecs )
 {
   uint16_t start = TIM5->CNT;
   /* use 16 bit count wrap around */
-  while((uint16_t)(TIM5->CNT - start) <= uSecs) {
-    // this->kernel->serial->printf("waiting...%u uSecs, starting at TIM5->CNT: %u, current TIM5->CNT: %u\n", uSecs, start, TIM5->CNT);
+  volatile int x = 0;
+  while((TIM5->CNT - start) <= uSecs) {
+    x++;
   };
 }
 
@@ -65,10 +70,10 @@ void Planner::delay_us( uint16_t uSecs )
 void Planner::append_block( int target[], double feed_rate, double distance, double deltas[] ){
    
     // Stall here if the queue is ful
-    bool is_full = this->kernel->player->queue.size() >= this->kernel->player->queue.capacity()-2;
-    while( is_full ){
+    while( this->kernel->player->queue.size() >= this->kernel->player->queue.capacity()-2 ){
     	//TODO: implement this wait for STM
-       delay_us(500);
+        // this->kernel->serial->printf("delaying...");
+      delay_us(500);
     }
 
     Block* block = this->kernel->player->new_block();

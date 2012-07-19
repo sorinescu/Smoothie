@@ -78,6 +78,7 @@ void Stepper::on_play(void* argument){
 
 // A new block is popped from the queue
 void Stepper::on_block_begin(void* argument){
+    // this->kernel->serial->printf("on_block_begin (queue size: %u) \n", this->kernel->player->queue.size());
     Block* block  = static_cast<Block*>(argument);
 
     // The stepper does not care about 0-blocks
@@ -102,6 +103,7 @@ void Stepper::on_block_begin(void* argument){
 
 // Current block is discarded
 void Stepper::on_block_end(void* argument){
+    // this->kernel->serial->printf("on_block_end (queue size: %u) \n", this->kernel->player->queue.size());
     Block* block  = static_cast<Block*>(argument);
     this->current_block = NULL; //stfu !
 }

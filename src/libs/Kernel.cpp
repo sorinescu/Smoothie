@@ -53,31 +53,21 @@ Kernel::Kernel(){
     this->add_module( this->config );
     this->add_module( this->serial );
   
-    // HAL stuff 
+   //  // HAL stuff 
     this->slow_ticker          = new SlowTicker();
     this->slow_ticker->kernel = this; // DEBUG: To remove
-    // this->slow_ticker->set_frequency(16);
     this->step_ticker          = new StepTicker();
     this->step_ticker->kernel = this; // DEBUG: To remove
-    // this->step_ticker->set_frequency(1);
-    // this->step_ticker->set_reset_delay(.5);
-//    this->adc                  = new Adc();
-    this->stepper->alpha_step_pin->set(1);
-
-
-    // LPC17xx-specific 
-    // This is the stepper interrupt
-    // NVIC_SetPriority(TIM3_IRQn, 1);
-    // this is the slow interrupt
-    // NVIC_SetPriority(TIM2_IRQn, 2);
-
-    // Core modules 
+ 
+   // // Core modules 
    this->add_module( this->gcode_dispatch = new GcodeDispatch() );
    this->add_module( this->robot          = new Robot()         );
    this->add_module( this->stepper        = new Stepper()       );
    this->add_module( this->planner        = new Planner()       );
    this->add_module( this->player         = new Player()        );
    this->add_module( this->pauser         = new Pauser()        );
+
+   this->stepper->alpha_step_pin->set(1);
 }
 
 void Kernel::add_module(Module* module){
