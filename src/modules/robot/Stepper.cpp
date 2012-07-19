@@ -26,6 +26,8 @@ Stepper::Stepper(){
 //Called when the module has just been loaded
 void Stepper::on_module_loaded(){
     stepper = this;
+
+
     this->register_for_event(ON_BLOCK_BEGIN);
     this->register_for_event(ON_BLOCK_END);
     this->register_for_event(ON_PLAY);
@@ -41,7 +43,6 @@ void Stepper::on_module_loaded(){
     // Initiate main_interrupt timer and step reset timer
     this->kernel->step_ticker->attach( this, &Stepper::main_interrupt );   
     this->kernel->step_ticker->reset_attach( this, &Stepper::reset_step_pins );
-
 }
 
 // Get configuration from the config file
@@ -53,14 +54,15 @@ void Stepper::on_config_reload(void* argument){
     this->base_stepping_frequency       =  this->kernel->config->value(base_stepping_frequency_checksum      )->by_default(100000)->as_number();
     this->alpha_step_pin                =  this->kernel->config->value(alpha_step_pin_checksum               )->by_default("3.12"     )->as_pin()->as_output();
     this->beta_step_pin                 =  this->kernel->config->value(beta_step_pin_checksum                )->by_default("3.13"     )->as_pin()->as_output();
-    this->gamma_step_pin                =  this->kernel->config->value(gamma_step_pin_checksum               )->by_default("3.14!"    )->as_pin()->as_output();
+    this->gamma_step_pin                =  this->kernel->config->value(gamma_step_pin_checksum               )->by_default("3.14"     )->as_pin()->as_output();
     this->alpha_dir_pin                 =  this->kernel->config->value(alpha_dir_pin_checksum                )->by_default("3.15"     )->as_pin()->as_output();
     this->beta_dir_pin                  =  this->kernel->config->value(beta_dir_pin_checksum                 )->by_default("3.11"     )->as_pin()->as_output();
     this->gamma_dir_pin                 =  this->kernel->config->value(gamma_dir_pin_checksum                )->by_default("3.10"     )->as_pin()->as_output();
 
     // Set the Timer interval for Match Register 1, 
-    this->kernel->step_ticker->set_reset_delay( this->microseconds_per_step_pulse / 1000000 );
+    
     this->kernel->step_ticker->set_frequency( this->base_stepping_frequency );
+    this->kernel->step_ticker->set_reset_delay( double(this->microseconds_per_step_pulse) / 1000000 );
 }
 
 // When the play/pause button is set to pause, or a module calls the ON_PAUSE event
@@ -107,8 +109,8 @@ void Stepper::on_block_end(void* argument){
 // "The Stepper Driver Interrupt" - This timer interrupt is the workhorse of Smoothie. It is executed at the rate set with
 // config_step_timer. It pops blocks from the block_buffer and executes them by pulsing the stepper pins appropriately.
 inline uint32_t Stepper::main_interrupt(uint32_t dummy){
+    
     if( this->paused ){ return 0; } 
-
     // Step dir pins first, then step pinse, stepper drivers like to know the direction before the step signal comes in
     this->alpha_dir_pin->set(  ( this->out_bits >> 0  ) & 1 );
     this->beta_dir_pin->set(   ( this->out_bits >> 1  ) & 1 );
@@ -116,12 +118,14 @@ inline uint32_t Stepper::main_interrupt(uint32_t dummy){
     this->alpha_step_pin->set( ( this->out_bits >> 3  ) & 1 );
     this->beta_step_pin->set(  ( this->out_bits >> 4  ) & 1 );
     this->gamma_step_pin->set( ( this->out_bits >> 5  ) & 1 );
-
+    
     if( this->current_block != NULL ){
         // Set bits for direction and steps 
+        // this->kernel->serial->printf("this->current_block is not null\n    this->counters[stpr] > this->offsets[stpr] && this->stepped[stpr] < this->current_block->steps[stpr]:\n    ");
         this->out_bits = this->current_block->direction_bits;
         for( int stpr=ALPHA_STEPPER; stpr<=GAMMA_STEPPER; stpr++){ 
             this->counters[stpr] += this->counter_increment; 
+            // this->kernel->serial->printf("%u > %u && %u < %u\n", this->counters[stpr], this->offsets[stpr], this->stepped[stpr], this->current_block->steps[stpr]);
             if( this->counters[stpr] > this->offsets[stpr] && this->stepped[stpr] < this->current_block->steps[stpr] ){
                 this->counters[stpr] -= this->offsets[stpr] ;
                 this->stepped[stpr]++;
@@ -140,7 +144,7 @@ inline uint32_t Stepper::main_interrupt(uint32_t dummy){
     }else{
         this->out_bits = 0;
     }
-
+    
 }
 
 // We compute this here instead of each time in the interrupt

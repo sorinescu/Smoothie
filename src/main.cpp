@@ -24,6 +24,7 @@
 #include "usbd_cdc_vcp.h"
 
 #include "stm32f4xx_conf.h"      
+
 //#include "libs/USBCDCMSC/USBCDCMSC.h"
 //SDFileSystem sd(p5, p6, p7, p8, "sd");  // LPC17xx specific : comment if you are not using a SD card ( for example with a mBed ).
 //LocalFileSystem local("local");       // LPC17xx specific : comment if you are not running a mBed
@@ -34,6 +35,7 @@
 __IO uint32_t TimingDelay;
 
 int main() {
+  DBGMCU->APB1FZ = DBGMCU_APB1_FZ_DBG_TIM2_STOP | DBGMCU_APB1_FZ_DBG_TIM3_STOP | DBGMCU_APB1_FZ_DBG_TIM5_STOP;
 
 	USBD_Init(&USB_OTG_dev,
     USB_OTG_FS_CORE_ID, 
@@ -52,10 +54,13 @@ int main() {
 //
 //    kernel->add_module( &cdcmsc );
 
+    // REMOVE THIS LATER -> Just for debugging...
+    // kernel->stepper->alpha_step_pin->set(1);
+    // kernel->stepper->beta_step_pin->set(1);
+    // kernel->stepper->gamma_step_pin->set(0);
+
     while(1){
       kernel->call_event(ON_MAIN_LOOP);
-      // kernel->serial->printf("Smoothie ( grbl port ) version 0.6 \r\nstart\r\n");
-      // kernel->serial->printf("Smoothie ( grbl port ) version 0.6 \r\nstart\r\n");
     }
 }
 
