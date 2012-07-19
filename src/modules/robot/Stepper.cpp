@@ -1,8 +1,8 @@
-/*  
+/*
       This file is part of Smoothie (http://smoothieware.org/). The motion control part is heavily based on Grbl (https://github.com/simen/grbl) with additions from Sungeun K. Jeon (https://github.com/chamnit/grbl)
       Smoothie is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
       Smoothie is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-      You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>. 
+      You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "libs/Module.h"
@@ -18,7 +18,7 @@ Stepper* stepper;
 
 Stepper::Stepper(){
     this->current_block = NULL;
-    this->step_events_completed = 0; 
+    this->step_events_completed = 0;
     this->divider = 0;
     this->paused = false;
 }
@@ -32,23 +32,23 @@ void Stepper::on_module_loaded(){
     this->register_for_event(ON_BLOCK_END);
     this->register_for_event(ON_PLAY);
     this->register_for_event(ON_PAUSE);
- 
+
     // Get onfiguration
-    this->on_config_reload(this); 
+    this->on_config_reload(this);
 
     // Acceleration ticker
     //this->kernel->slow_ticker->set_frequency(this->acceleration_ticks_per_second/10);
     this->kernel->slow_ticker->attach( this->acceleration_ticks_per_second, this, &Stepper::trapezoid_generator_tick );
 
     // Initiate main_interrupt timer and step reset timer
-    this->kernel->step_ticker->attach( this, &Stepper::main_interrupt );   
+    this->kernel->step_ticker->attach( this, &Stepper::main_interrupt );
     this->kernel->step_ticker->reset_attach( this, &Stepper::reset_step_pins );
 }
 
 // Get configuration from the config file
 void Stepper::on_config_reload(void* argument){
-    
-    this->microseconds_per_step_pulse   =  this->kernel->config->value(microseconds_per_step_pulse_ckeckusm  )->by_default(5     )->as_number();
+
+    this->microseconds_per_step_pulse   =  this->kernel->config->value(microseconds_per_step_pulse_ckecksum  )->by_default(5     )->as_number();
     this->acceleration_ticks_per_second =  this->kernel->config->value(acceleration_ticks_per_second_checksum)->by_default(100   )->as_number();
     this->minimum_steps_per_minute      =  this->kernel->config->value(minimum_steps_per_minute_checksum     )->by_default(1200  )->as_number();
     this->base_stepping_frequency       =  this->kernel->config->value(base_stepping_frequency_checksum      )->by_default(100000)->as_number();
@@ -59,8 +59,8 @@ void Stepper::on_config_reload(void* argument){
     this->beta_dir_pin                  =  this->kernel->config->value(beta_dir_pin_checksum                 )->by_default("3.11"     )->as_pin()->as_output();
     this->gamma_dir_pin                 =  this->kernel->config->value(gamma_dir_pin_checksum                )->by_default("3.10"     )->as_pin()->as_output();
 
-    // Set the Timer interval for Match Register 1, 
-    
+    // Set the Timer interval for Match Register 1,
+
     this->kernel->step_ticker->set_frequency( this->base_stepping_frequency );
     this->kernel->step_ticker->set_reset_delay( double(this->microseconds_per_step_pulse) / 1000000 );
 }
@@ -82,20 +82,20 @@ void Stepper::on_block_begin(void* argument){
 
     // The stepper does not care about 0-blocks
     if( block->millimeters == 0.0 ){ return; }
-    
+
     // Mark the new block as of interrest to us
     block->take();
-   
+
     // Setup
-    for( int stpr=ALPHA_STEPPER; stpr<=GAMMA_STEPPER; stpr++){ this->counters[stpr] = 0; this->stepped[stpr] = 0; } 
-    this->step_events_completed = 0; 
+    for( int stpr=ALPHA_STEPPER; stpr<=GAMMA_STEPPER; stpr++){ this->counters[stpr] = 0; this->stepped[stpr] = 0; }
+    this->step_events_completed = 0;
 
     this->current_block = block;
-    
-    // This is just to save computing power and not do it every step 
+
+    // This is just to save computing power and not do it every step
     this->update_offsets();
-    
-    // Setup acceleration for this block 
+
+    // Setup acceleration for this block
     this->trapezoid_generator_reset();
 
 }
@@ -109,8 +109,8 @@ void Stepper::on_block_end(void* argument){
 // "The Stepper Driver Interrupt" - This timer interrupt is the workhorse of Smoothie. It is executed at the rate set with
 // config_step_timer. It pops blocks from the block_buffer and executes them by pulsing the stepper pins appropriately.
 inline uint32_t Stepper::main_interrupt(uint32_t dummy){
-    
-    if( this->paused ){ return 0; } 
+
+    if( this->paused ){ return 0; }
     // Step dir pins first, then step pinse, stepper drivers like to know the direction before the step signal comes in
     this->alpha_dir_pin->set(  ( this->out_bits >> 0  ) & 1 );
     this->beta_dir_pin->set(   ( this->out_bits >> 1  ) & 1 );
@@ -118,39 +118,39 @@ inline uint32_t Stepper::main_interrupt(uint32_t dummy){
     this->alpha_step_pin->set( ( this->out_bits >> 3  ) & 1 );
     this->beta_step_pin->set(  ( this->out_bits >> 4  ) & 1 );
     this->gamma_step_pin->set( ( this->out_bits >> 5  ) & 1 );
-    
+
     if( this->current_block != NULL ){
-        // Set bits for direction and steps 
+        // Set bits for direction and steps
         // this->kernel->serial->printf("this->current_block is not null\n    this->counters[stpr] > this->offsets[stpr] && this->stepped[stpr] < this->current_block->steps[stpr]:\n    ");
         this->out_bits = this->current_block->direction_bits;
-        for( int stpr=ALPHA_STEPPER; stpr<=GAMMA_STEPPER; stpr++){ 
-            this->counters[stpr] += this->counter_increment; 
+        for( int stpr=ALPHA_STEPPER; stpr<=GAMMA_STEPPER; stpr++){
+            this->counters[stpr] += this->counter_increment;
             // this->kernel->serial->printf("%u > %u && %u < %u\n", this->counters[stpr], this->offsets[stpr], this->stepped[stpr], this->current_block->steps[stpr]);
             if( this->counters[stpr] > this->offsets[stpr] && this->stepped[stpr] < this->current_block->steps[stpr] ){
                 this->counters[stpr] -= this->offsets[stpr] ;
                 this->stepped[stpr]++;
                 this->out_bits |= (1 << (stpr+3) );
-            } 
-        } 
+            }
+        }
         // If current block is finished, reset pointer
         this->step_events_completed += this->counter_increment;
-        if( this->step_events_completed >= this->current_block->steps_event_count<<16 ){ 
-            if( this->stepped[ALPHA_STEPPER] == this->current_block->steps[ALPHA_STEPPER] && this->stepped[BETA_STEPPER] == this->current_block->steps[BETA_STEPPER] && this->stepped[GAMMA_STEPPER] == this->current_block->steps[GAMMA_STEPPER] ){ 
+        if( this->step_events_completed >= this->current_block->steps_event_count<<16 ){
+            if( this->stepped[ALPHA_STEPPER] == this->current_block->steps[ALPHA_STEPPER] && this->stepped[BETA_STEPPER] == this->current_block->steps[BETA_STEPPER] && this->stepped[GAMMA_STEPPER] == this->current_block->steps[GAMMA_STEPPER] ){
                 if( this->current_block != NULL ){
-                    this->current_block->release(); 
+                    this->current_block->release();
                 }
             }
         }
     }else{
         this->out_bits = 0;
     }
-    
+
 }
 
 // We compute this here instead of each time in the interrupt
 void Stepper::update_offsets(){
-    for( int stpr=ALPHA_STEPPER; stpr<=GAMMA_STEPPER; stpr++){ 
-        this->offsets[stpr] = (int)floor((float)((float)(1<<16)*(float)((float)this->current_block->steps_event_count / (float)this->current_block->steps[stpr]))); 
+    for( int stpr=ALPHA_STEPPER; stpr<=GAMMA_STEPPER; stpr++){
+        this->offsets[stpr] = (int)floor((float)((float)(1<<16)*(float)((float)this->current_block->steps_event_count / (float)this->current_block->steps[stpr])));
     }
 }
 
@@ -171,7 +171,7 @@ uint32_t Stepper::trapezoid_generator_tick( uint32_t dummy ) {
               if (this->trapezoid_adjusted_rate > double(this->current_block->rate_delta) * 1.5) {
                   this->trapezoid_adjusted_rate -= this->current_block->rate_delta;
               }else{
-                  this->trapezoid_adjusted_rate = double(this->current_block->rate_delta) * 1.5; 
+                  this->trapezoid_adjusted_rate = double(this->current_block->rate_delta) * 1.5;
                   //this->trapezoid_adjusted_rate = floor(double(this->trapezoid_adjusted_rate / 2 ));
                   //this->kernel->serial->printf("over!\r\n");
               }
@@ -196,13 +196,13 @@ void Stepper::trapezoid_generator_reset(){
     this->trapezoid_tick_cycle_counter = 0;
     // Because this can be called directly from the main loop, it could be interrupted by the acceleration ticker, and that would be bad, so we use a flag
     this->trapezoid_generator_busy = true;
-    this->set_step_events_per_minute(this->trapezoid_adjusted_rate); 
+    this->set_step_events_per_minute(this->trapezoid_adjusted_rate);
     this->trapezoid_generator_busy = false;
 }
 
 void Stepper::set_step_events_per_minute( double steps_per_minute ){
 
-    // We do not step slower than this 
+    // We do not step slower than this
     steps_per_minute = max(steps_per_minute, this->minimum_steps_per_minute);
 
     // The speed factor is the factor by which we must multiply the minimal step frequency to reach the maximum step frequency
@@ -217,7 +217,7 @@ void Stepper::set_step_events_per_minute( double steps_per_minute ){
 
 uint32_t Stepper::reset_step_pins(uint32_t dummy){
     this->alpha_step_pin->set(0);
-    this->beta_step_pin->set(0); 
+    this->beta_step_pin->set(0);
     this->gamma_step_pin->set(0);
 
 }

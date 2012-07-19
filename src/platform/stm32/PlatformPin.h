@@ -11,7 +11,7 @@
 
 typedef int PinName;
 // enum PinName {
-// PIN1 = 1  
+// PIN1 = 1
 // };
 
 class Pin{
@@ -46,12 +46,12 @@ class Pin{
         inline Pin*  as_output(){
             this->port->MODER |= 1 << this->pin*2;
             return this;
-        }  
+        }
 
         inline Pin*  as_input(){
             this->port->MODER &= ~(1 << (this->pin*2));
             return this;
-        }  
+        }
 
         inline bool get(){
            if( this->inverting ){
