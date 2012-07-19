@@ -36,7 +36,6 @@ class Planner : public Module {
         void cleanup_queue();
         void on_module_loaded();
         void on_config_reload(void* argument);
-        void delay_us( uint16_t uSecs );
 
         int position[3];              // Current position, in steps
         double previous_unit_vec[3];

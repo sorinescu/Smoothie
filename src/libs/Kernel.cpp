@@ -41,6 +41,9 @@ const ModuleCallback kernel_callback_functions[NUMBER_OF_DEFINED_EVENTS] = {
 #define baud_rate_setting_ckeckusm 10922
 #define uart0_checksum             16877
 
+#define SYS_CLK 84000000    /* SystemCoreClock / 2 */ 
+#define DELAY_TIM_FREQUENCY 1000000 /* = 1MHZ -> timer runs in microseconds */
+
 // The kernel is the central point in Smoothie : it stores modules, and handles event calls
 Kernel::Kernel(){
     
@@ -59,6 +62,21 @@ Kernel::Kernel(){
     this->step_ticker          = new StepTicker();
     this->step_ticker->kernel = this; // DEBUG: To remove
  
+
+  /* Enable timer clock  - use TIMER5 */
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);
+  
+  /* Time base configuration */
+  TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+  TIM_TimeBaseStructInit(&TIM_TimeBaseStructure); 
+  TIM_TimeBaseStructure.TIM_Prescaler = (SYS_CLK / DELAY_TIM_FREQUENCY) - 1;
+  TIM_TimeBaseStructure.TIM_Period = 65535;
+  TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBaseInit(TIM5, &TIM_TimeBaseStructure);
+
+ /* Enable counter */
+  TIM_Cmd(TIM5, ENABLE);
    // // Core modules 
    this->add_module( this->gcode_dispatch = new GcodeDispatch() );
    this->add_module( this->robot          = new Robot()         );
@@ -67,7 +85,19 @@ Kernel::Kernel(){
    this->add_module( this->player         = new Player()        );
    this->add_module( this->pauser         = new Pauser()        );
 
-   this->stepper->alpha_step_pin->set(1);
+   // this->stepper->alpha_step_pin->set(1);
+}
+
+
+void Kernel::delay_us( uint16_t uSecs ) 
+{
+  volatile uint16_t start = TIM5->CNT;
+  // this->__start = TIM5->CNT;
+  
+  volatile int x = 0;
+  while((TIM5->CNT - start) <= uSecs) {
+    x++;
+  };
 }
 
 void Kernel::add_module(Module* module){

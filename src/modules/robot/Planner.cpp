@@ -16,33 +16,13 @@ using namespace std;
 #include "Planner.h"
 #include "Player.h" 
 
-#define SYS_CLK 84000000    /* SystemCoreClock / 2 */ 
-#define DELAY_TIM_FREQUENCY 1000000 /* = 1MHZ -> timer runs in microseconds */
 
 Planner::Planner(){
-  //TODO: Delete these 2 variables - they are just for debugging.
-  // foo = 0;
-  // lastCNTValue = 0;
-
   clear_vector(this->position);
   clear_vector_double(this->previous_unit_vec);
   this->previous_nominal_speed = 0.0;
   this->has_deleted_block = false;
 
-  /* Enable timer clock  - use TIMER5 */
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM5, ENABLE);
-  
-  /* Time base configuration */
-  TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-  TIM_TimeBaseStructInit(&TIM_TimeBaseStructure); 
-  TIM_TimeBaseStructure.TIM_Prescaler = (SYS_CLK / DELAY_TIM_FREQUENCY) - 1;
-  TIM_TimeBaseStructure.TIM_Period = 65535;
-  TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBaseInit(TIM5, &TIM_TimeBaseStructure);
-
- /* Enable counter */
-  TIM_Cmd(TIM5, ENABLE);
 }
 
 
@@ -56,26 +36,20 @@ void Planner::on_config_reload(void* argument){
     this->junction_deviation = this->kernel->config->value(junction_deviation_checksum )->by_default(0.05)->as_number(); 
 }
 
-void Planner::delay_us( uint16_t uSecs ) 
-{
-  uint16_t start = TIM5->CNT;
-  /* use 16 bit count wrap around */
-  volatile int x = 0;
-  while((TIM5->CNT - start) <= uSecs) {
-    x++;
-  };
-}
-
 // Append a block to the queue, compute it's speed factors
 void Planner::append_block( int target[], double feed_rate, double distance, double deltas[] ){
    
     // Stall here if the queue is ful
     while( this->kernel->player->queue.size() >= this->kernel->player->queue.capacity()-2 ){
     	//TODO: implement this wait for STM
-        // this->kernel->serial->printf("delaying...");
-      delay_us(500);
+      // this->kernel->serial->printf(".");
+      // this->__current_queue_size = this->kernel->player->queue.size();
+      // this->__current_queue_cap  = this->kernel->player->queue.capacity();
+      // this->__num_of_delays++;
+      this->kernel->delay_us(500);
     }
 
+    // this->kernel->serial->printf(".\n");
     Block* block = this->kernel->player->new_block();
     block->planner = this;   
 
