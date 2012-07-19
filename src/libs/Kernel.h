@@ -1,17 +1,14 @@
-/*  
+/*
       This file is part of Smoothie (http://smoothieware.org/). The motion control part is heavily based on Grbl (https://github.com/simen/grbl).
       Smoothie is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
       Smoothie is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-      You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>. 
+      You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef KERNEL_H
 #define KERNEL_H
 
-//STM Specific
-#include "stm32f4xx.h"
-
-
+#include "platform/Platform.h"
 #include "libs/Module.h"
 #include "libs/Config.h"
 #include "libs/SlowTicker.h"
@@ -52,7 +49,7 @@ typedef void (Module::*ModuleCallback)(void * argument);
 class Module;
 class Player;
 class SlowTicker;
-class Kernel {
+class Kernel : public PlatformKernel {
     public:
         Kernel();
         void add_module(Module* module);
@@ -73,7 +70,6 @@ class Kernel {
         int debug;
         SlowTicker*       slow_ticker;
         StepTicker*       step_ticker;
-        Adc*              adc;
 
     private:
         vector<Module*> hooks[NUMBER_OF_DEFINED_EVENTS]; // When a module asks to be called for a specific event ( a hook ), this is where that request is remembered
@@ -81,3 +77,4 @@ class Kernel {
 };
 
 #endif
+
