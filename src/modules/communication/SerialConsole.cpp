@@ -29,18 +29,22 @@ SerialConsole::SerialConsole( PinName rx_pin, PinName tx_pin, int baud_rate ){
 void SerialConsole::on_module_loaded() {
     // We want to be called every time a new char is received
     this->serial->attach(this, &SerialConsole::on_serial_char_received);
-
     // We only call the command dispatcher in the main loop, nowhere else
     this->register_for_event(ON_MAIN_LOOP);
+
+    // Add to the pack of streams kernel can call to, for example for broadcasting
+    this->kernel->streams->append_stream(this);
 }
         
 // Called on Serial::RxIrq interrupt, meaning we have received a char
-uint32_t SerialConsole::on_serial_char_received(uint32_t i = NULL){
+uint32_t SerialConsole::on_serial_char_received(uint32_t _x = NULL){
    if(this->serial->readable()){
-       char received = this->serial->getc();
-       //On newline, we have received a line, else concatenate in buffer
-       if( received == '\r' ){ return; }
-       this->buffer.push_back(received);
+        char received = this->serial->getc();
+        //On newline, we have received a line, else concatenate in buffer
+        // convert CR to NL (for host OSs that don't send NL)
+        // if( received == '\r' ){ received = '\n'; }
+        if( received == '\r' ){ return; }
+        this->buffer.push_back(received);
    }
 }
         

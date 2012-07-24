@@ -5,26 +5,32 @@
       You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>. 
 */
 
-#ifndef PLAYER_H
-#define PLAYER_H
-#include "libs/Module.h"
-#include "libs/Kernel.h"
+#ifndef FILECONFIGSOURCE_H
+#define FILECONFIGSOURCE_H
+
+#include "ConfigValue.h"
+#include "ConfigSource.h"
+#include "ConfigCache.h"
+
 using namespace std;
 #include <string>
-#include <vector>
 
-class Player : public Module {
+#define FILE_CONFIGSOURCE_CHECKSUM    5281      // "file"
+
+class FileConfigSource : public ConfigSource {
     public:
-        Player();
+        FileConfigSource(string config_file = "/sd/config", uint16_t name_checksum = FILE_CONFIGSOURCE_CHECKSUM);
+        void transfer_values_to_cache( ConfigCache* cache );
+        bool is_named( uint16_t check_sum );
+        void write( string setting, string value );
+        string read( vector<uint16_t> check_sums );
+        bool has_config_file();
+        void try_config_file(string candidate);
+        string get_config_file();
 
-        Block* new_block();
-        void new_block_added();
-        void pop_and_process_new_block(int debug);
-        void wait_for_queue(int free_blocks);
+        string config_file;         // Path to the config file
+        bool   config_file_found;   // Wether or not the config file's location is known
 
-        RingBuffer<Block,32> queue;  // Queue of Blocks
-        Block* current_block;
-        bool looking_for_new_block;
 
 };
 

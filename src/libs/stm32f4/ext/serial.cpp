@@ -36,6 +36,7 @@ extern "C" {
     };
 
     void g_Serial_callback() {
-      Serial::g_Serial->callbackFptr->call(0);
+        if(Serial::g_Serial)
+            Serial::g_Serial->callbackFptr->call(0);
     }
 }

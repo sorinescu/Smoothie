@@ -10,7 +10,8 @@ using namespace std;
 #include "libs/nuts_bolts.h"
 #include "libs/Module.h"
 #include "libs/Kernel.h"
-#include "SlowTicker.h"
+
+#include "StepTicker.h"
 #include "libs/Hook.h"
 
 //STM Sepcific
@@ -18,7 +19,7 @@ using namespace std;
 #include "stm32f4xx_tim.h"
 #include "misc.h"
 
-//REMOVE
+//TODO: REMOVE - this has stuff we don't want long term.
 #include "stm32f4_discovery.h"
 
 StepTicker* global_step_ticker;

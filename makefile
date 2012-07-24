@@ -1,9 +1,9 @@
+
 PROJECT = Smoothie
 # Default project source to be located in current directory.
 ifndef SRC
 SRC=.
 endif
-
 
 # List of sources to be compiled/assembled
 CSRCS = $(wildcard $(SRC)/*.c $(SRC)/*/*.c $(SRC)/*/*/*.c $(SRC)/*/*/*/*.c $(SRC)/*/*/*/*/*.c $(SRC)/*/*/*/*/*/*.c)

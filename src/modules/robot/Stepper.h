@@ -12,7 +12,7 @@
 #include "Planner.h"
 #include "Block.h"
 
-#define microseconds_per_step_pulse_ckeckusm        42333
+#define microseconds_per_step_pulse_checksum        42333
 #define acceleration_ticks_per_second_checksum      25075
 #define minimum_steps_per_minute_checksum           9003
 #define base_stepping_frequency_checksum            21918
@@ -22,6 +22,10 @@
 #define alpha_dir_pin_checksum                      55887
 #define beta_dir_pin_checksum                       28644
 #define gamma_dir_pin_checksum                      46412
+#define alpha_en_pin_checksum                       35042  
+#define beta_en_pin_checksum                        34680 
+#define gamma_en_pin_checksum                       26335 
+
 
 class Stepper : public Module {
     public:
@@ -30,6 +34,7 @@ class Stepper : public Module {
         void on_config_reload(void* argument);
         void on_block_begin(void* argument);
         void on_block_end(void* argument);
+        void on_gcode_execute(void* argument);
         void on_play(void* argument);
         void on_pause(void* argument);
         uint32_t main_interrupt(uint32_t dummy);
@@ -64,6 +69,9 @@ class Stepper : public Module {
         Pin* alpha_dir_pin;
         Pin* beta_dir_pin;
         Pin* gamma_dir_pin;
+        Pin* alpha_en_pin;
+        Pin* beta_en_pin;
+        Pin* gamma_en_pin;
         unsigned short step_bits[3];
         int counter_increment;
         bool paused;

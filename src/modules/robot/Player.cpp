@@ -83,3 +83,14 @@ void Player::pop_and_process_new_block(int debug){
     this->looking_for_new_block = false;
 
 }
+//TODO:  May need to rework this to match the behavior of original Smoothie code.
+void Player::wait_for_queue(int free_blocks){
+    // mbed::Timer t;
+    while( this->queue.size() >= this->queue.capacity()-free_blocks ){
+        // t.reset();
+        // t.start();
+        this->kernel->call_event(ON_IDLE);
+        // t.stop();
+        kernel->delay_us(500);
+    }
+}

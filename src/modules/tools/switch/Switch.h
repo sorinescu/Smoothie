@@ -5,26 +5,31 @@
       you should have received a copy of the gnu general public license along with smoothie. if not, see <http://www.gnu.org/licenses/>. 
 */
 
-#ifndef TEMPERATURECONTROLPOOL_H
-#define TEMPERATURECONTROLPOOL_H
+#ifndef SWITCH_H
+#define SWITCH_H
 
-#include "TemperatureControl.h"
+#include "libs/Pin.h"
 #include <math.h>
-using namespace std;
-#include <vector>
 
-#define temperature_control_checksum 44054
-#define enable_checksum              29545
+#define    switch_checksum            15508 
+#define    on_m_code_checksum         29094 
+#define    off_m_code_checksum        14853 
+#define    output_pin_checksum        18779 
+#define    startup_state_checksum     37528 
 
-class TemperatureControlPool : public Module {
+class Switch : public Module {
     public:
-        TemperatureControlPool();
-
+        Switch();
+        Switch(uint16_t name);
+        
         void on_module_loaded();
+        void on_config_reload(void* argument);
+        void on_gcode_execute(void* argument);
 
-        vector<TemperatureControl*> controllers;
+        uint16_t name_checksum;
+        uint16_t on_m_code;
+        uint16_t off_m_code;
+        Pin*     output_pin;
 };
-
-
 
 #endif

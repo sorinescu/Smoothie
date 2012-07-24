@@ -5,46 +5,29 @@
       You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>. 
 */
 
-#ifndef LASER_MODULE_H
-#define LASER_MODULE_H
+#ifndef CONFIGSOURCE_H
+#define CONFIGSOURCE_H
 
-#include "libs/Module.h"
-#include "PwmOut.h" // mbed.h lib
-#include "libs/Kernel.h"
-#include "modules/communication/utils/Gcode.h"
+using namespace std;
+#include <vector>
+#include <string>
+#include "ConfigValue.h"
+#include "ConfigCache.h"
 
+class ConfigValue;
 
-#define laser_module_enable_checksum 35529 
-
-class Laser : public Module{
+class ConfigSource {
     public:
-        Laser(PinName pin);
-        void on_module_loaded();
-        void on_block_end(void* argument);
-        void on_block_begin(void* argument);
-        void on_play(void* argument);
-        void on_pause(void* argument);
-        void on_gcode_execute(void* argument);
-        void on_speed_change(void* argument);
-        void set_proportional_power();
+        ConfigSource(){}
 
-        mbed::PwmOut laser_pin;    // PWM output to regulate the laser power
-        bool   laser_on;     // Laser status
+        // Read each value, and append it as a ConfigValue to the config_cache we were passed
+        virtual void transfer_values_to_cache( ConfigCache* ){}
+        virtual bool is_named( uint16_t check_sum ){}
+        virtual void write( string setting, string value ){}
+        virtual string read( vector<uint16_t> check_sums ){}
+
+        uint16_t name_checksum;
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

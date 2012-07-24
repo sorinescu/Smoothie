@@ -1,8 +1,6 @@
 #ifndef PIN_H
 #define PIN_H
 
-//#include "mbed.h" //Required for LPC_GPIO* . can probably be found in one othe the files mbed.h includes. TODO
-//#include "../gcc4mbed/external/mbed/LPC1768/LPC17xx.h"
 #include "libs/Kernel.h"
 #include "libs/utils.h"
 #include <string>
@@ -10,9 +8,6 @@
 #include <cstdlib>
 
 typedef int PinName;
-// enum PinName {
-// PIN1 = 1  
-// };
 
 class Pin{
     public:
@@ -53,6 +48,15 @@ class Pin{
             return this;
         }  
 
+        // inline Pin* as_open_drain(){
+        //     if( this->port_number == 0 ){ LPC_PINCON->PINMODE_OD0 |= (1<<this->pin); }
+        //     if( this->port_number == 1 ){ LPC_PINCON->PINMODE_OD1 |= (1<<this->pin); }
+        //     if( this->port_number == 2 ){ LPC_PINCON->PINMODE_OD2 |= (1<<this->pin); }
+        //     if( this->port_number == 3 ){ LPC_PINCON->PINMODE_OD3 |= (1<<this->pin); }
+        //     if( this->port_number == 4 ){ LPC_PINCON->PINMODE_OD4 |= (1<<this->pin); }
+        //     return this;
+        // }
+
         inline bool get(){
            if( this->inverting ){
               return ~(1 & this->port->ODR << this->pin);
@@ -75,9 +79,8 @@ class Pin{
         GPIO_TypeDef* port;
         char pin;
         char port_number;
+
+
 };
-
-
-
 
 #endif

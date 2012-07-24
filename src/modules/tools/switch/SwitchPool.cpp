@@ -5,47 +5,33 @@
       You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>. 
 */
 
-#ifndef LASER_MODULE_H
-#define LASER_MODULE_H
-
 #include "libs/Module.h"
-#include "PwmOut.h" // mbed.h lib
 #include "libs/Kernel.h"
-#include "modules/communication/utils/Gcode.h"
+#include <math.h>
+using namespace std;
+#include <vector>
+#include "SwitchPool.h"
+#include "Switch.h"
 
+SwitchPool::SwitchPool(){}
 
-#define laser_module_enable_checksum 35529 
+void SwitchPool::on_module_loaded(){
 
-class Laser : public Module{
-    public:
-        Laser(PinName pin);
-        void on_module_loaded();
-        void on_block_end(void* argument);
-        void on_block_begin(void* argument);
-        void on_play(void* argument);
-        void on_pause(void* argument);
-        void on_gcode_execute(void* argument);
-        void on_speed_change(void* argument);
-        void set_proportional_power();
+    vector<uint16_t> modules;
+    this->kernel->config->get_module_list( &modules, switch_checksum );
 
-        mbed::PwmOut laser_pin;    // PWM output to regulate the laser power
-        bool   laser_on;     // Laser status
-};
+    for( int i = 0; i < modules.size(); i++ ){
+        // If module is enabled
+        if( this->kernel->config->value(switch_checksum, modules[i], enable_checksum )->as_bool() == true ){
+            Switch* controller = new Switch(modules[i]);
+            this->kernel->add_module(controller); 
+            this->controllers.push_back( controller );
+        }
+    }
 
-
-
-
-
-
+}
 
 
 
 
 
-
-
-
-
-
-
-#endif

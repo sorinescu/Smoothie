@@ -10,100 +10,20 @@
 #include "libs/Kernel.h"
 #include "libs/utils.h"
 #include "libs/Pin.h"
+#include "ConfigValue.h"
+#include "ConfigCache.h"
+#include "ConfigSource.h"
+#include "libs/ConfigSources/FileConfigSource.h"
 
+#define error(...) (fprintf(stderr, __VA_ARGS__), exit(1))
 
 using namespace std;
 #include <vector>
 #include <string>
-//#include <stdlib.h>
-#include <cstdlib>
+#include <stdio.h>
 
-#define config_get_checksum        46310
-#define config_set_checksum        55538
-#define config_load_checksum       3143
-
-class ConfigValue{
-    public:
-        ConfigValue(){
-            this->found = false;
-            this->default_set = false; 
-        };
-
-        ConfigValue* required(){
-            if( this->found == true ){
-                return this;
-            }else{
-                //error("could not find config setting with checksum %u, please see http://smoothieware.org/configuring-smoothie\r\n", this->check_sum );
-            }
-        }
-
-        double as_number(){
-            if( this->found == false && this->default_set == true ){
-                return this->default_double;
-            }else{
-                double result = atof(remove_non_number(this->value).c_str());
-                if( result == 0.0 && this->value.find_first_not_of("0.") != string::npos ){
-                    //error("config setting '%s' with value '%s' is not a valid number, please see http://smoothieware.org/configuring-smoothie\r\n", this->key.c_str(), this->value.c_str() );
-                }
-                return result; 
-            }
-           
-        }
-
-        std::string as_string(){
-            if( this->found == false && this->default_set == true ){
-                return this->default_string;
-            }else{
-                return this->value; 
-            }
-        }
-
-        bool as_bool(){
-            if( this->found == false && this->default_set == true ){
-                return this->default_double;
-            }else{
-                if( this->value.find_first_of("t1") != string::npos ){
-                    return true;
-                }else{
-                    return false;
-                } 
-            }
-        }
-
-        Pin* as_pin(){
-            Pin* pin = new Pin();
-            pin->from_string(this->as_string());
-            return pin;
-        }
-
-        ConfigValue* by_default(double value){
-            this->default_set = true;
-            this->default_double = value;
-            return this; 
-        }
-
-        ConfigValue* by_default(std::string value){
-            this->default_set = true;
-            this->default_string = value;
-            return this;
-        }
-
-        bool has_characters( string mask ){
-            if( this->value.find_first_of(mask) != string::npos ){ return true; }else{ return false; } 
-        }
-
-        bool is_inverted(){
-            return this->has_characters(string("!"));
-        }
-
-        string value;
-        string key;
-        uint16_t check_sum; 
-        bool found;
-        bool default_set;
-        double default_double; 
-        string default_string;
-};
+#define LOCAL_CONFIGSOURCE_CHECKSUM     13581
+#define SD_CONFIGSOURCE_CHECKSUM        19415
 
 
 class Config : public Module {
@@ -112,11 +32,10 @@ class Config : public Module {
 
         void on_module_loaded();
         void on_console_line_received( void* argument );
-        void config_get_command( string parameters ); 
-        void config_set_command( string parameters ); 
-        void config_load_command(string parameters );
+        void config_cache_load();
+        void config_cache_clear();
         void set_string( string setting , string value);
-        
+
         ConfigValue* value(uint16_t check_sum);
         ConfigValue* value(uint16_t check_sum_a, uint16_t check_sum_b);
         ConfigValue* value(uint16_t check_sum_a, uint16_t check_sum_b, uint16_t check_sum_c );
@@ -125,12 +44,10 @@ class Config : public Module {
         void get_module_list(vector<uint16_t>* list, uint16_t family);
 
         bool   has_characters(uint16_t check_sum, string str );
-        string get_config_file();
-        bool has_config_file();
-        void try_config_file(string candidate);
 
-        string config_file;         // Path to the config file
-        bool   config_file_found;   // Wether or not the config file's location is known
+        ConfigCache config_cache;             // A cache in which ConfigValues are kept
+        vector<ConfigSource*> config_sources; // A list of all possible coniguration sources
+        bool   config_cache_loaded;           // Whether or not the cache is currently popluated
 };
 
 #endif
