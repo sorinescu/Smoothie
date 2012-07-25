@@ -37,16 +37,9 @@ void Planner::on_config_reload(void* argument){
 
 // Append a block to the queue, compute it's speed factors
 void Planner::append_block( int target[], double feed_rate, double distance, double deltas[] ){
-
-    // Stall here if the queue is ful
-    while( this->kernel->player->queue.size() >= this->kernel->player->queue.capacity()-2 ){
-    	//TODO: implement this wait for STM
-      // this->kernel->serial->printf(".");
-      // this->__current_queue_size = this->kernel->player->queue.size();
-      // this->__current_queue_cap  = this->kernel->player->queue.capacity();
-      // this->__num_of_delays++;
-      this->kernel->delay_us(500);
-    }
+   
+       // Stall here if the queue is ful
+    this->kernel->player->wait_for_queue(2);
 
     // this->kernel->serial->printf(".\n");
     Block* block = this->kernel->player->new_block();
@@ -80,8 +73,8 @@ void Planner::append_block( int target[], double feed_rate, double distance, dou
         block->nominal_rate = 0;
     }
 
-    //this->kernel->serial->printf("nom_speed: %f nom_rate: %u step_event_count: %u block->steps_z: %u \r\n", block->nominal_speed, block->nominal_rate, block->steps_event_count, block->steps[2]  );
-
+    //this->kernel->streams->printf("nom_speed: %f nom_rate: %u step_event_count: %u block->steps_z: %u \r\n", block->nominal_speed, block->nominal_rate, block->steps_event_count, block->steps[2]  );
+    
     // Compute the acceleration rate for the trapezoid generator. Depending on the slope of the line
     // average travel per step event changes. For a line along one axis the travel per step event
     // is equal to the travel/step in the particular axis. For a 45 degree line the steppers of both
@@ -179,7 +172,7 @@ void Planner::append_block( int target[], double feed_rate, double distance, dou
 // 3. Recalculate trapezoids for all blocks.
 //
 void Planner::recalculate() {
-   //this->kernel->serial->printf("recalculate last: %p, queue size: %d \r\n", this->kernel->player->queue.get_ref( this->kernel->player->queue.size()-1  ), this->kernel->player->queue.size() );
+   //this->kernel->streams->printf("recalculate last: %p, queue size: %d \r\n", this->kernel->player->queue.get_ref( this->kernel->player->queue.size()-1  ), this->kernel->player->queue.size() );
    this->reverse_pass();
    this->forward_pass();
    this->recalculate_trapezoids();
@@ -235,7 +228,7 @@ void Planner::recalculate_trapezoids() {
     while(block_index != this->kernel->player->queue.tail){
         current = next;
         next = &this->kernel->player->queue.buffer[block_index];
-        //this->kernel->serial->printf("index:%d current:%p next:%p \r\n", block_index, current, next );
+        //this->kernel->streams->printf("index:%d current:%p next:%p \r\n", block_index, current, next );
         if( current ){
             // Recalculate if current block entry or exit junction speed has changed.
             if( current->recalculate_flag || next->recalculate_flag ){
@@ -256,8 +249,8 @@ void Planner::recalculate_trapezoids() {
 void Planner::dump_queue(){
     for( int index = 0; index <= this->kernel->player->queue.size()-1; index++ ){
        if( index > 10 && index < this->kernel->player->queue.size()-10 ){ continue; }
-       this->kernel->serial->printf("block %03d > ", index);
-       this->kernel->player->queue.get_ref(index)->debug(this->kernel);
+       this->kernel->streams->printf("block %03d > ", index);
+       this->kernel->player->queue.get_ref(index)->debug(this->kernel); 
     }
 }
 

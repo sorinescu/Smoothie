@@ -12,7 +12,11 @@
 #include "modules/robot/Block.h"
 #include "modules/tools/extruder/Extruder.h"
 
-Extruder::Extruder(PinName stppin, PinName dirpin) : step_pin(stppin), dir_pin(dirpin) {
+#define extruder_step_pin_checksum    40763
+#define extruder_dir_pin_checksum     57277
+#define extruder_en_pin_checksum      8017
+
+Extruder::Extruder() {
     this->absolute_mode = true;
     this->direction     = 1;
     this->acceleration_lock = false;
@@ -55,10 +59,14 @@ void Extruder::on_module_loaded() {
 
 // Get config
 void Extruder::on_config_reload(void* argument){
-    this->microseconds_per_step_pulse = this->kernel->config->value(microseconds_per_step_pulse_ckecksum)->by_default(5)->as_double();
-    this->steps_per_millimeter        = this->kernel->config->value(steps_per_millimeter_checksum       )->by_default(1)->as_double();
-    this->feed_rate                   = this->kernel->config->value(default_feed_rate_checksum          )->by_default(1)->as_double();
-    this->acceleration                = this->kernel->config->value(acceleration_checksum               )->by_default(1)->as_double();
+	this->microseconds_per_step_pulse = this->kernel->config->value(microseconds_per_step_pulse_checksum)->by_default(5)->as_double();
+	this->steps_per_millimeter        = this->kernel->config->value(extruder_steps_per_mm_checksum       )->by_default(1)->as_double();
+	this->feed_rate                   = this->kernel->config->value(default_feed_rate_checksum          )->by_default(1)->as_double();
+	this->acceleration                = this->kernel->config->value(acceleration_checksum               )->by_default(1)->as_double();
+
+	this->step_pin                    = this->kernel->config->value(extruder_step_pin_checksum          )->by_default("1.22" )->as_pin()->as_output();
+	this->dir_pin                     = this->kernel->config->value(extruder_dir_pin_checksum           )->by_default("1.19" )->as_pin()->as_output();
+	this->en_pin                      = this->kernel->config->value(extruder_en_pin_checksum            )->by_default("0.19" )->as_pin()->as_output();
 }
 
 
@@ -80,9 +88,10 @@ void Extruder::on_gcode_execute(void* argument){
 
     // Absolute/relative mode
     if( gcode->has_letter('M')){
-        int code = gcode->get_value('M');
-        if( code == 82 ){ this->absolute_mode == true; }
-        if( code == 83 ){ this->absolute_mode == false; }
+        int code = (int) gcode->get_value('M');
+        if( code == 82 ){ this->absolute_mode = true; }
+        if( code == 83 ){ this->absolute_mode = false; }
+        if( code == 84 ){ this->en_pin->set(0); }
     }
 
     // The mode is OFF by default, and SOLO or FOLLOW only if we need to extrude
@@ -113,6 +122,8 @@ void Extruder::on_gcode_execute(void* argument){
                     // We move proportionally to the robot's movement
                     this->travel_ratio = relative_extrusion_distance / gcode->millimeters_of_travel;
                 }
+
+                this->en_pin->set(1);
             }
         }
     }
@@ -227,6 +238,7 @@ uint32_t Extruder::acceleration_tick(uint32_t dummy){
     }
 
     this->acceleration_lock = false;
+	return 0;
 }
 
 // Convenience function to set stepping speed
@@ -254,8 +266,8 @@ inline uint32_t Extruder::stepping_tick(uint32_t dummy){
         // TODO: Step using the same timer as the robot, and count steps instead of absolute float position
         if( ( this->current_position < this->target_position && this->direction == 1 ) || ( this->current_position > this->target_position && this->direction == -1 ) ){
             this->current_position += (double(double(1)/double(this->steps_per_millimeter)))*double(this->direction);
-            this->dir_pin = ((this->direction > 0) ? 1 : 0);
-            this->step_pin = 1;
+            this->dir_pin->set((this->direction > 0) ? 1 : 0);
+            this->step_pin->set(1);
         }else{
             // Move finished
             if( this->mode == SOLO && this->current_block != NULL ){
@@ -264,8 +276,10 @@ inline uint32_t Extruder::stepping_tick(uint32_t dummy){
             }
         }
     }
+    return 0;
 }
 
 uint32_t Extruder::reset_step_pin(uint32_t dummy){
-    this->step_pin = 0;
+    this->step_pin->set(0);
+	return 0;
 }

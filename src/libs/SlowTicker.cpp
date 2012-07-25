@@ -24,19 +24,12 @@ using namespace std;
 SlowTicker* global_slow_ticker;
 
 SlowTicker::SlowTicker(){
-//	REMOVE LED Stuff - just for testing 
-
-	// STM_EVAL_LEDInit(LED4);
-	// STM_EVAL_LEDInit(LED3);
- //    STM_EVAL_LEDToggle(LED4);
-
 	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 	TIM_OCInitTypeDef  TIM_OCInitStructure;
 	uint16_t PrescalerValue = 0;
 
 	NVIC_InitTypeDef NVIC_InitStructure;
 
-    // What does this do???
 	this->max_frequency = 1;
     global_slow_ticker = this;
 
@@ -48,7 +41,6 @@ SlowTicker::SlowTicker(){
     NVIC_InitStructure.NVIC_IRQChannelSubPriority = 1;
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
-
 
     // Since we are dealing with the 48MHz domain for RCC_APB1 - we should be 2x which is 84MHz.  We can get there 
     // from our system clock of 168MHz / 2
@@ -71,30 +63,27 @@ SlowTicker::SlowTicker(){
     TIM_OC1Init(TIM2, &TIM_OCInitStructure);
 }
 
-void SlowTicker::set_frequency( int frequency ){
-    // Take from st docs:
-    // The update event period is calculated as follows:
-    // Update_event = TIM_CLK/((PSC + 1)*(ARR + 1)*(RCR + 1))
+// Take from st docs:
+// The update event period is calculated as follows:
+// Update_event = TIM_CLK/((PSC + 1)*(ARR + 1)*(RCR + 1))
 
-    // TIM_CLK = 72 MHz
-    // Prescaler = 1
-    // Auto reload = 65535
-    // No repetition counter RCR = 0
-    // Update_event = 72*106/((1 + 1)*(65535 + 1)*(1))
-    // Update_event = 549.3 Hz
-    // Where: TIM_CLK = timer clock input
-    // PSC = 16-bit prescaler register
-    // ARR = 16/32-bit Autoreload register
-    // RCR = 16-bit repetition counter
-    
-    // TODO - do I need to set this->frequency?
+// TIM_CLK = 72 MHz
+// Prescaler = 1
+// Auto reload = 65535
+// No repetition counter RCR = 0
+// Update_event = 72*106/((1 + 1)*(65535 + 1)*(1))
+// Update_event = 549.3 Hz
+// Where: TIM_CLK = timer clock input
+// PSC = 16-bit prescaler register
+// ARR = 16/32-bit Autoreload register
+// RCR = 16-bit repetition counter
+void SlowTicker::set_frequency( int frequency ){
     TIM_Cmd(TIM2, DISABLE);
     TIM2->ARR = (SystemCoreClock/2)/frequency;
     TIM_Cmd(TIM2, ENABLE);
 }
 
 void SlowTicker::tick(){
-    // this->kernel->serial->printf("SlowTicker::tick()\n");
     for (int i=0; i<this->hooks.size(); i++){
         Hook* hook = this->hooks.at(i);
         hook->counter += ( hook->frequency / this->max_frequency );

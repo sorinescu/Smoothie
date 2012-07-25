@@ -30,6 +30,7 @@ void Stepper::on_module_loaded(){
 
     this->register_for_event(ON_BLOCK_BEGIN);
     this->register_for_event(ON_BLOCK_END);
+    this->register_for_event(ON_GCODE_EXECUTE);
     this->register_for_event(ON_PLAY);
     this->register_for_event(ON_PAUSE);
 
@@ -47,17 +48,27 @@ void Stepper::on_module_loaded(){
 
 // Get configuration from the config file
 void Stepper::on_config_reload(void* argument){
-
-    this->microseconds_per_step_pulse   =  this->kernel->config->value(microseconds_per_step_pulse_ckecksum  )->by_default(5     )->as_double();
-    this->acceleration_ticks_per_second =  this->kernel->config->value(acceleration_ticks_per_second_checksum)->by_default(100   )->as_double();
-    this->minimum_steps_per_minute      =  this->kernel->config->value(minimum_steps_per_minute_checksum     )->by_default(1200  )->as_double();
-    this->base_stepping_frequency       =  this->kernel->config->value(base_stepping_frequency_checksum      )->by_default(100000)->as_double();
+    
+    this->microseconds_per_step_pulse   =  this->kernel->config->value(microseconds_per_step_pulse_checksum  )->by_default(5     )->as_number();
+    this->acceleration_ticks_per_second =  this->kernel->config->value(acceleration_ticks_per_second_checksum)->by_default(100   )->as_number();
+    this->minimum_steps_per_minute      =  this->kernel->config->value(minimum_steps_per_minute_checksum     )->by_default(1200  )->as_number();
+    this->base_stepping_frequency       =  this->kernel->config->value(base_stepping_frequency_checksum      )->by_default(100000)->as_number();
     this->alpha_step_pin                =  this->kernel->config->value(alpha_step_pin_checksum               )->by_default("3.12"     )->as_pin()->as_output();
     this->beta_step_pin                 =  this->kernel->config->value(beta_step_pin_checksum                )->by_default("3.13"     )->as_pin()->as_output();
     this->gamma_step_pin                =  this->kernel->config->value(gamma_step_pin_checksum               )->by_default("3.14"     )->as_pin()->as_output();
     this->alpha_dir_pin                 =  this->kernel->config->value(alpha_dir_pin_checksum                )->by_default("3.15"     )->as_pin()->as_output();
     this->beta_dir_pin                  =  this->kernel->config->value(beta_dir_pin_checksum                 )->by_default("3.11"     )->as_pin()->as_output();
     this->gamma_dir_pin                 =  this->kernel->config->value(gamma_dir_pin_checksum                )->by_default("3.10"     )->as_pin()->as_output();
+//TODO: these en pins need to be mapped to something that makes sense:
+    // this->alpha_en_pin                  =  this->kernel->config->value(alpha_en_pin_checksum                 )->by_default("0.4"      )->as_pin()->as_output()->as_open_drain();
+    // this->beta_en_pin                   =  this->kernel->config->value(beta_en_pin_checksum                  )->by_default("0.10"     )->as_pin()->as_output()->as_open_drain();
+    // this->gamma_en_pin                  =  this->kernel->config->value(gamma_en_pin_checksum                 )->by_default("0.19"     )->as_pin()->as_output()->as_open_drain();
+
+    // TODO : This is supposed to be done by gcodes
+    // TODO : re-enable these once the en_pins are mapped
+    // this->alpha_en_pin->set(0);
+    // this->beta_en_pin->set(0);
+    // this->gamma_en_pin->set(0);
 
     // Set the Timer interval for Match Register 1,
 
@@ -74,6 +85,19 @@ void Stepper::on_pause(void* argument){
 void Stepper::on_play(void* argument){
     // TODO: Re-compute the whole queue for a cold-start
     this->paused = false;
+}
+
+void Stepper::on_gcode_execute(void* argument){
+    Gcode* gcode = static_cast<Gcode*>(argument);
+
+    if( gcode->has_letter('M')){
+        int code = (int) gcode->get_value('M');
+        if( code == 84 ){
+            this->alpha_en_pin->set(0);
+            this->beta_en_pin->set(0);
+            this->gamma_en_pin->set(0);
+        }
+    }
 }
 
 // A new block is popped from the queue
@@ -175,7 +199,6 @@ uint32_t Stepper::trapezoid_generator_tick( uint32_t dummy ) {
               }else{
                   this->trapezoid_adjusted_rate = double(this->current_block->rate_delta) * 1.5;
                   //this->trapezoid_adjusted_rate = floor(double(this->trapezoid_adjusted_rate / 2 ));
-                  //this->kernel->serial->printf("over!\r\n");
               }
               if (this->trapezoid_adjusted_rate < this->current_block->final_rate ) {
                   this->trapezoid_adjusted_rate = this->current_block->final_rate;

@@ -6,11 +6,16 @@
 */
 
 #include "libs/Kernel.h"
+
 // #include "modules/tools/laser/Laser.h"
 // #include "modules/tools/extruder/Extruder.h"
 // #include "modules/tools/temperaturecontrol/TemperatureControlPool.h"
-// #include "modules/robot/Player.h"
+// #include "modules/tools/switch/SwitchPool.h"
+#include "modules/robot/Player.h"
+
 #include "modules/utils/simpleshell/SimpleShell.h"
+#include "modules/utils/configurator/Configurator.h"
+#include "modules/utils/currentcontrol/CurrentControl.h"
 #include "modules/utils/pausebutton/PauseButton.h"
 //#include "libs/ChaNFSSD/SDFileSystem.h"
 #include "libs/Config.h"
@@ -42,20 +47,26 @@ int main() {
     &USR_desc, 
     &USBD_CDC_cb, 
     &USR_cb);
-
     Kernel* kernel = new Kernel();
-    kernel->serial->printf("Smoothie ( grbl port ) version 0.6 \r\nstart\r\n");
 
-//    kernel->add_module( new Laser(p21) );
-//    kernel->add_module( new Extruder(p26,p27) );
-//    kernel->add_module( new SimpleShell() );
-//    kernel->add_module( new TemperatureControlPool() );
-//    kernel->add_module( new PauseButton() );
-//
-//    kernel->add_module( &cdcmsc );
+    kernel->streams->printf("Smoothie ( grbl port ) version 0.6.1 \r\n");
+
+    // kernel->add_module( new Laser(p21) );
+    // kernel->add_module( new Extruder() );
+    // kernel->add_module( new SimpleShell() );
+    // kernel->add_module( new Configurator() );
+    // kernel->add_module( new CurrentControl() );
+    // kernel->add_module( new TemperatureControlPool() );
+    // kernel->add_module( new SwitchPool() );
+    // kernel->add_module( new PauseButton() );   
+
+    // kernel->add_module( &cdcmsc );
+   
+    kernel->streams->printf("start\r\n");
 
     while(1){
-      kernel->call_event(ON_MAIN_LOOP);
+        kernel->call_event(ON_MAIN_LOOP);
+        kernel->call_event(ON_IDLE);
     }
 }
 

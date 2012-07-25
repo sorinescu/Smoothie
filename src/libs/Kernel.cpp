@@ -12,8 +12,8 @@ using namespace std;
 #include "libs/Config.h"
 #include "libs/nuts_bolts.h"
 #include "libs/SlowTicker.h"
-#include "libs/Adc.h"
 #include "libs/Pauser.h"
+#include "libs/StreamOutputPool.h"
 
 #include "modules/communication/SerialConsole.h"
 #include "modules/communication/GcodeDispatch.h"
@@ -35,19 +35,19 @@ const ModuleCallback kernel_callback_functions[NUMBER_OF_DEFINED_EVENTS] = {
         &Module::on_block_end,
         &Module::on_config_reload,
         &Module::on_play,
-        &Module::on_pause
+        &Module::on_pause,
+        &Module::on_idle
 };
 
-#define baud_rate_setting_ckeckusm 10922
+#define baud_rate_setting_checksum 10922
 #define uart0_checksum             16877
 
 // The kernel is the central point in Smoothie : it stores modules, and handles event calls
 Kernel::Kernel(){
-
-
     // Config first, because we need the baud_rate setting before we start serial
     this->config         = new Config();
     // Serial second, because the other modules might want to say something
+    this->streams        = new StreamOutputPool();
     this->serial         = new SerialConsole(NULL, NULL, NULL);
 
     this->add_module( this->config );
@@ -55,7 +55,6 @@ Kernel::Kernel(){
 
     init_platform();    // defined in PlatformKernel
 
-    // HAL stuff
     this->slow_ticker          = new SlowTicker();
     this->slow_ticker->kernel = this; // DEBUG: To remove
     this->step_ticker          = new StepTicker();
@@ -69,7 +68,8 @@ Kernel::Kernel(){
     this->add_module( this->player         = new Player()        );
     this->add_module( this->pauser         = new Pauser()        );
 
-   // this->stepper->alpha_step_pin->set(1);
+    // this->adc                  = new Adc();
+    // this->digipot              = new Digipot();
 }
 
 void Kernel::add_module(Module* module){

@@ -11,7 +11,7 @@ using namespace std;
 #include "libs/Module.h"
 #include "libs/Kernel.h"
 #include "Adc.h"
-#include "libs/ADC/adc.h"
+// #include "libs/ADC/adc.h"
 #include "libs/Pin.h"
 
 Adc::Adc(){

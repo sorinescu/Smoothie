@@ -9,6 +9,7 @@
 #define SERIALCONSOLE_H
 
 #include "libs/Module.h"
+// #include "Serial.h" // mbed.h lib
 #include "libs/Kernel.h"
 #include "serial.h"
 
@@ -18,9 +19,8 @@ using std::string;
 #include "libs/RingBuffer.h"
 #include "libs/StreamOutput.h"
 
-#define baud_rate_setting_ckeckusm 10922
 
-// Serial *MainSerial = NULL;
+#define baud_rate_setting_checksum 10922
 
 class SerialConsole : public Module, public StreamOutput {
     public:

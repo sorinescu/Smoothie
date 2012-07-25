@@ -12,37 +12,40 @@
 #include "libs/utils.h"
 #include "libs/SerialMessage.h"
 #include "libs/StreamOutput.h"
+#include "modules/robot/Player.h"
 
 
 void SimpleShell::on_module_loaded(){
-    this->current_path = "/";
-    this->playing_file = false;
-    this->register_for_event(ON_CONSOLE_LINE_RECEIVED);
-    this->register_for_event(ON_MAIN_LOOP);
+    // this->current_path = "/";
+    // this->playing_file = false;
+    // this->register_for_event(ON_CONSOLE_LINE_RECEIVED);
+    // this->register_for_event(ON_MAIN_LOOP);
 }
 
 // When a new line is received, check if it is a command, and if it is, act upon it
 void SimpleShell::on_console_line_received( void* argument ){
-    SerialMessage new_message = *static_cast<SerialMessage*>(argument);
-    string possible_command = new_message.message;
+    // SerialMessage new_message = *static_cast<SerialMessage*>(argument);
+    // string possible_command = new_message.message;
 
-    // We don't compare to a string but to a checksum of that string, this saves some space in flash memory
-    unsigned short check_sum = get_checksum( possible_command.substr(0,possible_command.find_first_of(" \r\n")) );  // todo: put this method somewhere more convenient
+    // // We don't compare to a string but to a checksum of that string, this saves some space in flash memory
+    // unsigned short check_sum = get_checksum( possible_command.substr(0,possible_command.find_first_of(" \r\n")) );  // todo: put this method somewhere more convenient
 
-    // Act depending on command
-    switch( check_sum ){
-        case ls_command_checksum      : this->ls_command(  get_arguments(possible_command), new_message.stream ); break;
-        case cd_command_checksum      : this->cd_command(  get_arguments(possible_command), new_message.stream ); break;
-        case cat_command_checksum     : this->cat_command( get_arguments(possible_command), new_message.stream ); break;
-        case play_command_checksum    : this->play_command(get_arguments(possible_command), new_message.stream ); break; 
-    }
+    // // Act depending on command
+    // switch( check_sum ){
+    //     case ls_command_checksum      : this->ls_command(  get_arguments(possible_command), new_message.stream ); break;
+    //     case cd_command_checksum      : this->cd_command(  get_arguments(possible_command), new_message.stream ); break;
+    //     case pwd_command_checksum     : this->pwd_command( get_arguments(possible_command), new_message.stream ); break;
+    //     case cat_command_checksum     : this->cat_command( get_arguments(possible_command), new_message.stream ); break;
+    //     case play_command_checksum    : this->play_command(get_arguments(possible_command), new_message.stream ); break; 
+    //     case reset_command_checksum   : this->reset_command(get_arguments(possible_command),new_message.stream ); break;
+    // }
 }
 
 // Convert a path indication ( absolute or relative ) into a path ( absolute )
 string SimpleShell::absolute_from_relative( string path ){
-    if( path[0] == '/' ){ return path; }
-    if( path[0] == '.' ){ return this->current_path; } 
-    return this->current_path + path;
+    // if( path[0] == '/' ){ return path; }
+    // if( path[0] == '.' ){ return this->current_path; } 
+    // return this->current_path + path;
 }
 
 // Act upon an ls command
@@ -73,59 +76,88 @@ void SimpleShell::cd_command( string parameters, StreamOutput* stream ){
 //    }
 }
 
+// Responds with the present working directory
+void SimpleShell::pwd_command( string parameters, StreamOutput* stream ){
+    // stream->printf("%s\r\n", this->current_path.c_str());
+}
+
 // Output the contents of a file, first parameter is the filename, second is the limit ( in number of lines to output )
 void SimpleShell::cat_command( string parameters, StreamOutput* stream ){
     
-//    // Get parameters ( filename and line limit )
-//    string filename          = this->absolute_from_relative(shift_parameter( parameters ));
-//    string limit_paramater   = shift_parameter( parameters );
-//    int limit = -1;
-//    if( limit_paramater != "" ){ limit = int(atof(limit_paramater.c_str())); }
-//
-//    // Open file
-//    FILE *lp = fopen(filename.c_str(), "r");
-//    string buffer;
-//    int c;
-//    int newlines = 0;
-//
-//    // Print each line of the file
-//    while ((c = fgetc (lp)) != EOF){
-//        if( char(c) == '\n' ){  newlines++; }
-//        stream->printf("%c",c);
-//        if( newlines == limit ){ break; }
-//    };
-//    fclose(lp);
+
+    // // Get parameters ( filename and line limit ) 
+    // string filename          = this->absolute_from_relative(shift_parameter( parameters ));
+    // string limit_paramater   = shift_parameter( parameters );
+    // int limit = -1;
+    // if( limit_paramater != "" ){ limit = int(atof(limit_paramater.c_str())); }
+   
+    // // Open file 
+    // FILE *lp = fopen(filename.c_str(), "r");
+    // if(lp == NULL) {
+    // 	stream->printf("File not found: %s\r\n", filename.c_str());
+    // 	return;
+    // }
+    // string buffer;
+    // int c;
+    // int newlines = 0; 
+    
+    // // Print each line of the file
+    // while ((c = fgetc (lp)) != EOF){
+    // 	buffer.append((char *)&c, 1);
+    //     if( char(c) == '\n' ){
+    //     	newlines++;
+    //     	stream->printf("%s", buffer.c_str());
+    //     	buffer.clear();
+    //     }
+    //     if( newlines == limit ){ break; }
+    // }; 
+    // fclose(lp);
 
 }
 
 // Play a gcode file by considering each line as if it was received on the serial console
 void SimpleShell::play_command( string parameters, StreamOutput* stream ){
-//    // Get filename
-//    this->current_file_handler = fopen( this->absolute_from_relative(shift_parameter( parameters )).c_str(), "r");
-//    this->playing_file = true;
-//    this->current_stream = stream;
+
+    // Get filename
+    // string filename          = this->absolute_from_relative(shift_parameter( parameters ));
+    // this->current_file_handler = fopen( filename.c_str(), "r");
+    // if(this->current_file_handler == NULL)
+    // {
+    // 	stream->printf("File not found: %s\r\n", filename.c_str());
+    // 	return;
+    // }
+    // this->playing_file = true;
+    // this->current_stream = stream;
 }
+
+// Reset the system
+void SimpleShell::reset_command( string parameters, StreamOutput* stream){
+    stream->printf("Smoothie out. Peace.\r\n");
+    // system_reset();
+}
+
 void SimpleShell::on_main_loop(void* argument){
-//
-//    if( this->playing_file ){
-//        string buffer;
-//        int c;
-//        // Print each line of the file
-//        while ((c = fgetc(this->current_file_handler)) != EOF){
-//            if (c == '\n'){
-//                this->current_stream->printf("%s\n", buffer.c_str());
-//                struct SerialMessage message;
-//                message.message = buffer;
-//                message.stream = this->current_stream;
-//                this->kernel->call_event(ON_CONSOLE_LINE_RECEIVED, &message);
-//                buffer.clear();
-//                return;
-//            }else{
-//                buffer += c;
-//            }
-//        };
-//
-//        fclose(this->current_file_handler);
-//        this->playing_file = false;
-//    }
+    if( this->playing_file ){ 
+        // string buffer;
+        // int c;
+        // // Print each line of the file
+        // while ((c = fgetc(this->current_file_handler)) != EOF){
+        //     if (c == '\n'){
+        //         this->current_stream->printf("%s\n", buffer.c_str());
+        //         struct SerialMessage message; 
+        //         message.message = buffer;
+        //         message.stream = this->current_stream;
+        //         // wait for the queue to have enough room that a serial message could still be received before sending
+        //         this->kernel->player->wait_for_queue(2);
+        //         this->kernel->call_event(ON_CONSOLE_LINE_RECEIVED, &message); 
+        //         buffer.clear();
+        //         return;
+        //     }else{
+        //         buffer += c;
+        //     }
+        // }; 
+
+        // fclose(this->current_file_handler);
+        // this->playing_file = false;
+    }
 }
