@@ -32,7 +32,7 @@ protected:
         TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
         TIM_TimeBaseInit(TIM5, &TIM_TimeBaseStructure);
 
-       /* Enable counter */
+        /* Enable counter */
         TIM_Cmd(TIM5, ENABLE);
     }
 

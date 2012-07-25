@@ -48,11 +48,11 @@ void Stepper::on_module_loaded(){
 
 // Get configuration from the config file
 void Stepper::on_config_reload(void* argument){
-    
-    this->microseconds_per_step_pulse   =  this->kernel->config->value(microseconds_per_step_pulse_checksum  )->by_default(5     )->as_number();
-    this->acceleration_ticks_per_second =  this->kernel->config->value(acceleration_ticks_per_second_checksum)->by_default(100   )->as_number();
-    this->minimum_steps_per_minute      =  this->kernel->config->value(minimum_steps_per_minute_checksum     )->by_default(1200  )->as_number();
-    this->base_stepping_frequency       =  this->kernel->config->value(base_stepping_frequency_checksum      )->by_default(100000)->as_number();
+
+    this->microseconds_per_step_pulse   =  this->kernel->config->value(microseconds_per_step_pulse_checksum  )->by_default(5     )->as_double();
+    this->acceleration_ticks_per_second =  this->kernel->config->value(acceleration_ticks_per_second_checksum)->by_default(100   )->as_double();
+    this->minimum_steps_per_minute      =  this->kernel->config->value(minimum_steps_per_minute_checksum     )->by_default(1200  )->as_double();
+    this->base_stepping_frequency       =  this->kernel->config->value(base_stepping_frequency_checksum      )->by_default(100000)->as_double();
     this->alpha_step_pin                =  this->kernel->config->value(alpha_step_pin_checksum               )->by_default("3.12"     )->as_pin()->as_output();
     this->beta_step_pin                 =  this->kernel->config->value(beta_step_pin_checksum                )->by_default("3.13"     )->as_pin()->as_output();
     this->gamma_step_pin                =  this->kernel->config->value(gamma_step_pin_checksum               )->by_default("3.14"     )->as_pin()->as_output();

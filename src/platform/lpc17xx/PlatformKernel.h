@@ -8,9 +8,13 @@
 #ifndef PLATFORM_KERNEL_H
 #define PLATFORM_KERNEL_H
 
+#include "libs/Adc.h"
+// #include "libs/Digipot.h"
+
 class PlatformKernel {
 protected:
     Adc* adc;
+    // Digipot* digipot;
 
     inline void init_platform() {
         // HAL stuff

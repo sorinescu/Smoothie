@@ -1,14 +1,7 @@
 #ifndef BASE_PIN_H
 #define BASE_PIN_H
 
-//#include "mbed.h" //Required for LPC_GPIO* . can probably be found in one othe the files mbed.h includes. TODO
-//#include "../gcc4mbed/external/mbed/LPC1768/LPC17xx.h"
 #include "platform/Platform.h"
-#include "libs/BasePin.h"
-#include "libs/utils.h"
-#include <string>
-#include <cmath>
-#include <cstdlib>
 
 struct PinDesc {
     PinDesc() : inverting(false), pin(0), port_number(0) {}
