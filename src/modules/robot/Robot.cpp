@@ -7,8 +7,6 @@
 
 #include "libs/Module.h"
 #include "libs/Kernel.h"
-#include <string>
-using std::string;
 #include <math.h>
 #include "Planner.h"
 #include "Player.h"
@@ -127,7 +125,7 @@ void Robot::append_milestone( double target[], double rate ){
     int steps[3]; //Holds the result of the conversion
 
     this->arm_solution->millimeters_to_steps( target, steps );
-    
+
     double deltas[3];
     for(int axis=X_AXIS;axis<=Z_AXIS;axis++){deltas[axis]=target[axis]-this->last_milestone[axis];}
 

@@ -41,9 +41,6 @@
 #define ON_PAUSE                   10
 #define ON_IDLE                    11
 
-using namespace std;
-#include <vector>
-
 typedef void (Module::*ModuleCallback)(void * argument);
 
 //Module manager
@@ -75,7 +72,7 @@ class Kernel : public PlatformKernel {
         StepTicker*       step_ticker;
 
     private:
-        vector<Module*> hooks[NUMBER_OF_DEFINED_EVENTS]; // When a module asks to be called for a specific event ( a hook ), this is where that request is remembered
+        smt_vector<Module*> hooks[NUMBER_OF_DEFINED_EVENTS]; // When a module asks to be called for a specific event ( a hook ), this is where that request is remembered
 
 };
 

@@ -1,12 +1,10 @@
-/*  
+/*
       This file is part of Smoothie (http://smoothieware.org/). The motion control part is heavily based on Grbl (https://github.com/simen/grbl).
       Smoothie is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
       Smoothie is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-      You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>. 
+      You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>.
 */
 
-using namespace std;
-#include <vector>
 #include "libs/nuts_bolts.h"
 #include "libs/Module.h"
 #include "libs/Kernel.h"
@@ -28,11 +26,11 @@ StepTicker::StepTicker(){
     TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 	TIM_OCInitTypeDef  TIM_OCInitStructure;
 	uint16_t PrescalerValue = 0;
-    
+
     NVIC_InitTypeDef NVIC_InitStructure;
-	
+
     global_step_ticker = this;
-	
+
     // TIM3 clock enable
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
 
@@ -42,7 +40,7 @@ StepTicker::StepTicker(){
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 
-    // Since we are dealing with the 48MHz domain for RCC_APB1 - we should be 2x which is 84MHz.  We can get there 
+    // Since we are dealing with the 48MHz domain for RCC_APB1 - we should be 2x which is 84MHz.  We can get there
     // from our system clock of 168MHz / 2
     PrescalerValue = 0;
     TIM_PrescalerConfig(TIM3, PrescalerValue, TIM_PSCReloadMode_Immediate);
@@ -56,7 +54,7 @@ StepTicker::StepTicker(){
 
     //Enable interrupt
     TIM_ITConfig(TIM3, TIM_IT_CC1 | TIM_IT_CC2 , ENABLE);
-    
+
     //Enable Counter
     TIM_Cmd(TIM3, ENABLE);
 
@@ -84,13 +82,13 @@ void StepTicker::set_reset_delay( double seconds ){
 }
 
 void StepTicker::tick(){
-    for (int i=0; i<this->hooks.size(); i++){ 
+    for (int i=0; i<this->hooks.size(); i++){
         this->hooks.at(i)->call();
     }
 }
 
 void StepTicker::reset_tick(){
-    for (int i=0; i<this->reset_hooks.size(); i++){ 
+    for (int i=0; i<this->reset_hooks.size(); i++){
         this->reset_hooks.at(i)->call();
     }
 }

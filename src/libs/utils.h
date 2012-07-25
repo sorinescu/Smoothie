@@ -2,28 +2,22 @@
 #define utils_h
 
 #include <stdint.h>
-using namespace std;
-#include <string>
-#include <vector>
-using std::string;
 
-string lc(string str);
+smt_string lc(smt_string str);
 
-string remove_non_number( string str );
+smt_string remove_non_number( smt_string str );
 
-uint16_t get_checksum(string to_check);
+uint16_t get_checksum(smt_string to_check);
 
-vector<uint16_t> get_checksums(string key);
+smt_vector<uint16_t> get_checksums(smt_string key);
 
-string shift_parameter( string &parameters );
+smt_string shift_parameter( smt_string &parameters );
 
-string get_arguments( string possible_command );
+smt_string get_arguments( smt_string possible_command );
 
-bool file_exists( string file_name );
+bool file_exists( smt_string file_name );
 
 void system_reset( void );
-
-
 
 
 #endif

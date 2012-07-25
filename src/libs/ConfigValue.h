@@ -53,6 +53,13 @@ public:
         type = CVT_PinDesc;
     }
 
+    /* Still a PinDesc value; see constructor */
+    ConfigValue* set(int16_t &value)
+    {
+        pin_desc_val = value;
+        type = CVT_PinDesc;
+    }
+
     double as_double(){
         switch (type) {
             case CVT_Bool: return (double)bool_val;
@@ -71,8 +78,9 @@ public:
         return false;
     }
 
-    Pin* as_pin(const PinDesc &default_pin_desc = PinDesc()){
+    Pin* as_pin(){
         switch (type) {
+            case CVT_Double: return new Pin(double_val);
             case CVT_PinDesc: return new Pin(pin_desc_val);
             default: SMT_ASSERT(0);
         }

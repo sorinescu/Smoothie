@@ -1,15 +1,13 @@
-/*  
+/*
       This file is part of Smoothie (http://smoothieware.org/). The motion control part is heavily based on Grbl (https://github.com/simen/grbl).
       Smoothie is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
       Smoothie is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-      You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>. 
+      You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef ROBOT_H
 #define ROBOT_H
 
-#include <string>
-using std::string;
 #include "libs/Module.h"
 #include "libs/Kernel.h"
 #include "../communication/utils/Gcode.h"
@@ -77,7 +75,7 @@ class Robot : public Module {
         BaseSolution* arm_solution;                           // Selected Arm solution ( millimeters to step calculation )
         double mm_per_line_segment;                           // Setting : Used to split lines into segments
         double mm_per_arc_segment;                            // Setting : Used to split arcs into segmentrs
-        
+
         // Number of arc generation iterations by small angle approximation before exact arc trajectory
         // correction. This parameter maybe decreased if there are issues with the accuracy of the arc
         // generations. In general, the default value is more than enough for the intended CNC applications

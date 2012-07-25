@@ -5,8 +5,6 @@
       You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>.
 */
 
-using namespace std;
-#include <vector>
 #include "libs/nuts_bolts.h"
 #include "libs/RingBuffer.h"
 #include "../communication/utils/Gcode.h"
@@ -37,7 +35,7 @@ void Planner::on_config_reload(void* argument){
 
 // Append a block to the queue, compute it's speed factors
 void Planner::append_block( int target[], double feed_rate, double distance, double deltas[] ){
-   
+
        // Stall here if the queue is ful
     this->kernel->player->wait_for_queue(2);
 
@@ -74,7 +72,7 @@ void Planner::append_block( int target[], double feed_rate, double distance, dou
     }
 
     //this->kernel->streams->printf("nom_speed: %f nom_rate: %u step_event_count: %u block->steps_z: %u \r\n", block->nominal_speed, block->nominal_rate, block->steps_event_count, block->steps[2]  );
-    
+
     // Compute the acceleration rate for the trapezoid generator. Depending on the slope of the line
     // average travel per step event changes. For a line along one axis the travel per step event
     // is equal to the travel/step in the particular axis. For a 45 degree line the steppers of both
@@ -250,7 +248,7 @@ void Planner::dump_queue(){
     for( int index = 0; index <= this->kernel->player->queue.size()-1; index++ ){
        if( index > 10 && index < this->kernel->player->queue.size()-10 ){ continue; }
        this->kernel->streams->printf("block %03d > ", index);
-       this->kernel->player->queue.get_ref(index)->debug(this->kernel); 
+       this->kernel->player->queue.get_ref(index)->debug(this->kernel);
     }
 }
 

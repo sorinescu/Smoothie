@@ -2,8 +2,6 @@
 #include "CurrentControl.h"
 #include "libs/nuts_bolts.h"
 #include "libs/utils.h"
-#include <string>
-using namespace std;
 
 CurrentControl::CurrentControl(){}
 

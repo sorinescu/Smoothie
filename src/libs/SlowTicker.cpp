@@ -1,12 +1,10 @@
-/*  
+/*
       This file is part of Smoothie (http://smoothieware.org/). The motion control part is heavily based on Grbl (https://github.com/simen/grbl).
       Smoothie is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
       Smoothie is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-      You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>. 
+      You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>.
 */
 
-using namespace std;
-#include <vector>
 #include "libs/nuts_bolts.h"
 #include "libs/Module.h"
 #include "libs/Kernel.h"
@@ -42,7 +40,7 @@ SlowTicker::SlowTicker(){
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
     NVIC_Init(&NVIC_InitStructure);
 
-    // Since we are dealing with the 48MHz domain for RCC_APB1 - we should be 2x which is 84MHz.  We can get there 
+    // Since we are dealing with the 48MHz domain for RCC_APB1 - we should be 2x which is 84MHz.  We can get there
     // from our system clock of 168MHz / 2
     // PrescalerValue = (uint16_t) ((SystemCoreClock / 2) / 100000) - 1; //  This + a TIM_Period of 100000 makes it tick every second.
     TIM_PrescalerConfig(TIM2, PrescalerValue, TIM_PSCReloadMode_Immediate);

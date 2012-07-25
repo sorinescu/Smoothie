@@ -1,8 +1,8 @@
-/*  
+/*
       This file is part of Smoothie (http://smoothieware.org/). The motion control part is heavily based on Grbl (https://github.com/simen/grbl).
       Smoothie is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
       Smoothie is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-      You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>. 
+      You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>.
 */
 
 #ifndef BLOCK_H
@@ -10,11 +10,8 @@
 #include "libs/Module.h"
 #include "libs/Kernel.h"
 //STM Specific
+#error "SORIN: this is not OK, should also use cortex m3"
 #include "core_cm4.h"
-
-using namespace std;
-#include <string>
-#include <vector>
 
 #include "../communication/utils/Gcode.h"
 #include "Planner.h"
@@ -29,7 +26,7 @@ class Block {
         double compute_factor_for_safe_speed();
         void calculate_trapezoid( double entry_factor, double exit_factor );
         double estimate_acceleration_distance( double initial_rate, double target_rate, double acceleration );
-        double intersection_distance(double initial_rate, double final_rate, double acceleration, double distance); 
+        double intersection_distance(double initial_rate, double final_rate, double acceleration, double distance);
         void reverse_pass(Block* previous, Block* next);
         void forward_pass(Block* previous, Block* next);
         void debug(Kernel* kernel);
@@ -40,10 +37,10 @@ class Block {
         void release();
         void ready();
 
-        vector<std::string> commands;
-        vector<double> travel_distances;
-        vector<Gcode> gcodes;
-        
+        smt_vector<smt_string> commands;
+        smt_vector<double> travel_distances;
+        smt_vector<Gcode> gcodes;
+
         unsigned int   steps[3];           // Number of steps for each axis for this block
         unsigned int   steps_event_count;  // Steps for the longest axis
         unsigned int   nominal_rate;       // Nominal rate in steps per minute
@@ -64,7 +61,7 @@ class Block {
         double max_entry_speed;
         Planner* planner;
         Player*  player;
-        
+
         bool is_ready;
 
         short times_taken;    // A block can be "taken" by any number of modules, and the next block is not moved to until all the modules have "released" it. This value serves as a tracker.

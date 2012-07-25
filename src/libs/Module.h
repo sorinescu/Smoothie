@@ -8,9 +8,6 @@
 #ifndef MODULE_H
 #define MODULE_H
 
-#include <string>
-using std::string;
-
 // Module base class
 // All modules must extend this class, see http://smoothieware.org/moduleexample
 class Kernel;
