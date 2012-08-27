@@ -9,15 +9,19 @@
 #define PLATFORM_KERNEL_H
 
 //STM Specific
+#if SMOOTHIE_PLATFORM == SMOOTHIE_PLATFORM_STM32F103
+#include "stm32f10x.h"
+#elif SMOOTHIE_PLATFORM == SMOOTHIE_PLATFORM_STM32F4XX
 #include "stm32f4xx.h"
+#else
+#error "Unsupported SMOOTHIE_PLATFORM"
+#endif
 
-#define SYS_CLK 84000000    /* SystemCoreClock / 2 */
+
+#define SYS_CLK SystemCoreClock
 #define DELAY_TIM_FREQUENCY 1000000 /* = 1MHZ -> timer runs in microseconds */
 
 class PlatformKernel {
-public:
-    void delay_us(uint16_t);
-
 protected:
     void init_platform() {
         /* Enable timer clock  - use TIMER5 */

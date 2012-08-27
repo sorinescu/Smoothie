@@ -30,13 +30,13 @@
 class Stepper : public Module {
     public:
         Stepper();
-        void on_module_loaded();
-        void on_config_reload(void* argument);
-        void on_block_begin(void* argument);
-        void on_block_end(void* argument);
-        void on_gcode_execute(void* argument);
-        void on_play(void* argument);
-        void on_pause(void* argument);
+        virtual void on_module_loaded();
+        virtual void on_config_reload(void* argument);
+        virtual void on_block_begin(void* argument);
+        virtual void on_block_end(void* argument);
+        virtual void on_gcode_execute(void* argument);
+        virtual void on_play(void* argument);
+        virtual void on_pause(void* argument);
         uint32_t main_interrupt(uint32_t dummy);
         void trapezoid_generator_reset();
         void set_step_events_per_minute(double steps_per_minute);

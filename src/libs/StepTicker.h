@@ -37,8 +37,8 @@ class StepTicker : public Module {
         }
 
 
-        smt_vector<FPointer*> hooks;
-        smt_vector<FPointer*> reset_hooks;
+        smt_vector<FPointer*>::type hooks;
+        smt_vector<FPointer*>::type reset_hooks;
         double frequency;
 
 };

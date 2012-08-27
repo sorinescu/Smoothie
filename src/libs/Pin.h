@@ -4,6 +4,7 @@
 #include "platform/Platform.h"
 
 class Pin : public PlatformPin {
+public:
     Pin(const PinDesc &desc) : PlatformPin(desc) {}
 };
 

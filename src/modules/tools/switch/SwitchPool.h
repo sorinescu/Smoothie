@@ -20,7 +20,7 @@ class SwitchPool : public Module {
 
         void on_module_loaded();
 
-        smt_vector<Switch*> controllers;
+        smt_vector<Switch*>::type controllers;
 };
 
 

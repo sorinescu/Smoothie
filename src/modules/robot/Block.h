@@ -9,9 +9,6 @@
 #define BLOCK_H
 #include "libs/Module.h"
 #include "libs/Kernel.h"
-//STM Specific
-#error "SORIN: this is not OK, should also use cortex m3"
-#include "core_cm4.h"
 
 #include "../communication/utils/Gcode.h"
 #include "Planner.h"
@@ -37,9 +34,9 @@ class Block {
         void release();
         void ready();
 
-        smt_vector<smt_string> commands;
-        smt_vector<double> travel_distances;
-        smt_vector<Gcode> gcodes;
+        smt_vector<smt_string>::type commands;
+        smt_vector<double>::type travel_distances;
+        smt_vector<Gcode>::type gcodes;
 
         unsigned int   steps[3];           // Number of steps for each axis for this block
         unsigned int   steps_event_count;  // Steps for the longest axis

@@ -33,7 +33,7 @@ class SlowTicker : public Module{
             this->hooks.push_back(hook);
         }
 
-        smt_vector<Hook*> hooks;
+        smt_vector<Hook*>::type hooks;
         double max_frequency;
 };
 

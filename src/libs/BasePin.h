@@ -3,18 +3,29 @@
 
 #include "platform/Platform.h"
 
-struct PinDesc {
-    PinDesc() : inverting(false), pin(0), port_number(0) {}
-    PinDesc(char aport_number, char apin, bool ainverting = false) :
-        inverting(ainverting), pin(apin), port_number(aport_number) {}
+typedef int16_t PinDescAsInt;
+#define PIN_DESC_TO_INT(inverting, port, pin) PinDescAsInt(inverting ? -((port) << 8 + (pin)) : ((port) << 8 + (pin)))
 
-#if SMOOTHIE_USE_STRINGS
-    PinDesc(const smt_string& value){
-        port_number = atoi(value.substr(0,1).c_str());
-        inverting = ( value.find_first_of("!")!=smt_string::npos ? true : false );
-        pin = atoi( value.substr(2, value.size()-2-(this->inverting?1:0)).c_str() );
+struct PinDesc {
+    static PinDesc& init(PinDesc& desc, const smt_string& value) {
+        desc.port_number = atoi(value.substr(0,1).c_str());
+        desc.inverting = ( value.find_first_of("!")!=smt_string::npos ? true : false );
+        desc.pin = atoi( value.substr(2, value.size()-2-(desc.inverting?1:0)).c_str() );
+        return desc;
     }
-#endif
+    static PinDesc& init(PinDesc& desc, PinDescAsInt value) {
+        if (value < 0) {
+            desc.inverting = true;
+            value = -value;
+        }
+        else
+            desc.inverting = false;
+
+        desc.port_number = value >> 8;
+        desc.pin = value & 0xff;
+
+        return desc;
+    }
 
     bool inverting;
     char pin;
@@ -32,7 +43,7 @@ struct PinDesc {
       void set(bool value);
  */
 class BasePin {
-public:
+protected:
     BasePin(const PinDesc &desc) {
         inverting = desc.inverting;
         port_number = desc.port_number;

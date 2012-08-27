@@ -60,14 +60,14 @@ void Configurator::config_get_command( smt_string parameters, StreamOutput* stre
     if (setting == "") { // output live setting
         setting = source;
         source = "";
-        smt_vector<uint16_t> setting_checksums = get_checksums( setting );
+        smt_vector<uint16_t>::type setting_checksums = get_checksums( setting );
         ConfigValue* cv = this->kernel->config->value(setting_checksums);
         smt_string value = "";
         if(cv->found){ value = cv->as_string(); }
         stream->printf( "live: %s is set to %s\r\n", setting.c_str(), value.c_str() );
     } else { // output setting from specified source
         uint16_t source_checksum = get_checksum( source );
-        smt_vector<uint16_t> setting_checksums = get_checksums( setting );
+        smt_vector<uint16_t>::type setting_checksums = get_checksums( setting );
         for(int i=0; i < this->kernel->config->config_sources.size(); i++){
             if( this->kernel->config->config_sources[i]->is_named(source_checksum) ){
                 smt_string value = this->kernel->config->config_sources[i]->read(setting_checksums);

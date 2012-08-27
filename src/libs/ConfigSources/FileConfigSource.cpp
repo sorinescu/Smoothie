@@ -5,6 +5,8 @@
       You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "platform/Platform.h"
+
 #if SMOOTHIE_USE_FILES
 
 #include "libs/Kernel.h"
@@ -39,7 +41,7 @@ void FileConfigSource::transfer_values_to_cache( ConfigCache* cache ){
             size_t begin_key = buffer.find_first_not_of(" ");
             size_t begin_value = buffer.find_first_not_of(" ", buffer.find_first_of(" ", begin_key));
             smt_string key = buffer.substr(begin_key,  buffer.find_first_of(" ", begin_key) - begin_key).append(" ");
-            smt_vector<uint16_t> check_sums = get_checksums(key);
+            smt_vector<uint16_t>::type check_sums = get_checksums(key);
 
             result = new ConfigValue;
             result->found = true;
@@ -105,7 +107,7 @@ void FileConfigSource::write( smt_string setting, smt_string value ){
 }
 
 // Return the value for a specific checksum
-smt_string FileConfigSource::read( smt_vector<uint16_t> check_sums ){
+smt_string FileConfigSource::read( smt_vector<uint16_t>::type check_sums ){
 
     smt_string value = "";
 
@@ -124,7 +126,7 @@ smt_string FileConfigSource::read( smt_vector<uint16_t> check_sums ){
             size_t begin_key = buffer.find_first_not_of(" ");
             size_t begin_value = buffer.find_first_not_of(" ", buffer.find_first_of(" ", begin_key));
             smt_string key = buffer.substr(begin_key,  buffer.find_first_of(" ", begin_key) - begin_key).append(" ");
-            smt_vector<uint16_t> line_checksums = get_checksums(key);
+            smt_vector<uint16_t>::type line_checksums = get_checksums(key);
 
             if(check_sums == line_checksums){
                 value = buffer.substr(begin_value, buffer.find_first_of("\r\n# ", begin_value+1)-begin_value);

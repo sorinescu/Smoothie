@@ -20,21 +20,13 @@
  ****************************************************************************************/
 
 // Actual platform used by Smoothie
-#define SMOOTHIE_PLATFORM               SMOOTHIE_PLATFORM_STM32F103
+#define SMOOTHIE_PLATFORM		SMOOTHIE_PLATFORM_STM32F103
 
-// Set this to 1 if you need any string-based function (e.g. set_config/get_config),
-// 0 otherwise.
-// If not defined here, it will have the default value for the platform (see Platform.h).
-//#define SMOOTHIE_USE_STRINGS 1
-
-// Set this to 1 if you prefer to use std::string instead of fix_str.
-// By default, fix_str is used (smaller footprint).
-// This define has no effect if SMOOTHIE_USE_STRINGS is 0.
-//#define SMOOTHIE_USE_STD_STRING 1
-
-// Set this to 1 if you prefer to use std::vector instead of ???.
-// By default, ??? is used (smaller footprint).
-//#define SMOOTHIE_USE_STD_VECTOR 1
+// Set this to 1 if you prefer to use STL classes (like std::string and std::vector)
+// instead of EASTL ones. STL has a higher overhead, but may be more stable on some
+// platforms.
+// By default, EASTL is used (smaller footprint).
+//#define SMOOTHIE_USE_STL 1
 
 // Set this to 1 if you need to use files (e.g. config files, SD card etc), 0 otherwise.
 // If not defined here, it will have the default value for the platform (see Platform.h).

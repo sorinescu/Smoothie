@@ -10,7 +10,7 @@
 
 #include "ConfigValue.h"
 
-class ConfigCache : public smt_vector<ConfigValue*> {
+class ConfigCache : public smt_vector<ConfigValue*>::type {
     public:
         ConfigCache(){}
 
@@ -21,14 +21,7 @@ class ConfigCache : public smt_vector<ConfigValue*> {
             // For each already existing element
             for( int i=1; i<this->size(); i++){
                 // If this configvalue matches the checksum
-                bool match = true;
-                for( unsigned int j = 0; j < new_value->check_sums.size(); j++ ){
-                    uint16_t checksum_node = new_value->check_sums[j];
-                    if(this->at(i)->check_sums[j] != checksum_node ){
-                        match = false;
-                        break;
-                    }
-                }
+                bool match = this->at(i)->checksum() == new_value->checksum();
                 if( match == false ){ continue; }
                 value_exists = true;
                 // Replace with the provided value

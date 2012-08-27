@@ -32,8 +32,8 @@ class Planner : public Module {
         void dump_queue();
         Block* get_current_block();
         void cleanup_queue();
-        void on_module_loaded();
-        void on_config_reload(void* argument);
+        virtual void on_module_loaded();
+        virtual void on_config_reload(void* argument);
 
         int position[3];              // Current position, in steps
         double previous_unit_vec[3];

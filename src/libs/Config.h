@@ -23,8 +23,8 @@ class Config : public Module {
     public:
         Config();
 
-        void on_module_loaded();
-        void on_console_line_received( void* argument );
+        virtual void on_module_loaded();
+        virtual void on_console_line_received( void* argument );
         void config_cache_load();
         void config_cache_clear();
         void set_string( smt_string setting , smt_string value);
@@ -32,14 +32,14 @@ class Config : public Module {
         ConfigValue* value(uint16_t check_sum);
         ConfigValue* value(uint16_t check_sum_a, uint16_t check_sum_b);
         ConfigValue* value(uint16_t check_sum_a, uint16_t check_sum_b, uint16_t check_sum_c );
-        ConfigValue* value(smt_vector<uint16_t> check_sums );
+        ConfigValue* value(smt_vector<uint16_t>::type check_sums );
 
-        void get_module_list(smt_vector<uint16_t>* list, uint16_t family);
+        void get_module_list(smt_vector<uint16_t>::type* list, uint16_t family);
 
         bool   has_characters(uint16_t check_sum, smt_string str );
 
         ConfigCache config_cache;             // A cache in which ConfigValues are kept
-        smt_vector<ConfigSource*> config_sources; // A list of all possible coniguration sources
+        smt_vector<ConfigSource*>::type config_sources; // A list of all possible coniguration sources
         bool   config_cache_loaded;           // Whether or not the cache is currently popluated
 };
 

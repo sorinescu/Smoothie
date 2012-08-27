@@ -19,8 +19,8 @@ Block::Block(){
     clear_vector(this->steps);
     this->times_taken = 0;   // A block can be "taken" by any number of modules, and the next block is not moved to until all the modules have "released" it. This value serves as a tracker.
     this->is_ready = false;
-    this->initial_rate = -1;
-    this->final_rate = -1;
+    this->initial_rate = 1;
+    this->final_rate = 1;
 }
 
 void Block::debug(Kernel* kernel){

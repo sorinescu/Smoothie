@@ -15,7 +15,7 @@ SwitchPool::SwitchPool(){}
 
 void SwitchPool::on_module_loaded(){
 
-    smt_vector<uint16_t> modules;
+    smt_vector<uint16_t>::type modules;
     this->kernel->config->get_module_list( &modules, switch_checksum );
 
     for( int i = 0; i < modules.size(); i++ ){

@@ -5,14 +5,12 @@
       You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#if SMOOTHIE_USE_FILES
-
 #ifndef FILECONFIGSOURCE_H
 #define FILECONFIGSOURCE_H
 
-#if !SMOOTHIE_USE_STRINGS
-#error FileConfigSource needs the smt_string class; please set SMOOTHIE_USE_STRINGS to 1 in config.h !
-#endif
+#include "platform/Platform.h"
+
+#if SMOOTHIE_USE_FILES
 
 #include "ConfigValue.h"
 #include "ConfigSource.h"
@@ -26,7 +24,7 @@ class FileConfigSource : public ConfigSource {
         void transfer_values_to_cache( ConfigCache* cache );
         bool is_named( uint16_t check_sum );
         void write( smt_string setting, smt_string value );
-        smt_string read( smt_vector<uint16_t> check_sums );
+        smt_string read( smt_vector<uint16_t>::type check_sums );
         bool has_config_file();
         void try_config_file(smt_string candidate);
         smt_string get_config_file();

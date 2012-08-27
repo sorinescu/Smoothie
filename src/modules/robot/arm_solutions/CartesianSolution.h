@@ -14,8 +14,8 @@
 class CartesianSolution : public BaseSolution {
     public:
         CartesianSolution(Config* passed_config);
-        void millimeters_to_steps( double millimeters[], int steps[] );
-        void steps_to_millimeters( int steps[], double millimeters[] ); 
+        virtual void millimeters_to_steps( double millimeters[], int steps[] );
+        virtual void steps_to_millimeters( int steps[], double millimeters[] ); 
 
         Config* config;
         double alpha_steps_per_mm;

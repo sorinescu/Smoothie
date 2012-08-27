@@ -19,9 +19,9 @@ class ConfigSource {
 
         // Read each value, and append it as a ConfigValue to the config_cache we were passed
         virtual void transfer_values_to_cache( ConfigCache* ){}
-        virtual bool is_named( uint16_t check_sum ){}
+        virtual bool is_named( uint16_t check_sum ){ return false; }
         virtual void write( smt_string setting, smt_string value ){}
-        virtual smt_string read( smt_vector<uint16_t> check_sums ){}
+        virtual smt_string read( smt_vector<uint16_t>::type check_sums ){ return ""; }
 
         uint16_t name_checksum;
 };

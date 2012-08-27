@@ -20,7 +20,7 @@ class TemperatureControlPool : public Module {
 
         void on_module_loaded();
 
-        smt_vector<TemperatureControl*> controllers;
+        smt_vector<TemperatureControl*>::type controllers;
 };
 
 

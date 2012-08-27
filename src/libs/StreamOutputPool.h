@@ -18,7 +18,7 @@
 class StreamOutputPool {
     public:
        StreamOutputPool(){}
-       int printf(const smt_string format, ...){
+       void printf(const smt_string format, ...){
             // Make the message
             va_list args;
             va_start(args, format);
@@ -29,14 +29,13 @@ class StreamOutputPool {
                 size *= 2;
                 buffer = new char[size];
             }
-            smt_string message = std::smt_string(buffer);
+            smt_string message(buffer);
             va_end(args);
 
             // Dispatch to all
             for(unsigned int i=0; i < this->streams.size(); i++){
                 this->streams.at(i)->printf(message.c_str());
             }
-
        }
 
        void append_stream(StreamOutput* stream){
@@ -44,7 +43,7 @@ class StreamOutputPool {
        }
 
 
-       smt_vector<StreamOutput*> streams;
+       smt_vector<StreamOutput*>::type streams;
 };
 
 

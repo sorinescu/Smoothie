@@ -11,11 +11,7 @@
 class StreamOutput {
     public:
        StreamOutput(){}
-       virtual int printf(const char* format, ...){}
-
-
-
-
+       virtual void printf(const char* format, ...){}
 };
 
 

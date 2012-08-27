@@ -3,9 +3,9 @@
 
 CartesianSolution::CartesianSolution(Config* passed_config) : config(passed_config){
 	// this->microseconds_per_step_pulse   =  this->kernel->config->value(microseconds_per_step_pulse_ckeckusm  )->by_default(5   )->as_double();
-    this->alpha_steps_per_mm = this->config->value( alpha_steps_per_mm_checksum)->by_default(50)->as_double();
-    this->beta_steps_per_mm  = this->config->value(  beta_steps_per_mm_checksum)->by_default(50)->as_double();
-    this->gamma_steps_per_mm = this->config->value( gamma_steps_per_mm_checksum)->by_default(50)->as_double();
+    this->alpha_steps_per_mm = this->config->value( alpha_steps_per_mm_checksum)->by_default(50.0)->as_double();
+    this->beta_steps_per_mm  = this->config->value(  beta_steps_per_mm_checksum)->by_default(50.0)->as_double();
+    this->gamma_steps_per_mm = this->config->value( gamma_steps_per_mm_checksum)->by_default(50.0)->as_double();
 }
 
 void CartesianSolution::millimeters_to_steps( double millimeters[], int steps[] ){

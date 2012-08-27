@@ -13,7 +13,6 @@
 #include "libs/Pauser.h"
 #include "libs/StreamOutputPool.h"
 
-#include "modules/communication/SerialConsole.h"
 #include "modules/communication/GcodeDispatch.h"
 #include "modules/robot/Planner.h"
 #include "modules/robot/Robot.h"
@@ -46,10 +45,10 @@ Kernel::Kernel(){
     this->config         = new Config();
     // Serial second, because the other modules might want to say something
     this->streams        = new StreamOutputPool();
-    this->serial         = new SerialConsole(NULL, NULL, NULL);
+    //this->serial         = new SerialConsole(NULL, NULL, NULL);
 
     this->add_module( this->config );
-    this->add_module( this->serial );
+    //this->add_module( this->serial );
 
     init_platform();    // defined in PlatformKernel
 

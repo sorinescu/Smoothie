@@ -15,7 +15,6 @@
 #include "libs/StreamOutputPool.h"
 #include "libs/StepTicker.h"
 #include "libs/Pauser.h"
-#include "modules/communication/SerialConsole.h"
 #include "modules/communication/GcodeDispatch.h"
 #include "modules/robot/Planner.h"
 #include "modules/robot/Robot.h"
@@ -56,7 +55,7 @@ class Kernel : public PlatformKernel {
         void call_event(unsigned int id_event, void * argument);
 
         // These modules are aviable to all other modules
-        SerialConsole*    serial;
+        //SerialConsole*    serial;
         StreamOutputPool* streams;
 
         GcodeDispatch*    gcode_dispatch;
@@ -72,7 +71,7 @@ class Kernel : public PlatformKernel {
         StepTicker*       step_ticker;
 
     private:
-        smt_vector<Module*> hooks[NUMBER_OF_DEFINED_EVENTS]; // When a module asks to be called for a specific event ( a hook ), this is where that request is remembered
+        smt_vector<Module*>::type hooks[NUMBER_OF_DEFINED_EVENTS]; // When a module asks to be called for a specific event ( a hook ), this is where that request is remembered
 
 };
 

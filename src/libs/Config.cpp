@@ -20,9 +20,11 @@
 Config::Config(){
     this->config_cache_loaded = false;
 
+#if SMOOTHIE_USE_FILES
     // Config source for */config files
     this->config_sources.push_back( new FileConfigSource("/local/config", LOCAL_CONFIGSOURCE_CHECKSUM) );
     this->config_sources.push_back( new FileConfigSource("/sd/config",    SD_CONFIGSOURCE_CHECKSUM   ) );
+#endif
 
     // Pre-load the config cache
     this->config_cache_load();
@@ -34,17 +36,21 @@ void Config::on_module_loaded(){}
 void Config::on_console_line_received( void* argument ){}
 
 void Config::set_string( smt_string setting, smt_string value ){
-    ConfigValue* cv = new ConfigValue;
-    cv->found = true;
-    cv->check_sums = get_checksums(setting);
-    cv->value = value;
+    smt_vector<uint16_t>::type check_sums = get_checksums(setting);
+
+    for( int i=0; i<check_sums.size(); ++i ) {
+        ConfigValue* cv = new ConfigValue(;
+        cv->found = true;
+        cv->check_sums = 
+        cv->value = value;
+    }
 
     this->config_cache.replace_or_push_back(cv);
 
     this->kernel->call_event(ON_CONFIG_RELOAD);
 }
 
-void Config::get_module_list(smt_vector<uint16_t>* list, uint16_t family){
+void Config::get_module_list(smt_vector<uint16_t>::type* list, uint16_t family){
     for( int i=1; i<this->config_cache.size(); i++){
         ConfigValue* value = this->config_cache.at(i);
         if( value->check_sums.size() == 3 && value->check_sums.at(2) == 29545 && value->check_sums.at(0) == family ){
@@ -84,7 +90,7 @@ void Config::config_cache_clear(){
 
 
 ConfigValue* Config::value(uint16_t check_sum_a, uint16_t check_sum_b, uint16_t check_sum_c ){
-    smt_vector<uint16_t> check_sums;
+    smt_vector<uint16_t>::type check_sums;
     check_sums.push_back(check_sum_a);
     check_sums.push_back(check_sum_b);
     check_sums.push_back(check_sum_c);
@@ -92,14 +98,14 @@ ConfigValue* Config::value(uint16_t check_sum_a, uint16_t check_sum_b, uint16_t 
 }
 
 ConfigValue* Config::value(uint16_t check_sum_a, uint16_t check_sum_b){
-    smt_vector<uint16_t> check_sums;
+    smt_vector<uint16_t>::type check_sums;
     check_sums.push_back(check_sum_a);
     check_sums.push_back(check_sum_b);
     return this->value(check_sums);
 }
 
 ConfigValue* Config::value(uint16_t check_sum){
-    smt_vector<uint16_t> check_sums;
+    smt_vector<uint16_t>::type check_sums;
     check_sums.push_back(check_sum);
     return this->value(check_sums);
 }
@@ -107,7 +113,7 @@ ConfigValue* Config::value(uint16_t check_sum){
 // Get a value from the configuration as a smt_string
 // Because we don't like to waste space in Flash with lengthy config parameter names, we take a checksum instead so that the name does not have to be stored
 // See get_checksum
-ConfigValue* Config::value(smt_vector<uint16_t> check_sums){
+ConfigValue* Config::value(smt_vector<uint16_t>::type check_sums){
     ConfigValue* result = this->config_cache[0];
     //if( this->has_config_file() == false ){
     //   return result;

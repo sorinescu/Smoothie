@@ -8,7 +8,7 @@
 class Pauser : public Module {
     public:
         Pauser();
-        void on_module_loaded();
+        virtual void on_module_loaded();
         void take();
         void release();
 

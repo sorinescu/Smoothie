@@ -7,8 +7,6 @@
 
 #include "libs/Kernel.h"
 #include "libs/utils.h"
-// #include "system_LPC17xx.h"
-
 
 uint16_t get_checksum(smt_string to_check){
    // From: http://en.wikipedia.org/wiki/Fletcher%27s_checksum
@@ -21,9 +19,9 @@ uint16_t get_checksum(smt_string to_check){
    return (sum2 << 8) | sum1;
 }
 
-smt_vector<uint16_t> get_checksums(smt_string key){
+smt_vector<uint16_t>::type get_checksums(smt_string key){
     key = key.append(" ");
-    smt_vector<uint16_t> check_sums;
+    smt_vector<uint16_t>::type check_sums;
     size_t begin_key = 0;
     while( begin_key < key.size()-1 ){
         size_t end_key =  key.find_first_of(" .", begin_key);
@@ -70,6 +68,8 @@ smt_string get_arguments( smt_string possible_command ){
     return possible_command.substr( beginning+1, possible_command.size() - beginning);
 }
 
+#if SMOOTHIE_USE_FILES
+
 // Returns true if the file exists
 bool file_exists( smt_string file_name ){
     bool exists = false;
@@ -78,6 +78,8 @@ bool file_exists( smt_string file_name ){
     fclose(lp);
     return exists;
 }
+
+#endif
 
 // Prepares and executes a watchdog reset
 void system_reset( void ){

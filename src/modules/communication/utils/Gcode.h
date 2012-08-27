@@ -8,6 +8,7 @@
 
 #ifndef GCODE_H
 #define GCODE_H
+#include "platform/Platform.h"
 #include "libs/StreamOutput.h"
 // Object to represent a Gcode comman
 #include <stdlib.h>

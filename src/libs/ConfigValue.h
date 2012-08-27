@@ -22,10 +22,12 @@ public:
     };
 
     ConfigValue(){
-        found = false;
-        default_set = false;
         type = CVT_NotSet;
     };
+
+    uint16_t checksum() const {
+        return check_sum;
+    }
 
     ConfigValue* required(){
         SMT_ASSERT(type);
@@ -39,25 +41,29 @@ public:
     {
         bool_val = value;
         type = CVT_Bool;
+        return this;
     }
 
     ConfigValue* set(double value)
     {
         double_val = value;
         type = CVT_Double;
+        return this;
     }
 
     ConfigValue* set(const PinDesc &value)
     {
         pin_desc_val = value;
         type = CVT_PinDesc;
+        return this;
     }
 
-    /* Still a PinDesc value; see constructor */
-    ConfigValue* set(int16_t &value)
+    /* Still a PinDesc value; see init() */
+    ConfigValue* set(PinDescAsInt value)
     {
-        pin_desc_val = value;
+        PinDesc::init(pin_desc_val, value);
         type = CVT_PinDesc;
+        return this;
     }
 
     double as_double(){
@@ -66,7 +72,6 @@ public:
             case CVT_Double: return double_val;
             default: SMT_ASSERT(0);
         }
-        return 0.0;
     }
 
     bool as_bool(){
@@ -75,16 +80,14 @@ public:
             case CVT_Double: return double_val != 0.0;
             default: SMT_ASSERT(0);
         }
-        return false;
     }
 
     Pin* as_pin(){
         switch (type) {
-            case CVT_Double: return new Pin(double_val);
+            //case CVT_Double: return new Pin(double_val);
             case CVT_PinDesc: return new Pin(pin_desc_val);
             default: SMT_ASSERT(0);
         }
-        return NULL;
     }
 
     ConfigValue* by_default(double value){
