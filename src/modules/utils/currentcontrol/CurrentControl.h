@@ -16,7 +16,7 @@ class CurrentControl : public Module {
     public:
         CurrentControl();
        
-        void on_module_loaded();
+        virtual void on_module_loaded();
        
         double alpha_current;
         double beta_current;

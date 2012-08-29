@@ -8,16 +8,16 @@
 #include "libs/nuts_bolts.h"
 #include "libs/Module.h"
 #include "libs/Kernel.h"
-
-#include "StepTicker.h"
+#include "libs/StepTicker.h"
 #include "libs/Hook.h"
+#include <math.h>
 
 StepTicker* global_step_ticker;
 
 StepTicker::StepTicker(){
     TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-	TIM_OCInitTypeDef  TIM_OCInitStructure;
-	uint16_t PrescalerValue = 0;
+        TIM_OCInitTypeDef  TIM_OCInitStructure;
+        uint16_t PrescalerValue = 0;
 
     NVIC_InitTypeDef NVIC_InitStructure;
 
@@ -87,13 +87,13 @@ void StepTicker::reset_tick(){
 
 extern "C" void TIM3_IRQHandler(void){
     if(TIM_GetITStatus(TIM3, TIM_IT_CC1) != RESET) {
-		TIM_ClearITPendingBit(TIM3, TIM_IT_CC1);
-	    global_step_ticker->tick();
+                TIM_ClearITPendingBit(TIM3, TIM_IT_CC1);
+            global_step_ticker->tick();
     }
 
-	if(TIM_GetITStatus(TIM3, TIM_IT_CC2) != RESET) {
-		TIM_ClearITPendingBit(TIM3, TIM_IT_CC2);
-    	global_step_ticker->reset_tick();
+        if(TIM_GetITStatus(TIM3, TIM_IT_CC2) != RESET) {
+                TIM_ClearITPendingBit(TIM3, TIM_IT_CC2);
+        global_step_ticker->reset_tick();
     }
 }
 

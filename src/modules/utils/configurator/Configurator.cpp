@@ -30,8 +30,10 @@ void Configurator::on_console_line_received( void* argument ){
 
     // Act depending on command
     switch( check_sum ){
+#if SMOOTHIE_HAS_CONFIG_VALUE_STRING
         case config_get_command_checksum: this->config_get_command(  get_arguments(possible_command), new_message.stream ); break;
         case config_set_command_checksum: this->config_set_command(  get_arguments(possible_command), new_message.stream ); break;
+#endif
         case config_load_command_checksum: this->config_load_command(  get_arguments(possible_command), new_message.stream ); break;
     }
 }
@@ -53,6 +55,8 @@ void Configurator::on_gcode_execute(void* argument){
 
 void Configurator::on_main_loop(void* argument){}
 
+#if SMOOTHIE_HAS_CONFIG_VALUE_STRING
+
 // Output a ConfigValue from the specified ConfigSource to the stream
 void Configurator::config_get_command( smt_string parameters, StreamOutput* stream ){
     smt_string source = shift_parameter(parameters);
@@ -63,7 +67,7 @@ void Configurator::config_get_command( smt_string parameters, StreamOutput* stre
         smt_vector<uint16_t>::type setting_checksums = get_checksums( setting );
         ConfigValue* cv = this->kernel->config->value(setting_checksums);
         smt_string value = "";
-        if(cv->found){ value = cv->as_string(); }
+        if(cv->valid()){ value = cv->as_string(); }
         stream->printf( "live: %s is set to %s\r\n", setting.c_str(), value.c_str() );
     } else { // output setting from specified source
         uint16_t source_checksum = get_checksum( source );
@@ -101,6 +105,8 @@ void Configurator::config_set_command( smt_string parameters, StreamOutput* stre
     }
 }
 
+#endif // SMOOTHIE_HAS_CONFIG_VALUE_STRING
+
 // Reload config values from the specified ConfigSource
 void Configurator::config_load_command( smt_string parameters, StreamOutput* stream ){
     smt_string source = shift_parameter(parameters);
@@ -108,11 +114,13 @@ void Configurator::config_load_command( smt_string parameters, StreamOutput* str
         this->kernel->config->config_cache_load();
         this->kernel->call_event(ON_CONFIG_RELOAD);
         stream->printf( "Reloaded settings\r\n" );
+#if SMOOTHIE_USE_FILES
     } else if(file_exists(source)){
         FileConfigSource fcs(source);
         fcs.transfer_values_to_cache(&this->kernel->config->config_cache);
         this->kernel->call_event(ON_CONFIG_RELOAD);
         stream->printf( "Loaded settings from %s\r\n", source.c_str() );
+#endif
     } else {
         uint16_t source_checksum = get_checksum(source);
         for(int i=0; i < this->kernel->config->config_sources.size(); i++){

@@ -26,8 +26,7 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f10x_tim.h"
-#include "stm32f10x_rcc.h"
+#include "platform/Platform.h"
 
 /** @addtogroup STM32F10x_StdPeriph_Driver
   * @{
@@ -54,7 +53,7 @@
 #define SMCR_ETR_Mask               ((uint16_t)0x00FF) 
 #define CCMR_Offset                 ((uint16_t)0x0018)
 #define CCER_CCE_Set                ((uint16_t)0x0001)  
-#define	CCER_CCNE_Set               ((uint16_t)0x0004) 
+#define CCER_CCNE_Set               ((uint16_t)0x0004) 
 
 /**
   * @}
@@ -898,7 +897,7 @@ void TIM_ITConfig(TIM_TypeDef* TIMx, uint16_t TIM_IT, FunctionalState NewState)
   * @brief  Configures the TIMx event to be generate by software.
   * @param  TIMx: where x can be 1 to 17 to select the TIM peripheral.
   * @param  TIM_EventSource: specifies the event source.
-  *   This parameter can be one or more of the following values:	   
+  *   This parameter can be one or more of the following values:           
   *     @arg TIM_EventSource_Update: Timer update Event source
   *     @arg TIM_EventSource_CC1: Timer Capture Compare 1 Event source
   *     @arg TIM_EventSource_CC2: Timer Capture Compare 2 Event source

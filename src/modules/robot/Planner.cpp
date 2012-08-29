@@ -5,15 +5,15 @@
       You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "libs/Kernel.h"
 #include "libs/nuts_bolts.h"
 #include "libs/RingBuffer.h"
 #include "../communication/utils/Gcode.h"
 #include "libs/Module.h"
-#include "libs/Kernel.h"
 #include "Block.h"
 #include "Planner.h"
 #include "Player.h"
-
+#include <math.h>
 
 Planner::Planner(){
   clear_vector(this->position);
@@ -28,9 +28,9 @@ void Planner::on_module_loaded(){
 }
 
 void Planner::on_config_reload(void* argument){
-    this->acceleration =       this->kernel->config->value(acceleration_checksum       )->by_default(100 )->as_double();
-    this->max_jerk =           this->kernel->config->value(max_jerk_checksum           )->by_default(100 )->as_double();
-    this->junction_deviation = this->kernel->config->value(junction_deviation_checksum )->by_default(0.05)->as_double();
+    this->acceleration =       this->kernel->config->value(acceleration_checksum       )->by_default(100.0)->as_double();
+    this->max_jerk =           this->kernel->config->value(max_jerk_checksum           )->by_default(100.0)->as_double();
+    this->junction_deviation = this->kernel->config->value(junction_deviation_checksum )->by_default(0.05 )->as_double();
 }
 
 // Append a block to the queue, compute it's speed factors
@@ -53,7 +53,7 @@ void Planner::append_block( int target[], double feed_rate, double distance, dou
     for( int stepper=ALPHA_STEPPER; stepper<=GAMMA_STEPPER; stepper++){ block->steps[stepper] = labs(target[stepper] - this->position[stepper]); }
 
     // Max number of steps, for all axes
-    block->steps_event_count = max( block->steps[ALPHA_STEPPER], max( block->steps[BETA_STEPPER], block->steps[GAMMA_STEPPER] ) );
+    block->steps_event_count = __smt_max( block->steps[ALPHA_STEPPER], __smt_max( block->steps[BETA_STEPPER], block->steps[GAMMA_STEPPER] ) );
     //if( block->steps_event_count == 0 ){ this->computing = false; return; }
 
     block->millimeters = distance;
@@ -65,7 +65,7 @@ void Planner::append_block( int target[], double feed_rate, double distance, dou
     double inverse_minute = feed_rate * inverse_millimeters;
     if( distance > 0 ){
         block->nominal_speed = block->millimeters * inverse_minute;           // (mm/min) Always > 0
-        block->nominal_rate = ceil(block->steps_event_count * inverse_minute); // (step/min) Always > 0
+        block->nominal_rate = (unsigned)ceil(block->steps_event_count * inverse_minute); // (step/min) Always > 0
     }else{
         block->nominal_speed = 0;
         block->nominal_rate = 0;
@@ -80,7 +80,7 @@ void Planner::append_block( int target[], double feed_rate, double distance, dou
     // To generate trapezoids with contant acceleration between blocks the rate_delta must be computed
     // specifically for each line to compensate for this phenomenon:
     // Convert universal acceleration for direction-dependent stepper rate change parameter
-    block->rate_delta = ceil( block->steps_event_count*inverse_millimeters * this->acceleration*60.0 / this->kernel->stepper->acceleration_ticks_per_second ); // (step/min/acceleration_tick)
+    block->rate_delta = (unsigned)ceil( block->steps_event_count*inverse_millimeters * this->acceleration*60.0 / this->kernel->stepper->acceleration_ticks_per_second ); // (step/min/acceleration_tick)
 
     // Compute path unit vector
     double unit_vec[3];

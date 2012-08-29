@@ -8,16 +8,8 @@
 #include "libs/nuts_bolts.h"
 #include "libs/Module.h"
 #include "libs/Kernel.h"
-#include "SlowTicker.h"
+#include "libs/SlowTicker.h"
 #include "libs/Hook.h"
-
-//STM Sepcific
-#include "stm32f4xx_rcc.h"
-#include "stm32f4xx_tim.h"
-#include "misc.h"
-
-//REMOVE
-#include "stm32f4_discovery.h"
 
 SlowTicker* global_slow_ticker;
 

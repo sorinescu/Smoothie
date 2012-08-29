@@ -35,20 +35,17 @@ void Config::on_module_loaded(){}
 
 void Config::on_console_line_received( void* argument ){}
 
+#if SMOOTHIE_HAS_CONFIG_VALUE_STRING
 void Config::set_string( smt_string setting, smt_string value ){
-    smt_vector<uint16_t>::type check_sums = get_checksums(setting);
-
-    for( int i=0; i<check_sums.size(); ++i ) {
-        ConfigValue* cv = new ConfigValue(;
-        cv->found = true;
-        cv->check_sums = 
-        cv->value = value;
-    }
+    ConfigValue* cv = new ConfigValue;
+    cv->check_sums = get_checksums(setting);
+    cv->set(value);
 
     this->config_cache.replace_or_push_back(cv);
 
     this->kernel->call_event(ON_CONFIG_RELOAD);
 }
+#endif
 
 void Config::get_module_list(smt_vector<uint16_t>::type* list, uint16_t family){
     for( int i=1; i<this->config_cache.size(); i++){

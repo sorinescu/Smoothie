@@ -31,7 +31,21 @@ along with Grbl. If not, see <http://www.gnu.org/licenses/>.
 
 #define clear_vector(a) memset(a, 0, sizeof(a))
 #define clear_vector_double(a) memset(a, 0.0, sizeof(a))
-#define max(a,b) (((a) > (b)) ? (a) : (b))
+
+#ifndef max
+    #define max(a,b) __smt_max(a,b)
+
+    template <typename T>
+    inline T __smt_max(T a, T b) { return a > b ? a : b; }
+#endif
+
+#ifndef min
+    #define min(a,b) __smt_min(a,b)
+
+    template <typename T>
+    inline T __smt_min(T a, T b) { return a < b ? a : b; }
+#endif
+
 
 #define dd(...) LPC_GPIO2->FIODIR = 0xffff; LPC_GPIO2->FIOCLR = 0xffff; LPC_GPIO2->FIOSET = __VA_ARGS__
 

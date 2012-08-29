@@ -3,17 +3,24 @@
 
 #include "platform/Platform.h"
 
-typedef int16_t PinDescAsInt;
-#define PIN_DESC_TO_INT(inverting, port, pin) PinDescAsInt(inverting ? -((port) << 8 + (pin)) : ((port) << 8 + (pin)))
+typedef int16_t PinDescAsInt16;
+
+#define PIN_INVERTING true
+#define PIN_NON_INVERTING false
+
+#define PIN_DESC_AS_INT16(inverting, port, pin) PinDescAsInt16(inverting ? -((port) << 8 + (pin)) : ((port) << 8 + (pin)))
 
 struct PinDesc {
+#if SMOOTHIE_HAS_CONFIG_VALUE_STRING
     static PinDesc& init(PinDesc& desc, const smt_string& value) {
         desc.port_number = atoi(value.substr(0,1).c_str());
         desc.inverting = ( value.find_first_of("!")!=smt_string::npos ? true : false );
         desc.pin = atoi( value.substr(2, value.size()-2-(desc.inverting?1:0)).c_str() );
         return desc;
     }
-    static PinDesc& init(PinDesc& desc, PinDescAsInt value) {
+#endif
+
+    static PinDesc& init(PinDesc& desc, PinDescAsInt16 value) {
         if (value < 0) {
             desc.inverting = true;
             value = -value;

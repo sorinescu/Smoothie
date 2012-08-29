@@ -69,7 +69,7 @@ void Block::calculate_trapezoid( double entryfactor, double exitfactor ){
 
    // TODO: FIX THIS: DIRTY HACK so that we don't end too early for blocks with 0 as final_rate. Doing the math right would be better. Probably fixed in latest grbl
    if( this->final_rate < 0.01 ){
-        this->decelerate_after += floor( this->nominal_rate / 60 / this->planner->kernel->stepper->acceleration_ticks_per_second ) * 3;
+        this->decelerate_after += this->nominal_rate * 3 / (60 * this->planner->kernel->stepper->acceleration_ticks_per_second);
     }
 
 }

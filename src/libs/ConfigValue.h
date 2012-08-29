@@ -19,14 +19,28 @@ public:
         CVT_Bool,
         CVT_Double,
         CVT_PinDesc
+#if SMOOTHIE_HAS_CONFIG_VALUE_STRING
+        ,CVT_String
+#endif
     };
 
     ConfigValue(){
         type = CVT_NotSet;
     };
 
-    uint16_t checksum() const {
-        return check_sum;
+    bool checksum_matches(const ConfigValue *other) const {
+        if (check_sums.size() != other->check_sums.size())
+            return false;
+
+        for (int i=0; i<check_sums.size(); ++i)
+            if (check_sums[i] != other->check_sums[i])
+                return false;
+
+        return true;
+    }
+
+    bool valid() const {
+        return type != CVT_NotSet;
     }
 
     ConfigValue* required(){
@@ -59,36 +73,83 @@ public:
     }
 
     /* Still a PinDesc value; see init() */
-    ConfigValue* set(PinDescAsInt value)
+    ConfigValue* set(PinDescAsInt16 value)
     {
         PinDesc::init(pin_desc_val, value);
         type = CVT_PinDesc;
         return this;
     }
 
+#if SMOOTHIE_HAS_CONFIG_VALUE_STRING
+    ConfigValue* set(const smt_string &value)
+    {
+        str_val = value;
+        type = CVT_String;
+        return this;
+    }
+#endif
+
     double as_double(){
         switch (type) {
             case CVT_Bool: return (double)bool_val;
             case CVT_Double: return double_val;
+#if SMOOTHIE_HAS_CONFIG_VALUE_STRING
+            case CVT_String: {
+                double result = atof(remove_non_number(this->str_val).c_str());
+                if( result == 0.0 && this->str_val.find_first_not_of("0.") != smt_string::npos )
+                    SMT_ASSERT(0);
+                return result;
+            }
+#endif
             default: SMT_ASSERT(0);
         }
+        return 0.0;
     }
 
     bool as_bool(){
         switch (type) {
             case CVT_Bool: return bool_val;
             case CVT_Double: return double_val != 0.0;
+#if SMOOTHIE_HAS_CONFIG_VALUE_STRING
+            case CVT_String: return str_val.find_first_of("t1") != smt_string::npos;
+#endif
             default: SMT_ASSERT(0);
         }
+        return false;
     }
 
     Pin* as_pin(){
         switch (type) {
-            //case CVT_Double: return new Pin(double_val);
             case CVT_PinDesc: return new Pin(pin_desc_val);
+#if SMOOTHIE_HAS_CONFIG_VALUE_STRING
+            case CVT_String: {
+                PinDesc pin_desc;
+                pin_desc.port_number = atoi(str_val.substr(0,1).c_str());
+                pin_desc.inverting = str_val.find_first_of("!") != smt_string::npos;
+                pin_desc.pin = atoi(str_val.substr(2, str_val.size()-2-(pin_desc.inverting ? 1:0)).c_str());
+                return new Pin(pin_desc);
+            }
+#endif
             default: SMT_ASSERT(0);
         }
+        return 0;
     }
+
+#if SMOOTHIE_HAS_CONFIG_VALUE_STRING
+    smt_string as_string(){
+        char fmt[32] = "";
+        switch (type) {
+            case CVT_Bool: sprintf(fmt, "%s", bool_val ? "true" : "false");
+            case CVT_Double: sprintf(fmt, "%lf", double_val);
+            case CVT_PinDesc: pin_desc_val.inverting ? 
+                sprintf(fmt, "%d.%d!", (int)pin_desc_val.port_number, (int)pin_desc_val.pin) :
+                sprintf(fmt, "%d.%d", (int)pin_desc_val.port_number, (int)pin_desc_val.pin);
+            case CVT_String: return str_val;
+            default: SMT_ASSERT(0);
+        }
+        return fmt;
+    }
+#endif
 
     ConfigValue* by_default(double value){
         if (type == CVT_NotSet)
@@ -108,6 +169,14 @@ public:
         return this;
     }
 
+#if SMOOTHIE_HAS_CONFIG_VALUE_STRING
+    ConfigValue* by_default(const smt_string &value){
+        if (type == CVT_NotSet)
+            set(value);
+        return this;
+    }
+#endif
+
 protected:
     Type type;
     union {
@@ -115,7 +184,13 @@ protected:
         double double_val;
         PinDesc pin_desc_val;
     };
-    uint16_t check_sum;
+#if SMOOTHIE_HAS_CONFIG_VALUE_STRING
+    smt_string str_val; // can't be put inside of union because it has non-static methods
+#endif
+
+    smt_vector<uint16_t>::type check_sums;
+
+    friend class Config;
 };
 
 #endif

@@ -16,6 +16,10 @@
 #include "arm_solutions/BaseSolution.h"
 #include "arm_solutions/CartesianSolution.h"
 
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
+
 Robot::Robot(){
     this->inch_mode = false;
     this->absolute_mode = true;
@@ -37,12 +41,12 @@ void Robot::on_module_loaded() {
 void Robot::on_config_reload(void* argument){
     this->feed_rate =           this->kernel->config->value(default_feed_rate_checksum  )->by_default(100.0)->as_double()/60;
     this->seek_rate =           this->kernel->config->value(default_seek_rate_checksum  )->by_default(100.0)->as_double()/60;
-    this->mm_per_line_segment = this->kernel->config->value(mm_per_line_segment_checksum)->by_default(0.1)->as_double();
-    this->mm_per_arc_segment  = this->kernel->config->value(mm_per_arc_segment_checksum )->by_default(10.0)->as_double();
-    this->arc_correction      = this->kernel->config->value(arc_correction_checksum     )->by_default(5.0)->as_double();
-    this->max_speeds[X_AXIS]  = this->kernel->config->value(x_axis_max_speed_checksum   )->by_default(0)->as_double();
-    this->max_speeds[Y_AXIS]  = this->kernel->config->value(y_axis_max_speed_checksum   )->by_default(0)->as_double();
-    this->max_speeds[Z_AXIS]  = this->kernel->config->value(z_axis_max_speed_checksum   )->by_default(0)->as_double();
+    this->mm_per_line_segment = this->kernel->config->value(mm_per_line_segment_checksum)->by_default(  0.1)->as_double();
+    this->mm_per_arc_segment  = this->kernel->config->value(mm_per_arc_segment_checksum )->by_default( 10.0)->as_double();
+    this->arc_correction      = this->kernel->config->value(arc_correction_checksum     )->by_default(  5.0)->as_double();
+    this->max_speeds[X_AXIS]  = this->kernel->config->value(x_axis_max_speed_checksum   )->by_default(  0.0)->as_double();
+    this->max_speeds[Y_AXIS]  = this->kernel->config->value(y_axis_max_speed_checksum   )->by_default(  0.0)->as_double();
+    this->max_speeds[Z_AXIS]  = this->kernel->config->value(z_axis_max_speed_checksum   )->by_default(  0.0)->as_double();
 }
 
 //A GCode has been received
@@ -71,7 +75,7 @@ void Robot::execute_gcode(Gcode* gcode){
 
     //Temp variables, constant properties are stored in the object
     uint8_t next_action = NEXT_ACTION_DEFAULT;
-    this->motion_mode = -1;
+    this->motion_mode = 1;
 
    //G-letter Gcodes are mostly what the Robot module is interrested in, other modules also catch the gcode event and do stuff accordingly
    if( gcode->has_letter('G')){
@@ -132,8 +136,8 @@ void Robot::append_milestone( double target[], double rate ){
 
     double millimeters_of_travel = sqrt( pow( deltas[X_AXIS], 2 ) +  pow( deltas[Y_AXIS], 2 ) +  pow( deltas[Z_AXIS], 2 ) );
     // this->kernel->serial->printf("millimeters_of_travel %f\n", millimeters_of_travel);
-    double duration = 0;
-    if( rate > 0 ){ duration = millimeters_of_travel / rate; }
+    //double duration = 0;
+    //if( rate > 0 ){ duration = millimeters_of_travel / rate; }
     // this->kernel->serial->printf("duration %f\n", duration);
 
     for(int axis=X_AXIS;axis<=Z_AXIS;axis++){

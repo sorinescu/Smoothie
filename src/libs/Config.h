@@ -27,7 +27,10 @@ class Config : public Module {
         virtual void on_console_line_received( void* argument );
         void config_cache_load();
         void config_cache_clear();
+
+#if SMOOTHIE_HAS_CONFIG_VALUE_STRING
         void set_string( smt_string setting , smt_string value);
+#endif
 
         ConfigValue* value(uint16_t check_sum);
         ConfigValue* value(uint16_t check_sum_a, uint16_t check_sum_b);

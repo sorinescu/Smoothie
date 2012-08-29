@@ -28,13 +28,16 @@ class Configurator : public Module {
     public:
         Configurator(){}
 
-        void on_module_loaded();
-        void on_console_line_received( void* argument );
-        void on_gcode_execute( void* argument );
-        void on_main_loop( void* argument );
+        virtual void on_module_loaded();
+        virtual void on_console_line_received( void* argument );
+        virtual void on_gcode_execute( void* argument );
+        virtual void on_main_loop( void* argument );
 
+#if SMOOTHIE_HAS_CONFIG_VALUE_STRING
         void config_get_command( smt_string parameters, StreamOutput* stream );
         void config_set_command( smt_string parameters, StreamOutput* stream );
+#endif
+
         void config_load_command(smt_string parameters, StreamOutput* stream );
 };
 

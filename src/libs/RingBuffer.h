@@ -83,7 +83,7 @@ template<class kind, int length> kind* RingBuffer<kind, length>::get_ref(int ind
         k= (k + 1) & (length - 1);
     }
     if (k == this->tail){
-        return NULL;
+        return 0;
     }
     return &(this->buffer[k]);
 }

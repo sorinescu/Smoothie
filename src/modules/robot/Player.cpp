@@ -5,11 +5,11 @@
       You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "libs/Kernel.h"
 #include "libs/nuts_bolts.h"
 #include "libs/RingBuffer.h"
 #include "../communication/utils/Gcode.h"
 #include "libs/Module.h"
-#include "libs/Kernel.h"
 #include "Block.h"
 #include "Player.h"
 #include "Planner.h"
@@ -37,8 +37,8 @@ Block* Player::new_block(){
     this->queue.push_back(Block());
     block = this->queue.get_ref( this->queue.size()-1 );
     block->is_ready = false;
-    block->initial_rate = -2;
-    block->final_rate = -2;
+    block->initial_rate = 2;
+    block->final_rate = 2;
     block->player = this;
 
     return block;

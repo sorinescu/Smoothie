@@ -11,6 +11,7 @@
 #include "Planner.h"
 #include "Player.h"
 #include "libs/nuts_bolts.h"
+#include <math.h>
 
 Stepper* stepper;
 
@@ -47,10 +48,10 @@ void Stepper::on_module_loaded(){
 // Get configuration from the config file
 void Stepper::on_config_reload(void* argument){
 
-    this->microseconds_per_step_pulse   =  this->kernel->config->value(microseconds_per_step_pulse_checksum  )->by_default(5     )->as_double();
-    this->acceleration_ticks_per_second =  this->kernel->config->value(acceleration_ticks_per_second_checksum)->by_default(100   )->as_double();
-    this->minimum_steps_per_minute      =  this->kernel->config->value(minimum_steps_per_minute_checksum     )->by_default(1200  )->as_double();
-    this->base_stepping_frequency       =  this->kernel->config->value(base_stepping_frequency_checksum      )->by_default(100000)->as_double();
+    this->microseconds_per_step_pulse   =  this->kernel->config->value(microseconds_per_step_pulse_checksum  )->by_default(     5.0)->as_double();
+    this->acceleration_ticks_per_second =  this->kernel->config->value(acceleration_ticks_per_second_checksum)->by_default(   100.0)->as_double();
+    this->minimum_steps_per_minute      =  this->kernel->config->value(minimum_steps_per_minute_checksum     )->by_default(  1200.0)->as_double();
+    this->base_stepping_frequency       =  this->kernel->config->value(base_stepping_frequency_checksum      )->by_default(100000.0)->as_double();
     this->alpha_step_pin                =  this->kernel->config->value(alpha_step_pin_checksum               )->by_default("3.12"     )->as_pin()->as_output();
     this->beta_step_pin                 =  this->kernel->config->value(beta_step_pin_checksum                )->by_default("3.13"     )->as_pin()->as_output();
     this->gamma_step_pin                =  this->kernel->config->value(gamma_step_pin_checksum               )->by_default("3.14"     )->as_pin()->as_output();
@@ -126,7 +127,7 @@ void Stepper::on_block_begin(void* argument){
 // Current block is discarded
 void Stepper::on_block_end(void* argument){
     // this->kernel->serial->printf("on_block_end (queue size: %u) \n", this->kernel->player->queue.size());
-    Block* block  = static_cast<Block*>(argument);
+    //Block* block  = static_cast<Block*>(argument);
     this->current_block = NULL; //stfu !
 }
 
@@ -168,7 +169,7 @@ inline uint32_t Stepper::main_interrupt(uint32_t dummy){
     }else{
         this->out_bits = 0;
     }
-
+    return 0;
 }
 
 // We compute this here instead of each time in the interrupt
@@ -210,6 +211,7 @@ uint32_t Stepper::trapezoid_generator_tick( uint32_t dummy ) {
               }
           }
     }
+    return 0;
 }
 
 // Initializes the trapezoid generator from the current block. Called whenever a new
@@ -226,7 +228,7 @@ void Stepper::trapezoid_generator_reset(){
 void Stepper::set_step_events_per_minute( double steps_per_minute ){
 
     // We do not step slower than this
-    steps_per_minute = max(steps_per_minute, this->minimum_steps_per_minute);
+    steps_per_minute = max(steps_per_minute, (double)this->minimum_steps_per_minute);
 
     // The speed factor is the factor by which we must multiply the minimal step frequency to reach the maximum step frequency
     // The higher, the smoother the movement will be, but the closer the maximum and minimum frequencies are, the smaller the factor is
@@ -242,5 +244,5 @@ uint32_t Stepper::reset_step_pins(uint32_t dummy){
     this->alpha_step_pin->set(0);
     this->beta_step_pin->set(0);
     this->gamma_step_pin->set(0);
-
+    return 0;
 }

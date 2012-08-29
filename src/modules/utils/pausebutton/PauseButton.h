@@ -13,10 +13,10 @@ class PauseButton : public Module {
     public:
         PauseButton();
        
-        void on_module_loaded();
+        virtual void on_module_loaded();
         uint32_t button_tick(uint32_t dummy);
-        void on_play( void* argument );
-        void on_pause( void* argument );
+        virtual void on_play( void* argument );
+        virtual void on_pause( void* argument );
         
         Pin*       button;
         Pin*       led; 

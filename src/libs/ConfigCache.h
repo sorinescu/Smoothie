@@ -21,7 +21,7 @@ class ConfigCache : public smt_vector<ConfigValue*>::type {
             // For each already existing element
             for( int i=1; i<this->size(); i++){
                 // If this configvalue matches the checksum
-                bool match = this->at(i)->checksum() == new_value->checksum();
+                bool match = this->at(i)->checksum_matches(new_value);
                 if( match == false ){ continue; }
                 value_exists = true;
                 // Replace with the provided value

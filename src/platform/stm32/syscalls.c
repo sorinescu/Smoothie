@@ -1,4 +1,4 @@
-
+#include "platform/Platform.h"
 #include <reent.h>
 #include <errno.h>
 #include <stdlib.h> /* abort */
@@ -6,16 +6,11 @@
 #include <sys/stat.h>
 #include <stdio.h>
 
-//#include "stm32f10x.h" /* for _get_PSP() from core_cm3.h*/
-
 #undef errno
 extern int errno;
 extern int  _end;
 
 int putChar( int ch );
-
-
-extern "C" {
 
 caddr_t _sbrk(int incr) {
 
@@ -103,5 +98,4 @@ char* get_stack_top(void)
 //TODO: Implement?  Or find suitable implementation
 void _open() {
 
-}
 }

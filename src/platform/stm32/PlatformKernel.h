@@ -10,18 +10,29 @@
 
 //STM Specific
 #if SMOOTHIE_PLATFORM == SMOOTHIE_PLATFORM_STM32F103
-#include "stm32f10x.h"
+    #include "stm32f10x.h"
 #elif SMOOTHIE_PLATFORM == SMOOTHIE_PLATFORM_STM32F4XX
-#include "stm32f4xx.h"
+    #include "stm32f4xx.h"
 #else
-#error "Unsupported SMOOTHIE_PLATFORM"
+    #error "Unsupported SMOOTHIE_PLATFORM"
 #endif
 
 
 #define SYS_CLK SystemCoreClock
 #define DELAY_TIM_FREQUENCY 1000000 /* = 1MHZ -> timer runs in microseconds */
 
-class PlatformKernel {
+class PlatformKernel
+{
+public:
+    void delay_us( uint16_t uSecs ) {
+        volatile uint16_t start = TIM5->CNT;
+        // this->__start = TIM5->CNT;
+
+        volatile int x = 0;
+        while ((TIM5->CNT - start) <= uSecs)
+            x++;
+    };
+
 protected:
     void init_platform() {
         /* Enable timer clock  - use TIMER5 */
@@ -39,16 +50,6 @@ protected:
         /* Enable counter */
         TIM_Cmd(TIM5, ENABLE);
     }
-
-    void delay_us( uint16_t uSecs )
-    {
-        volatile uint16_t start = TIM5->CNT;
-        // this->__start = TIM5->CNT;
-
-        volatile int x = 0;
-        while((TIM5->CNT - start) <= uSecs)
-          x++;
-    };
 };
 
 #endif

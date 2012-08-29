@@ -26,9 +26,9 @@ class SimpleShell : public Module {
     public:
         SimpleShell(){}
 
-        void on_module_loaded();
-        void on_console_line_received( void* argument );
-        void on_main_loop( void* argument );
+        virtual void on_module_loaded();
+        virtual void on_console_line_received( void* argument );
+        virtual void on_main_loop( void* argument );
         smt_string absolute_from_relative( smt_string path );
         void ls_command(   smt_string parameters, StreamOutput* stream );
         void cd_command(   smt_string parameters, StreamOutput* stream );
