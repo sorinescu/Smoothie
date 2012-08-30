@@ -9,7 +9,7 @@ class Pin;  // the only descendent of this class
 
 class PlatformPin : public BasePin {
 protected:
-    PlatformPin(const PinDesc &desc) : BasePin(desc) {
+    PlatformPin(PinAsUint16 pin) : BasePin(pin) {
         if (!this->connected) {
             this->port = 0;
             return;

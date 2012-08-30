@@ -7,11 +7,11 @@
       You should customize these values to match your particular hardware
 
       Pin values have the following format:
-      PIN_DESC_AS_INT16(is_inverting, port_number, pin_number)
+      PIN(is_inverting, port_number, pin_number)
       or
-      PIN_DESC_AS_INT_16_NC
+      PIN_NC
       where:
-        PIN_DESC_AS_INT_16_NC means the pin is not connected
+        PIN_NC means the pin is not connected
         is_inverting can be PIN_INVERTING or PIN_NON_INVERTING
         port_number can be 0 (GPIOA), 1 (GPIOB) etc.
         pin_number can be 0..15
@@ -51,15 +51,15 @@
 #define MINIMUM_STEPS_PER_MINUTE      1200.0
 #define BASE_STEPPING_FREQUENCY       100000.0
 
-#define ALPHA_STEP_PIN      PIN_DESC_AS_INT16(PIN_NON_INVERTING, 3, 12)
-#define BETA_STEP_PIN       PIN_DESC_AS_INT16(PIN_NON_INVERTING, 3, 13)
-#define GAMMA_STEP_PIN      PIN_DESC_AS_INT16(PIN_NON_INVERTING, 3, 14)
-#define ALPHA_DIR_PIN       PIN_DESC_AS_INT16(PIN_NON_INVERTING, 3, 15)
-#define BETA_DIR_PIN        PIN_DESC_AS_INT16(PIN_NON_INVERTING, 3, 11)
-#define GAMMA_DIR_PIN       PIN_DESC_AS_INT16(PIN_NON_INVERTING, 3, 10)
-#define ALPHA_EN_PIN        PIN_DESC_AS_INT16(PIN_NON_INVERTING, 0, 4)
-#define BETA_EN_PIN         PIN_DESC_AS_INT16(PIN_NON_INVERTING, 0, 10)
-#define GAMMA_EN_PIN        PIN_DESC_AS_INT16(PIN_NON_INVERTING, 0, 19)
+#define ALPHA_STEP_PIN      PIN(PIN_NON_INVERTING, 3, 12)
+#define BETA_STEP_PIN       PIN(PIN_NON_INVERTING, 3, 13)
+#define GAMMA_STEP_PIN      PIN(PIN_NON_INVERTING, 3, 14)
+#define ALPHA_DIR_PIN       PIN(PIN_NON_INVERTING, 3, 15)
+#define BETA_DIR_PIN        PIN(PIN_NON_INVERTING, 3, 11)
+#define GAMMA_DIR_PIN       PIN(PIN_NON_INVERTING, 3, 10)
+#define ALPHA_EN_PIN        PIN(PIN_NON_INVERTING, 0, 4)
+#define BETA_EN_PIN         PIN(PIN_NON_INVERTING, 0, 10)
+#define GAMMA_EN_PIN        PIN(PIN_NON_INVERTING, 0, 19)
 
 // Extruder
 #define EXTRUDER_MODULE_ENABLE               false
@@ -68,9 +68,9 @@
 #define EXTRUDER_DEFAULT_FEED_RATE           1.0
 #define EXTRUDER_ACCELERATION                1.0
 
-#define EXTRUDER_STEP_PIN   PIN_DESC_AS_INT16(PIN_NON_INVERTING, 1, 22)
-#define EXTRUDER_DIR_PIN    PIN_DESC_AS_INT16(PIN_NON_INVERTING, 1, 19)
-#define EXTRUDER_EN_PIN     PIN_DESC_AS_INT16(PIN_NON_INVERTING, 0, 19)
+#define EXTRUDER_STEP_PIN   PIN(PIN_NON_INVERTING, 1, 22)
+#define EXTRUDER_DIR_PIN    PIN(PIN_NON_INVERTING, 1, 19)
+#define EXTRUDER_EN_PIN     PIN(PIN_NON_INVERTING, 0, 19)
 
 // Laser
 #define LASER_MODULE_ENABLE false
@@ -94,8 +94,8 @@
 #define DELTA_CURRENT 0.8
 
 // PauseButton
-#define PAUSE_BUTTON_PIN    PIN_DESC_AS_INT16_NC
-#define PAUSE_LED_PIN       PIN_DESC_AS_INT16_NC
+#define PAUSE_BUTTON_PIN    PIN_NC
+#define PAUSE_LED_PIN       PIN_NC
 
 #endif // _DEFAULT_CNC_CONFIG_H_
 

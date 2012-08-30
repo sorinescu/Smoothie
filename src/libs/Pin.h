@@ -5,7 +5,7 @@
 
 class Pin : public PlatformPin {
 public:
-    Pin(const PinDesc &desc) : PlatformPin(desc) {}
+    Pin(PinAsUint16 pin) : PlatformPin(pin) {}
 };
 
 #endif

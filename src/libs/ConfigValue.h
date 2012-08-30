@@ -19,7 +19,7 @@ public:
         CVT_NotSet,
         CVT_Bool,
         CVT_Double,
-        CVT_PinDesc
+        CVT_Pin
 #if SMOOTHIE_HAS_CONFIG_VALUE_STRING
         ,CVT_String
 #endif
@@ -69,17 +69,17 @@ public:
     /*
     ConfigValue* set(const PinDesc &value)
     {
-        pin_desc_val = value;
-        type = CVT_PinDesc;
+        pin_val = value;
+        type = CVT_Pin;
         return this;
     }
     */
 
     /* Still a PinDesc value; see init() */
-    ConfigValue* set(PinDescAsInt16 value)
+    ConfigValue* set(PinAsUint16 value)
     {
-        PinDesc::init(pin_desc_val, value);
-        type = CVT_PinDesc;
+        pin_val = value;
+        type = CVT_Pin;
         return this;
     }
 
@@ -123,15 +123,9 @@ public:
 
     Pin* as_pin(){
         switch (type) {
-            case CVT_PinDesc: return new Pin(pin_desc_val);
+            case CVT_Pin: return new Pin(pin_val);
 #if SMOOTHIE_HAS_CONFIG_VALUE_STRING
-            case CVT_String: {
-                PinDesc pin_desc;
-                pin_desc.port_number = atoi(str_val.substr(0,1).c_str());
-                pin_desc.inverting = str_val.find_first_of("!") != smt_string::npos;
-                pin_desc.pin = atoi(str_val.substr(2, str_val.size()-2-(pin_desc.inverting ? 1:0)).c_str());
-                return new Pin(pin_desc);
-            }
+            case CVT_String: return new Pin(Pin::from_str(str_val));
 #endif
             default: SMT_ASSERT(0);
         }
@@ -144,9 +138,9 @@ public:
         switch (type) {
             case CVT_Bool: sprintf(fmt, "%s", bool_val ? "true" : "false");
             case CVT_Double: sprintf(fmt, "%lf", double_val);
-            case CVT_PinDesc: pin_desc_val.inverting ?
-                sprintf(fmt, "%d.%d!", (int)pin_desc_val.port_number, (int)pin_desc_val.pin) :
-                sprintf(fmt, "%d.%d", (int)pin_desc_val.port_number, (int)pin_desc_val.pin);
+            case CVT_Pin: PIN_IS_INVERTING(pin_val) ?
+                sprintf(fmt, "%d.%d!", (int)PIN_PORT_NR(pin_val), (int)PIN_PIN(pin_val)) :
+                sprintf(fmt, "%d.%d", (int)PIN_PORT_NR(pin_val), (int)PIN_PIN(pin_val));
             case CVT_String: return str_val;
             default: SMT_ASSERT(0);
         }
@@ -166,7 +160,7 @@ public:
         return this;
     }
 
-    ConfigValue* by_default(PinDescAsInt16 value){
+    ConfigValue* by_default(PinAsUint16 value){
         if (type == CVT_NotSet)
             set(value);
         return this;
@@ -185,7 +179,7 @@ protected:
     union {
         bool bool_val;
         double double_val;
-        PinDesc pin_desc_val;
+        PinAsUint16 pin_val;
     };
 #if SMOOTHIE_HAS_CONFIG_VALUE_STRING
     smt_string str_val; // can't be put inside of union because it has non-static methods
