@@ -45,7 +45,7 @@ uint32_t SerialConsole::on_serial_char_received(uint32_t _x = NULL){
         //On newline, we have received a line, else concatenate in buffer
         // convert CR to NL (for host OSs that don't send NL)
         // if( received == '\r' ){ received = '\n'; }
-        if( received == '\r' ){ return; }
+        if( received == '\r' ){ return 0; }
         this->buffer.push_back(received);
    }
    return 0;
@@ -74,10 +74,9 @@ void SerialConsole::on_main_loop(void * argument){
 
 void SerialConsole::printf(const char* format, ...){
     va_list args;
-    int result;
     char buf[255];
     va_start (args, format);
-    result = vsprintf(buf, format, args);
+    vsprintf(buf, format, args);
     serial->puts(buf);
     va_end (args);
 }
