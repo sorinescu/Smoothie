@@ -26,9 +26,13 @@
 #define SMOOTHIE_USE_FILES 0
 #endif
 
+#ifndef SMOOTHIE_HAS_SERIAL_CONSOLE
+#define SMOOTHIE_HAS_SERIAL_CONSOLE 1
+#endif
+
 #ifndef SMOOTHIE_HAS_CONFIG_VALUE_STRING
-// Enable by default when files are also enabled
-#define SMOOTHIE_HAS_CONFIG_VALUE_STRING SMOOTHIE_USE_FILES
+// Enable by default when files or console are also enabled
+#define SMOOTHIE_HAS_CONFIG_VALUE_STRING (SMOOTHIE_USE_FILES || SMOOTHIE_HAS_SERIAL_CONSOLE)
 #endif
 
 /*
@@ -89,12 +93,20 @@ struct smt_vector
 #endif
 
 #ifdef __cplusplus
+
 #include "stm32/PlatformKernel.h"
 #include "stm32/stm32f103/PlatformPin.h"
+
+#if SMOOTHIE_HAS_SERIAL_CONSOLE
+#include "stm32/stm32f103/USBSerial.h"
+#endif
+
 #endif // __cplusplus
 
 #else   // SMOOTHIE_PLATFORM_STM32F103
+
 #error "Unsupported SMOOTHIE_PLATFORM"
+
 #endif
 
 #endif  // _PLATFORM_H_

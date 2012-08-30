@@ -5,6 +5,10 @@
       You should have received a copy of the GNU General Public License along with Smoothie. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "platform/Platform.h"
+
+#if SMOOTHIE_HAS_SERIAL_CONSOLE
+
 #include <stdarg.h>
 #include "libs/Module.h"
 #include "libs/Kernel.h"
@@ -44,12 +48,12 @@ uint32_t SerialConsole::on_serial_char_received(uint32_t _x = NULL){
         if( received == '\r' ){ return; }
         this->buffer.push_back(received);
    }
+   return 0;
 }
 
 // Actual event calling must happen in the main loop because if it happens in the interrupt we will loose data
 void SerialConsole::on_main_loop(void * argument){
     if( this->has_char('\n') ){
-        int index = 0;
         smt_string received;
         while(1){
            char c;
@@ -68,7 +72,7 @@ void SerialConsole::on_main_loop(void * argument){
 }
 
 
-int SerialConsole::printf(const char* format, ...){
+void SerialConsole::printf(const char* format, ...){
     va_list args;
     int result;
     char buf[255];
@@ -76,7 +80,6 @@ int SerialConsole::printf(const char* format, ...){
     result = vsprintf(buf, format, args);
     serial->puts(buf);
     va_end (args);
-    return result;
 }
 
 bool SerialConsole::has_char(char letter){
@@ -89,3 +92,6 @@ bool SerialConsole::has_char(char letter){
     }
     return false;
 }
+
+#endif // SMOOTHIE_HAS_SERIAL_CONSOLE
+

@@ -12,7 +12,6 @@
 #include "libs/SlowTicker.h"
 #include "libs/Pauser.h"
 #include "libs/StreamOutputPool.h"
-
 #include "modules/communication/GcodeDispatch.h"
 #include "modules/robot/Planner.h"
 #include "modules/robot/Robot.h"
@@ -45,7 +44,10 @@ Kernel::Kernel(){
     this->config         = new Config();
     // Serial second, because the other modules might want to say something
     this->streams        = new StreamOutputPool();
-    //this->serial         = new SerialConsole(NULL, NULL, NULL);
+
+#if SMOOTHIE_HAS_SERIAL_CONSOLE
+    this->serial         = new SerialConsole(NULL, NULL, NULL);
+#endif
 
     this->add_module( this->config );
     //this->add_module( this->serial );

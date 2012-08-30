@@ -19,6 +19,11 @@
 #include "modules/robot/Planner.h"
 #include "modules/robot/Robot.h"
 #include "modules/robot/Stepper.h"
+
+#if SMOOTHIE_HAS_SERIAL_CONSOLE
+#include "modules/communication/SerialConsole.h"
+#endif
+
 //Added for compiler issues
 #include <stdlib.h>
 #include <cstdlib>
@@ -55,7 +60,9 @@ class Kernel : public PlatformKernel {
         void call_event(unsigned int id_event, void * argument);
 
         // These modules are aviable to all other modules
-        //SerialConsole*    serial;
+#if SMOOTHIE_HAS_SERIAL_CONSOLE
+        SerialConsole*    serial;
+#endif
         StreamOutputPool* streams;
 
         GcodeDispatch*    gcode_dispatch;

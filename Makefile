@@ -26,6 +26,12 @@ SMOOTHIE_PLATFORM:=SMOOTHIE_PLATFORM_STM32F103
 # will be 0 (smaller footprint).
 #SMOOTHIE_HAS_CONFIG_VALUE_STRING:=1
 
+# Set this to 0 if you don't need a serial console.
+# The serial console is used for receiving G-codes and other commands, so don't disable
+# it unless you have some other way of passing commands to Smoothie.
+# If not defined here, it will be 1.
+#SMOOTHIE_HAS_SERIAL_CONSOLE:=0
+
 #****************************************************************************************
 #*                               End of user customizations                             *
 #****************************************************************************************
@@ -168,6 +174,7 @@ src/config.h: src/config.h.in
 	@if [ -n "$(SMOOTHIE_USE_STL)" ]; then sed -i -r "s/@SMOOTHIE_USE_STL@/#define SMOOTHIE_USE_STL $(SMOOTHIE_USE_STL)/" $@; fi
 	@if [ -n "$(SMOOTHIE_USE_FILES)" ]; then sed -i -r "s/@SMOOTHIE_USE_FILES@/#define SMOOTHIE_USE_FILES $(SMOOTHIE_USE_FILES)/" $@; fi
 	@if [ -n "$(SMOOTHIE_HAS_CONFIG_VALUE_STRING)" ]; then sed -i -r "s/@SMOOTHIE_HAS_CONFIG_VALUE_STRING@/#define SMOOTHIE_HAS_CONFIG_VALUE_STRING $(SMOOTHIE_HAS_CONFIG_VALUE_STRING)/" $@; fi
+	@if [ -n "$(SMOOTHIE_HAS_SERIAL_CONSOLE)" ]; then sed -i -r "s/@SMOOTHIE_HAS_SERIAL_CONSOLE@/#define SMOOTHIE_HAS_SERIAL_CONSOLE $(SMOOTHIE_HAS_SERIAL_CONSOLE)/" $@; fi
 	@sed -i -r "s^@([A-Z_0-9]+)@^//#define \\1^" $@
 
 clean:
