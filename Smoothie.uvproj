@@ -635,6 +635,16 @@
               <FileType>8</FileType>
               <FilePath>.\src\modules\utils\configurator\Configurator.cpp</FilePath>
             </File>
+            <File>
+              <FileName>SerialConsole.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\modules\communication\SerialConsole.h</FilePath>
+            </File>
+            <File>
+              <FileName>SerialConsole.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\src\modules\communication\SerialConsole.cpp</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -826,11 +836,6 @@
               <FilePath>.\src\platform\stm32\stm32f103\STM32F10x_StdPeriph_Driver\src\stm32f10x_rcc.c</FilePath>
             </File>
             <File>
-              <FileName>USBSerialConsole.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>.\src\platform\stm32\stm32f103\USBSerialConsole.cpp</FilePath>
-            </File>
-            <File>
               <FileName>string.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>.\src\platform\shared\EASTL\src\string.cpp</FilePath>
@@ -849,6 +854,16 @@
               <FileName>startup_stm32f10x_ld.s</FileName>
               <FileType>2</FileType>
               <FilePath>.\src\platform\stm32\stm32f103\glue\keil\startup_stm32f10x_ld.s</FilePath>
+            </File>
+            <File>
+              <FileName>USBSerial.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\platform\stm32\stm32f103\USBSerial.h</FilePath>
+            </File>
+            <File>
+              <FileName>USBSerial.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>.\src\platform\stm32\stm32f103\USBSerial.cpp</FilePath>
             </File>
           </Files>
         </Group>
