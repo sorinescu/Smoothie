@@ -16,6 +16,21 @@
 #include "libs/nuts_bolts.h"
 #include "libs/utils.h"
 
+/*
+static void CNC_Init(void)
+{
+    GPIO_InitTypeDef GPIO_InitStructure;
+
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+
+    GPIO_StructInit(&GPIO_InitStructure);
+    GPIO_InitStructure.GPIO_Pin = X_VM_SWITCH_PIN;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_Init(X_VM_SWITCH_GPIO, &GPIO_InitStructure);
+}
+*/
+
 int main() {
     Kernel* kernel = new Kernel();
 

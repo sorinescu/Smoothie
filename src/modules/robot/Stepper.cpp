@@ -48,20 +48,20 @@ void Stepper::on_module_loaded(){
 // Get configuration from the config file
 void Stepper::on_config_reload(void* argument){
 
-    this->microseconds_per_step_pulse   =  this->kernel->config->value(microseconds_per_step_pulse_checksum  )->by_default(     5.0)->as_double();
-    this->acceleration_ticks_per_second =  this->kernel->config->value(acceleration_ticks_per_second_checksum)->by_default(   100.0)->as_double();
-    this->minimum_steps_per_minute      =  this->kernel->config->value(minimum_steps_per_minute_checksum     )->by_default(  1200.0)->as_double();
-    this->base_stepping_frequency       =  this->kernel->config->value(base_stepping_frequency_checksum      )->by_default(100000.0)->as_double();
-    this->alpha_step_pin                =  this->kernel->config->value(alpha_step_pin_checksum               )->by_default("3.12"     )->as_pin()->as_output();
-    this->beta_step_pin                 =  this->kernel->config->value(beta_step_pin_checksum                )->by_default("3.13"     )->as_pin()->as_output();
-    this->gamma_step_pin                =  this->kernel->config->value(gamma_step_pin_checksum               )->by_default("3.14"     )->as_pin()->as_output();
-    this->alpha_dir_pin                 =  this->kernel->config->value(alpha_dir_pin_checksum                )->by_default("3.15"     )->as_pin()->as_output();
-    this->beta_dir_pin                  =  this->kernel->config->value(beta_dir_pin_checksum                 )->by_default("3.11"     )->as_pin()->as_output();
-    this->gamma_dir_pin                 =  this->kernel->config->value(gamma_dir_pin_checksum                )->by_default("3.10"     )->as_pin()->as_output();
+    this->microseconds_per_step_pulse   =  this->kernel->config->value(microseconds_per_step_pulse_checksum  )->by_default(MICROSECONDS_PER_STEP_PULSE)->as_double();
+    this->acceleration_ticks_per_second =  this->kernel->config->value(acceleration_ticks_per_second_checksum)->by_default(ACCELERATION_TICKS_PER_SECOND)->as_double();
+    this->minimum_steps_per_minute      =  this->kernel->config->value(minimum_steps_per_minute_checksum     )->by_default(MINIMUM_STEPS_PER_MINUTE)->as_double();
+    this->base_stepping_frequency       =  this->kernel->config->value(base_stepping_frequency_checksum      )->by_default(BASE_STEPPING_FREQUENCY)->as_double();
+    this->alpha_step_pin                =  this->kernel->config->value(alpha_step_pin_checksum               )->by_default(ALPHA_STEP_PIN)->as_pin()->as_output();
+    this->beta_step_pin                 =  this->kernel->config->value(beta_step_pin_checksum                )->by_default(BETA_STEP_PIN)->as_pin()->as_output();
+    this->gamma_step_pin                =  this->kernel->config->value(gamma_step_pin_checksum               )->by_default(GAMMA_STEP_PIN)->as_pin()->as_output();
+    this->alpha_dir_pin                 =  this->kernel->config->value(alpha_dir_pin_checksum                )->by_default(ALPHA_DIR_PIN)->as_pin()->as_output();
+    this->beta_dir_pin                  =  this->kernel->config->value(beta_dir_pin_checksum                 )->by_default(BETA_DIR_PIN)->as_pin()->as_output();
+    this->gamma_dir_pin                 =  this->kernel->config->value(gamma_dir_pin_checksum                )->by_default(GAMMA_DIR_PIN)->as_pin()->as_output();
 //TODO: these en pins need to be mapped to something that makes sense:
-    // this->alpha_en_pin                  =  this->kernel->config->value(alpha_en_pin_checksum                 )->by_default("0.4"      )->as_pin()->as_output()->as_open_drain();
-    // this->beta_en_pin                   =  this->kernel->config->value(beta_en_pin_checksum                  )->by_default("0.10"     )->as_pin()->as_output()->as_open_drain();
-    // this->gamma_en_pin                  =  this->kernel->config->value(gamma_en_pin_checksum                 )->by_default("0.19"     )->as_pin()->as_output()->as_open_drain();
+    // this->alpha_en_pin                  =  this->kernel->config->value(alpha_en_pin_checksum                 )->by_default(ALPHA_EN_PIN)->as_pin()->as_output()->as_open_drain();
+    // this->beta_en_pin                   =  this->kernel->config->value(beta_en_pin_checksum                  )->by_default(BETA_EN_PIN)->as_pin()->as_output()->as_open_drain();
+    // this->gamma_en_pin                  =  this->kernel->config->value(gamma_en_pin_checksum                 )->by_default(GAMMA_EN_PIN)->as_pin()->as_output()->as_open_drain();
 
     // TODO : This is supposed to be done by gcodes
     // TODO : re-enable these once the en_pins are mapped

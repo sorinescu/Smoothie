@@ -11,6 +11,7 @@
 #include "libs/Kernel.h"
 #include "libs/utils.h"
 #include "libs/Pin.h"
+#include "platform/DefaultCNCConfig.h"
 
 class ConfigValue{
 public:
@@ -65,12 +66,14 @@ public:
         return this;
     }
 
+    /*
     ConfigValue* set(const PinDesc &value)
     {
         pin_desc_val = value;
         type = CVT_PinDesc;
         return this;
     }
+    */
 
     /* Still a PinDesc value; see init() */
     ConfigValue* set(PinDescAsInt16 value)
@@ -141,7 +144,7 @@ public:
         switch (type) {
             case CVT_Bool: sprintf(fmt, "%s", bool_val ? "true" : "false");
             case CVT_Double: sprintf(fmt, "%lf", double_val);
-            case CVT_PinDesc: pin_desc_val.inverting ? 
+            case CVT_PinDesc: pin_desc_val.inverting ?
                 sprintf(fmt, "%d.%d!", (int)pin_desc_val.port_number, (int)pin_desc_val.pin) :
                 sprintf(fmt, "%d.%d", (int)pin_desc_val.port_number, (int)pin_desc_val.pin);
             case CVT_String: return str_val;
@@ -163,7 +166,7 @@ public:
         return this;
     }
 
-    ConfigValue* by_default(const PinDesc &value){
+    ConfigValue* by_default(PinDescAsInt16 value){
         if (type == CVT_NotSet)
             set(value);
         return this;

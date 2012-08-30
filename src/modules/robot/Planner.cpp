@@ -28,9 +28,9 @@ void Planner::on_module_loaded(){
 }
 
 void Planner::on_config_reload(void* argument){
-    this->acceleration =       this->kernel->config->value(acceleration_checksum       )->by_default(100.0)->as_double();
-    this->max_jerk =           this->kernel->config->value(max_jerk_checksum           )->by_default(100.0)->as_double();
-    this->junction_deviation = this->kernel->config->value(junction_deviation_checksum )->by_default(0.05 )->as_double();
+    this->acceleration =       this->kernel->config->value(acceleration_checksum       )->by_default(ACCELERATION)->as_double();
+    this->max_jerk =           this->kernel->config->value(max_jerk_checksum           )->by_default(MAX_JERK)->as_double();
+    this->junction_deviation = this->kernel->config->value(junction_deviation_checksum )->by_default(JUNCTION_DEVIATION)->as_double();
 }
 
 // Append a block to the queue, compute it's speed factors

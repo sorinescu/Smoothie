@@ -15,6 +15,9 @@
 #define SMOOTHIE_PLATFORM_STM32F4XX     2
 #define SMOOTHIE_PLATFORM_STM32F103     3
 
+// These values are documented in ../Makefile.
+// If you're using Keil MDK instead of GCC, you must set them manually in config.h (NOT config.h.in).
+
 #define SMOOTHIE_PLATFORM SMOOTHIE_PLATFORM_STM32F103
 //#define SMOOTHIE_USE_STL
 //#define SMOOTHIE_USE_FILES

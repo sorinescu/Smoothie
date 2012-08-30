@@ -34,7 +34,7 @@
 /*
     Platform-specific configuration.
  */
- 
+
 #ifdef __cplusplus
 
 #if SMOOTHIE_USE_STL
@@ -96,5 +96,5 @@ struct smt_vector
 #else   // SMOOTHIE_PLATFORM_STM32F103
 #error "Unsupported SMOOTHIE_PLATFORM"
 #endif
- 
+
 #endif  // _PLATFORM_H_

@@ -39,14 +39,14 @@ void Robot::on_module_loaded() {
 }
 
 void Robot::on_config_reload(void* argument){
-    this->feed_rate =           this->kernel->config->value(default_feed_rate_checksum  )->by_default(100.0)->as_double()/60;
-    this->seek_rate =           this->kernel->config->value(default_seek_rate_checksum  )->by_default(100.0)->as_double()/60;
-    this->mm_per_line_segment = this->kernel->config->value(mm_per_line_segment_checksum)->by_default(  0.1)->as_double();
-    this->mm_per_arc_segment  = this->kernel->config->value(mm_per_arc_segment_checksum )->by_default( 10.0)->as_double();
-    this->arc_correction      = this->kernel->config->value(arc_correction_checksum     )->by_default(  5.0)->as_double();
-    this->max_speeds[X_AXIS]  = this->kernel->config->value(x_axis_max_speed_checksum   )->by_default(  0.0)->as_double();
-    this->max_speeds[Y_AXIS]  = this->kernel->config->value(y_axis_max_speed_checksum   )->by_default(  0.0)->as_double();
-    this->max_speeds[Z_AXIS]  = this->kernel->config->value(z_axis_max_speed_checksum   )->by_default(  0.0)->as_double();
+    this->feed_rate =           this->kernel->config->value(default_feed_rate_checksum  )->by_default(DEFAULT_FEED_RATE)->as_double()/60;
+    this->seek_rate =           this->kernel->config->value(default_seek_rate_checksum  )->by_default(DEFAULT_SEEK_RATE)->as_double()/60;
+    this->mm_per_line_segment = this->kernel->config->value(mm_per_line_segment_checksum)->by_default(MM_PER_LINE_SEGMENT)->as_double();
+    this->mm_per_arc_segment  = this->kernel->config->value(mm_per_arc_segment_checksum )->by_default(MM_PER_ARC_SEGMENT)->as_double();
+    this->arc_correction      = this->kernel->config->value(arc_correction_checksum     )->by_default(ARC_CORRECTION)->as_double();
+    this->max_speeds[X_AXIS]  = this->kernel->config->value(x_axis_max_speed_checksum   )->by_default(X_AXIS_MAX_SPEED)->as_double();
+    this->max_speeds[Y_AXIS]  = this->kernel->config->value(y_axis_max_speed_checksum   )->by_default(Y_AXIS_MAX_SPEED)->as_double();
+    this->max_speeds[Z_AXIS]  = this->kernel->config->value(z_axis_max_speed_checksum   )->by_default(Z_AXIS_MAX_SPEED)->as_double();
 }
 
 //A GCode has been received

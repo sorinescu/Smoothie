@@ -28,7 +28,7 @@ Extruder::Extruder() {
 void Extruder::on_module_loaded() {
 
     // Do not do anything if not enabledd
-    if( this->kernel->config->value( extruder_module_enable_checksum )->by_default(false)->as_bool() == false ){ return; }
+    if( this->kernel->config->value( extruder_module_enable_checksum )->by_default(EXTRUDER_MODULE_ENABLE)->as_bool() == false ){ return; }
 
     // Settings
     this->on_config_reload(this);
@@ -59,14 +59,14 @@ void Extruder::on_module_loaded() {
 
 // Get config
 void Extruder::on_config_reload(void* argument){
-	this->microseconds_per_step_pulse = this->kernel->config->value(microseconds_per_step_pulse_checksum)->by_default(5)->as_double();
-	this->steps_per_millimeter        = this->kernel->config->value(extruder_steps_per_mm_checksum       )->by_default(1)->as_double();
-	this->feed_rate                   = this->kernel->config->value(default_feed_rate_checksum          )->by_default(1)->as_double();
-	this->acceleration                = this->kernel->config->value(acceleration_checksum               )->by_default(1)->as_double();
+        this->microseconds_per_step_pulse = this->kernel->config->value(microseconds_per_step_pulse_checksum)->by_default(EXTRUDER_MICROSECONDS_PER_STEP_PULSE)->as_double();
+        this->steps_per_millimeter        = this->kernel->config->value(extruder_steps_per_mm_checksum      )->by_default(EXTRUDER_STEPS_PER_MM)->as_double();
+        this->feed_rate                   = this->kernel->config->value(default_feed_rate_checksum          )->by_default(EXTRUDER_DEFAULT_FEED_RATE)->as_double();
+        this->acceleration                = this->kernel->config->value(acceleration_checksum               )->by_default(EXTRUDER_ACCELERATION)->as_double();
 
-	this->step_pin                    = this->kernel->config->value(extruder_step_pin_checksum          )->by_default("1.22" )->as_pin()->as_output();
-	this->dir_pin                     = this->kernel->config->value(extruder_dir_pin_checksum           )->by_default("1.19" )->as_pin()->as_output();
-	this->en_pin                      = this->kernel->config->value(extruder_en_pin_checksum            )->by_default("0.19" )->as_pin()->as_output();
+        this->step_pin                    = this->kernel->config->value(extruder_step_pin_checksum          )->by_default(EXTRUDER_STEP_PIN)->as_pin()->as_output();
+        this->dir_pin                     = this->kernel->config->value(extruder_dir_pin_checksum           )->by_default(EXTRUDER_DIR_PIN)->as_pin()->as_output();
+        this->en_pin                      = this->kernel->config->value(extruder_en_pin_checksum            )->by_default(EXTRUDER_EN_PIN)->as_pin()->as_output();
 }
 
 
@@ -238,7 +238,7 @@ uint32_t Extruder::acceleration_tick(uint32_t dummy){
     }
 
     this->acceleration_lock = false;
-	return 0;
+        return 0;
 }
 
 // Convenience function to set stepping speed
@@ -281,5 +281,5 @@ inline uint32_t Extruder::stepping_tick(uint32_t dummy){
 
 uint32_t Extruder::reset_step_pin(uint32_t dummy){
     this->step_pin->set(0);
-	return 0;
+        return 0;
 }
