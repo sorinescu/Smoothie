@@ -65,48 +65,48 @@ extern LINE_CODING linecoding;
 void Set_System(void)
 {
 #if !defined(STM32F10X_CL) && !defined(STM32L1XX_MD) && !defined(STM32L1XX_HD) && !defined(STM32L1XX_MD_PLUS)
-  //GPIO_InitTypeDef GPIO_InitStructure;
+    //GPIO_InitTypeDef GPIO_InitStructure;
 #endif /* STM32F10X_CL && STM32L1XX_XD */  
 
 #if defined(USB_USE_EXTERNAL_PULLUP)
-  GPIO_InitTypeDef  GPIO_InitStructure;
+    GPIO_InitTypeDef  GPIO_InitStructure;
 #endif /* USB_USE_EXTERNAL_PULLUP */ 
-  
-  /*!< At this stage the microcontroller clock setting is already configured, 
-       this is done through SystemInit() function which is called from startup
-       file (startup_stm32f10x_xx.s) before to branch to application main.
-       To reconfigure the default setting of SystemInit() function, refer to
-       system_stm32f10x.c file
-     */   
+
+    /*!< At this stage the microcontroller clock setting is already configured, 
+         this is done through SystemInit() function which is called from startup
+         file (startup_stm32f10x_xx.s) before to branch to application main.
+         To reconfigure the default setting of SystemInit() function, refer to
+         system_stm32f10x.c file
+       */   
 #if defined(STM32L1XX_MD) || defined(STM32L1XX_HD)|| defined(STM32L1XX_MD_PLUS)
-  /* Enable the SYSCFG module clock */
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+    /* Enable the SYSCFG module clock */
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
 #endif /* STM32L1XX_XD */ 
-   
+
 #if !defined(STM32F10X_CL) && !defined(STM32L1XX_MD) && !defined(STM32L1XX_HD) && !defined(STM32L1XX_MD_PLUS)
 #if 0 // Smoothie doesn't use software USB disconnect
-  /* Enable USB_DISCONNECT GPIO clock */
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIO_DISCONNECT, ENABLE);
+    /* Enable USB_DISCONNECT GPIO clock */
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIO_DISCONNECT, ENABLE);
 
-  /* Configure USB pull-up pin */
-  GPIO_InitStructure.GPIO_Pin = USB_DISCONNECT_PIN;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
-  GPIO_Init(USB_DISCONNECT, &GPIO_InitStructure);
+    /* Configure USB pull-up pin */
+    GPIO_InitStructure.GPIO_Pin = USB_DISCONNECT_PIN;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
+    GPIO_Init(USB_DISCONNECT, &GPIO_InitStructure);
 #endif
 #endif /* STM32F10X_CL && STM32L1XX_XD */
-   
-#if defined(USB_USE_EXTERNAL_PULLUP)
-  /* Enable the USB disconnect GPIO clock */
-  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIO_DISCONNECT, ENABLE);
 
-  /* USB_DISCONNECT used as USB pull-up */
-  GPIO_InitStructure.GPIO_Pin = USB_DISCONNECT_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(USB_DISCONNECT, &GPIO_InitStructure);  
+#if defined(USB_USE_EXTERNAL_PULLUP)
+    /* Enable the USB disconnect GPIO clock */
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIO_DISCONNECT, ENABLE);
+
+    /* USB_DISCONNECT used as USB pull-up */
+    GPIO_InitStructure.GPIO_Pin = USB_DISCONNECT_PIN;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_Init(USB_DISCONNECT, &GPIO_InitStructure);  
 #endif /* USB_USE_EXTERNAL_PULLUP */  
 }
 
@@ -119,22 +119,22 @@ void Set_System(void)
 void Set_USBClock(void)
 {
 #if defined(STM32L1XX_MD) || defined(STM32L1XX_HD) || defined(STM32L1XX_MD_PLUS) 
-  /* Enable USB clock */
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
-  
-#elif defined(STM32F10X_CL)
-  /* Select USBCLK source */
-  RCC_OTGFSCLKConfig(RCC_OTGFSCLKSource_PLLVCO_Div3);
+    /* Enable USB clock */
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
 
-  /* Enable the USB clock */ 
-  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_OTG_FS, ENABLE) ;
-  
+#elif defined(STM32F10X_CL)
+    /* Select USBCLK source */
+    RCC_OTGFSCLKConfig(RCC_OTGFSCLKSource_PLLVCO_Div3);
+
+    /* Enable the USB clock */ 
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_OTG_FS, ENABLE) ;
+
 #else 
-  /* Select USBCLK source */
-  RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
-  
-  /* Enable the USB clock */
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
+    /* Select USBCLK source */
+    RCC_USBCLKConfig(RCC_USBCLKSource_PLLCLK_1Div5);
+
+    /* Enable the USB clock */
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_USB, ENABLE);
 #endif /* STM32F10X_CL */
 }
 
@@ -146,8 +146,8 @@ void Set_USBClock(void)
 *******************************************************************************/
 void Enter_LowPowerMode(void)
 {
-  /* Set the device state to suspend */
-  bDeviceState = SUSPENDED;
+    /* Set the device state to suspend */
+    bDeviceState = SUSPENDED;
 }
 
 /*******************************************************************************
@@ -158,18 +158,18 @@ void Enter_LowPowerMode(void)
 *******************************************************************************/
 void Leave_LowPowerMode(void)
 {
-  DEVICE_INFO *pInfo = &Device_Info;
+    DEVICE_INFO *pInfo = &Device_Info;
 
-  /* Set the device state to the correct state */
-  if (pInfo->Current_Configuration != 0)
-  {
-    /* Device configured */
-    bDeviceState = CONFIGURED;
-  }
-  else
-  {
-    bDeviceState = ATTACHED;
-  }
+    /* Set the device state to the correct state */
+    if (pInfo->Current_Configuration != 0)
+    {
+        /* Device configured */
+        bDeviceState = CONFIGURED;
+    }
+    else
+    {
+        bDeviceState = ATTACHED;
+    }
 }
 
 /*******************************************************************************
@@ -180,38 +180,38 @@ void Leave_LowPowerMode(void)
 *******************************************************************************/
 void USB_Interrupts_Config(void)
 {
-  NVIC_InitTypeDef NVIC_InitStructure;
+    NVIC_InitTypeDef NVIC_InitStructure;
 
-  NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_1);
 
 #if defined(STM32L1XX_MD) || defined(STM32L1XX_HD) || defined(STM32L1XX_MD_PLUS) 
-  NVIC_InitStructure.NVIC_IRQChannel = USB_LP_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&NVIC_InitStructure);
-  
+    NVIC_InitStructure.NVIC_IRQChannel = USB_LP_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
+
 #elif defined(STM32F10X_CL) 
-  /* Enable the USB Interrupts */
-  NVIC_InitStructure.NVIC_IRQChannel = OTG_FS_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&NVIC_InitStructure);
-  
+    /* Enable the USB Interrupts */
+    NVIC_InitStructure.NVIC_IRQChannel = OTG_FS_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
+
 #else
-  NVIC_InitStructure.NVIC_IRQChannel = USB_LP_CAN1_RX0_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&NVIC_InitStructure);
+    NVIC_InitStructure.NVIC_IRQChannel = USB_LP_CAN1_RX0_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
+    NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
+    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
+    NVIC_Init(&NVIC_InitStructure);
 #endif /* STM32L1XX_XD */
 
-#if 0 // SORIN
-  /* Enable USART Interrupt */
-  NVIC_InitStructure.NVIC_IRQChannel = EVAL_COM1_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-  NVIC_Init(&NVIC_InitStructure);
+#if 0 // Smoothie doesn't use physical USART
+    /* Enable USART Interrupt */
+    NVIC_InitStructure.NVIC_IRQChannel = EVAL_COM1_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
+    NVIC_Init(&NVIC_InitStructure);
 #endif
 }
 
@@ -224,35 +224,35 @@ void USB_Interrupts_Config(void)
 void USB_Cable_Config (FunctionalState NewState)
 {
 #if defined(STM32L1XX_MD) || defined (STM32L1XX_HD)|| (STM32L1XX_MD_PLUS)
-  if (NewState != DISABLE)
-  {
-    STM32L15_USB_CONNECT;
-  }
-  else
-  {
-    STM32L15_USB_DISCONNECT;
-  }  
+    if (NewState != DISABLE)
+    {
+        STM32L15_USB_CONNECT;
+    }
+    else
+    {
+        STM32L15_USB_DISCONNECT;
+    }  
 
 #elif defined(USE_STM3210C_EVAL)  
-  if (NewState != DISABLE)
-  {
-    USB_DevConnect();
-  }
-  else
-  {
-    USB_DevDisconnect();
-  }
-  
+    if (NewState != DISABLE)
+    {
+        USB_DevConnect();
+    }
+    else
+    {
+        USB_DevDisconnect();
+    }
+
 #else /* USE_STM3210B_EVAL or USE_STM3210E_EVAL */
 #if 0 // Smoothie doesn't use software USB disconnect
-  if (NewState != DISABLE)
-  {
-    GPIO_ResetBits(USB_DISCONNECT, USB_DISCONNECT_PIN);
-  }
-  else
-  {
-    GPIO_SetBits(USB_DISCONNECT, USB_DISCONNECT_PIN);
-  }
+    if (NewState != DISABLE)
+    {
+        GPIO_ResetBits(USB_DISCONNECT, USB_DISCONNECT_PIN);
+    }
+    else
+    {
+        GPIO_SetBits(USB_DISCONNECT, USB_DISCONNECT_PIN);
+    }
 #endif
 #endif /* USE_STM3210C_EVAL */
 }
@@ -265,59 +265,59 @@ void USB_Cable_Config (FunctionalState NewState)
 *******************************************************************************/
 void Handle_USBAsynchXfer (void)
 {
-  
-  uint16_t USB_Tx_ptr;
-  uint16_t USB_Tx_length;
-  
-  if(USB_Tx_State != 1)
-  {
-    if (USART_Rx_ptr_out == USART_RX_DATA_SIZE)
+
+    uint16_t USB_Tx_ptr;
+    uint16_t USB_Tx_length;
+
+    if (USB_Tx_State != 1)
     {
-      USART_Rx_ptr_out = 0;
-    }
-    
-    if(USART_Rx_ptr_out == USART_Rx_ptr_in) 
-    {
-      USB_Tx_State = 0; 
-      return;
-    }
-    
-    if(USART_Rx_ptr_out > USART_Rx_ptr_in) /* rollback */
-    { 
-      USART_Rx_length = USART_RX_DATA_SIZE - USART_Rx_ptr_out;
-    }
-    else 
-    {
-      USART_Rx_length = USART_Rx_ptr_in - USART_Rx_ptr_out;
-    }
-    
-    if (USART_Rx_length > VIRTUAL_COM_PORT_DATA_SIZE)
-    {
-      USB_Tx_ptr = USART_Rx_ptr_out;
-      USB_Tx_length = VIRTUAL_COM_PORT_DATA_SIZE;
-      
-      USART_Rx_ptr_out += VIRTUAL_COM_PORT_DATA_SIZE;   
-      USART_Rx_length -= VIRTUAL_COM_PORT_DATA_SIZE;    
-    }
-    else
-    {
-      USB_Tx_ptr = USART_Rx_ptr_out;
-      USB_Tx_length = USART_Rx_length;
-      
-      USART_Rx_ptr_out += USART_Rx_length;
-      USART_Rx_length = 0;
-    }
-    USB_Tx_State = 1; 
-    
+        if (USART_Rx_ptr_out == USART_RX_DATA_SIZE)
+        {
+            USART_Rx_ptr_out = 0;
+        }
+
+        if (USART_Rx_ptr_out == USART_Rx_ptr_in)
+        {
+            USB_Tx_State = 0; 
+            return;
+        }
+
+        if (USART_Rx_ptr_out > USART_Rx_ptr_in) /* rollback */
+        {
+            USART_Rx_length = USART_RX_DATA_SIZE - USART_Rx_ptr_out;
+        }
+        else
+        {
+            USART_Rx_length = USART_Rx_ptr_in - USART_Rx_ptr_out;
+        }
+
+        if (USART_Rx_length > VIRTUAL_COM_PORT_DATA_SIZE)
+        {
+            USB_Tx_ptr = USART_Rx_ptr_out;
+            USB_Tx_length = VIRTUAL_COM_PORT_DATA_SIZE;
+
+            USART_Rx_ptr_out += VIRTUAL_COM_PORT_DATA_SIZE;   
+            USART_Rx_length -= VIRTUAL_COM_PORT_DATA_SIZE;    
+        }
+        else
+        {
+            USB_Tx_ptr = USART_Rx_ptr_out;
+            USB_Tx_length = USART_Rx_length;
+
+            USART_Rx_ptr_out += USART_Rx_length;
+            USART_Rx_length = 0;
+        }
+        USB_Tx_State = 1; 
+
 #ifdef USE_STM3210C_EVAL
-    USB_SIL_Write(EP1_IN, &USART_Rx_Buffer[USB_Tx_ptr], USB_Tx_length);  
+        USB_SIL_Write(EP1_IN, &USART_Rx_Buffer[USB_Tx_ptr], USB_Tx_length);  
 #else
-    UserToPMABufferCopy(&USART_Rx_Buffer[USB_Tx_ptr], ENDP1_TXADDR, USB_Tx_length);
-    SetEPTxCount(ENDP1, USB_Tx_length);
-    SetEPTxValid(ENDP1); 
+        UserToPMABufferCopy(&USART_Rx_Buffer[USB_Tx_ptr], ENDP1_TXADDR, USB_Tx_length);
+        SetEPTxCount(ENDP1, USB_Tx_length);
+        SetEPTxValid(ENDP1); 
 #endif /* USE_STM3210C_EVAL */
-  }  
-  
+    }
+
 }
 /*******************************************************************************
 * Function Name  : USB_Send_Data.
@@ -328,38 +328,38 @@ void Handle_USBAsynchXfer (void)
 *******************************************************************************/
 void USB_Send_Data(uint8_t* data_buffer, uint8_t Nb_bytes)
 {
-  while (Nb_bytes)
-  {
-      uint32_t USART_Rx_ptr_out_copy = USART_Rx_ptr_out;
-      uint32_t len;
+    while (Nb_bytes)
+    {
+        uint32_t USART_Rx_ptr_out_copy = USART_Rx_ptr_out;
+        uint32_t len;
 
-      /* To avoid buffer overflow */
-      if (USART_Rx_ptr_in == USART_RX_DATA_SIZE)
-        USART_Rx_ptr_in = 0;
+        /* To avoid buffer overflow */
+        if (USART_Rx_ptr_in == USART_RX_DATA_SIZE)
+            USART_Rx_ptr_in = 0;
 
-      if (USART_Rx_ptr_in < USART_Rx_ptr_out_copy)  /* rollback */
-          len = USART_Rx_ptr_out_copy - USART_Rx_ptr_in;
-      else
-          len = USART_RX_DATA_SIZE - USART_Rx_ptr_in;
+        if (USART_Rx_ptr_in < USART_Rx_ptr_out_copy)  /* rollback */
+            len = USART_Rx_ptr_out_copy - USART_Rx_ptr_in;
+        else
+            len = USART_RX_DATA_SIZE - USART_Rx_ptr_in;
 
-      if (len > Nb_bytes)
-          len = Nb_bytes;
+        if (len > Nb_bytes)
+            len = Nb_bytes;
 
-      while (len)
-      {
-          if (linecoding.datatype == 7)
-            USART_Rx_Buffer[USART_Rx_ptr_in] = *data_buffer & 0x7F;
-          else if (linecoding.datatype == 8)
-            USART_Rx_Buffer[USART_Rx_ptr_in] = *data_buffer;
-          
-          ++USART_Rx_ptr_in;
-          ++data_buffer;
-          --len;
-      }
-      
-      /* Wait for transmission */
-      while (USART_Rx_ptr_out_copy == USART_Rx_ptr_out);
-  }
+        while (len)
+        {
+            if (linecoding.datatype == 7)
+                USART_Rx_Buffer[USART_Rx_ptr_in] = *data_buffer & 0x7F;
+            else if (linecoding.datatype == 8)
+                USART_Rx_Buffer[USART_Rx_ptr_in] = *data_buffer;
+
+            ++USART_Rx_ptr_in;
+            ++data_buffer;
+            --len;
+        }
+
+        /* Wait for transmission */
+        while (USART_Rx_ptr_out_copy == USART_Rx_ptr_out);
+    }
 }
 
 /*******************************************************************************
@@ -371,25 +371,25 @@ void USB_Send_Data(uint8_t* data_buffer, uint8_t Nb_bytes)
 *******************************************************************************/
 void Get_SerialNum(void)
 {
-  uint32_t Device_Serial0, Device_Serial1, Device_Serial2;
+    uint32_t Device_Serial0, Device_Serial1, Device_Serial2;
 
 #if defined(STM32L1XX_MD) || defined(STM32L1XX_HD) || defined(STM32L1XX_MD_PLUS) 
-  Device_Serial0 = *(uint32_t*)(0x1FF80050);
-  Device_Serial1 = *(uint32_t*)(0x1FF80054);
-  Device_Serial2 = *(uint32_t*)(0x1FF80064);
+    Device_Serial0 = *(uint32_t*)(0x1FF80050);
+    Device_Serial1 = *(uint32_t*)(0x1FF80054);
+    Device_Serial2 = *(uint32_t*)(0x1FF80064);
 #else  
-  Device_Serial0 = *(__IO uint32_t*)(0x1FFFF7E8);
-  Device_Serial1 = *(__IO uint32_t*)(0x1FFFF7EC);
-  Device_Serial2 = *(__IO uint32_t*)(0x1FFFF7F0);
+    Device_Serial0 = *(__IO uint32_t*)(0x1FFFF7E8);
+    Device_Serial1 = *(__IO uint32_t*)(0x1FFFF7EC);
+    Device_Serial2 = *(__IO uint32_t*)(0x1FFFF7F0);
 #endif /* STM32L1XX_XD */  
 
-  Device_Serial0 += Device_Serial2;
+    Device_Serial0 += Device_Serial2;
 
-  if (Device_Serial0 != 0)
-  {
-    IntToUnicode (Device_Serial0, &Virtual_Com_Port_StringSerial[2] , 8);
-    IntToUnicode (Device_Serial1, &Virtual_Com_Port_StringSerial[18], 4);
-  }
+    if (Device_Serial0 != 0)
+    {
+        IntToUnicode (Device_Serial0, &Virtual_Com_Port_StringSerial[2] , 8);
+        IntToUnicode (Device_Serial1, &Virtual_Com_Port_StringSerial[18], 4);
+    }
 }
 
 /*******************************************************************************
@@ -401,23 +401,23 @@ void Get_SerialNum(void)
 *******************************************************************************/
 static void IntToUnicode (uint32_t value , uint8_t *pbuf , uint8_t len)
 {
-  uint8_t idx = 0;
-  
-  for( idx = 0 ; idx < len ; idx ++)
-  {
-    if( ((value >> 28)) < 0xA )
+    uint8_t idx = 0;
+
+    for (idx = 0 ; idx < len ; idx ++)
     {
-      pbuf[ 2* idx] = (value >> 28) + '0';
+        if (((value >> 28)) < 0xA)
+        {
+            pbuf[ 2* idx] = (value >> 28) + '0';
+        }
+        else
+        {
+            pbuf[2* idx] = (value >> 28) + 'A' - 10; 
+        }
+
+        value = value << 4;
+
+        pbuf[ 2* idx + 1] = 0;
     }
-    else
-    {
-      pbuf[2* idx] = (value >> 28) + 'A' - 10; 
-    }
-    
-    value = value << 4;
-    
-    pbuf[ 2* idx + 1] = 0;
-  }
 }
 #ifdef STM32F10X_CL
 /*******************************************************************************
@@ -429,18 +429,18 @@ static void IntToUnicode (uint32_t value , uint8_t *pbuf , uint8_t len)
 *******************************************************************************/
 void USB_OTG_BSP_uDelay (const uint32_t usec)
 {
-  RCC_ClocksTypeDef  RCC_Clocks;  
+    RCC_ClocksTypeDef  RCC_Clocks;  
 
-  /* Configure HCLK clock as SysTick clock source */
-  SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);
-  
-  RCC_GetClocksFreq(&RCC_Clocks);
-  
-  SysTick_Config(usec * (RCC_Clocks.HCLK_Frequency / 1000000));  
-  
-  SysTick->CTRL  &= ~SysTick_CTRL_TICKINT_Msk ;
-  
-  while (!(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk));
+    /* Configure HCLK clock as SysTick clock source */
+    SysTick_CLKSourceConfig(SysTick_CLKSource_HCLK);
+
+    RCC_GetClocksFreq(&RCC_Clocks);
+
+    SysTick_Config(usec * (RCC_Clocks.HCLK_Frequency / 1000000));  
+
+    SysTick->CTRL  &= ~SysTick_CTRL_TICKINT_Msk ;
+
+    while (!(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk));
 }
 #endif /* STM32F10X_CL */
 
@@ -456,13 +456,13 @@ void USB_OTG_BSP_uDelay (const uint32_t usec)
   */
 void assert_failed(uint8_t* file, uint32_t line)
 { 
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+    /* User can add his own implementation to report the file name and line number,
+       ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
 
-  /* Infinite loop */
-  while (1)
-  {
-  }
+    /* Infinite loop */
+    while (1)
+    {
+    }
 }
 #endif
 
