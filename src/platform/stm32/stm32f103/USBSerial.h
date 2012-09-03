@@ -10,11 +10,15 @@
 
 #include "libs/FPointer.h"
 
+// GCC strangeness
+#ifdef getc
+#undef getc
+#endif
+
 class Serial
 {
 public:
     Serial(int tx, int rx);
-    FPointer *callbackFptr;
 
     static Serial* g_Serial;
 
@@ -34,6 +38,13 @@ public:
 
     // readable - says if getc() will return anything, I think
     bool readable();
+
+    void on_char_received(char c);
+
+protected:
+    FPointer *callbackFptr;
+    bool hasChar;
+    char ch;
 };
 
 #endif  // _USB_SERIAL_H_

@@ -9,6 +9,13 @@
 
 #if SMOOTHIE_HAS_SERIAL_CONSOLE
 
+#include "libs/nuts_bolts.h"
+
+Serial* Serial::g_Serial = 0;
+
+extern "C" 
+void USB_Send_Data(uint8_t* data_buffer, uint8_t Nb_bytes);
+
 /*******************************************************************************
 * Function Name  : USB_On_Data_Recv.
 * Description    : send the received data from USB to the recipient.
@@ -19,45 +26,67 @@
 extern "C" 
 void USB_On_Data_Recv(uint8_t* data_buffer, uint8_t Nb_bytes)
 {
-
     uint32_t i;
 
-    for (i = 0; i < Nb_bytes; i++)
-    {
-//    USART_SendData(EVAL_COM1, *(data_buffer + i));
-//    while(USART_GetFlagStatus(EVAL_COM1, USART_FLAG_TXE) == RESET); 
-    }  
-}
+    if (!Serial::g_Serial)
+        return;
 
-Serial* Serial::g_Serial = 0;
+    for (i = 0; i < Nb_bytes; i++)
+        Serial::g_Serial->on_char_received((char)data_buffer[i]);
+}
 
 Serial::Serial(int tx, int rx)
 {
+    hasChar = false;
     Serial::g_Serial = this;
-};
+}
 
 void Serial::baud(int b) 
 {
-    SMT_ASSERT(0);  // TODO implement
-};
+    // TODO implement
+}
+
+void Serial::on_char_received(char c)
+{
+    SMT_ASSERT(!hasChar);
+
+    ch = c;
+    hasChar = true;
+
+    // consume char
+    g_Serial->callbackFptr->call(0);
+
+    SMT_ASSERT(!hasChar);   // must be cleared by getc
+}
 
 char Serial::getc() 
 {
-    SMT_ASSERT(0);  // TODO implement
-    return 0;
-};
+    SMT_ASSERT(hasChar);
+
+    if (hasChar) {
+        hasChar = false;
+        return ch;
+    }
+    else
+        return 0;
+}
 
 void Serial::puts(char *buf) 
 {
-    SMT_ASSERT(0);  // TODO implement
-};
+    int len = strlen(buf);
+    while (len) {
+        uint8_t l = (uint8_t)min(255,len);
 
+        USB_Send_Data((uint8_t*)buf, l);
+        len -= l;
+        buf += l;
+    }
+}
 
 bool Serial::readable() 
 {
-    return true;
-};
-
+    return hasChar;
+}
 
 #endif // SMOOTHIE_HAS_SERIAL_CONSOLE
 
