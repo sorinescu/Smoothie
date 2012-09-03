@@ -54,10 +54,10 @@ void USB_Cable_Config (FunctionalState NewState);
 void Handle_USBAsynchXfer (void);
 void Get_SerialNum(void);
 
+void USB_Send_Data(uint8_t* data_buffer, uint8_t Nb_bytes);
+
 /* This function must be implemented by the application. */
 void USB_On_Data_Recv(uint8_t* data_buffer, uint8_t Nb_bytes);
-
-void USB_Send_Data(uint8_t* data_buffer, uint8_t Nb_bytes);
 
 
 /* External variables --------------------------------------------------------*/
