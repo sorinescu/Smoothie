@@ -100,6 +100,11 @@ CPPSRCS += \
     src/platform/shared/EASTL/src/allocator.cpp \
     src/platform/shared/EASTLGlue.cpp
 
+ifneq "$(SMOOTHIE_HAS_SERIAL_CONSOLE)" "0"
+CPPSRCS += \
+    src/modules/communication/SerialConsole.cpp
+endif
+
 INCDIRS += \
 	src/platform/shared/EASTL/include
 endif
