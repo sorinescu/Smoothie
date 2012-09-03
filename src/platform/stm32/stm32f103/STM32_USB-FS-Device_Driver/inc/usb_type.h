@@ -72,11 +72,9 @@ typedef enum { DISABLE = 0, ENABLE  = !DISABLE} FunctionalState;
 typedef enum { ERROR = 0, SUCCESS  = !ERROR} ErrorStatus;
 #endif /* __STM32F10x_H && __STM32L1XX_H */
 
-typedef enum
-{
-  FALSE = 0, TRUE  = !FALSE
-}
-bool;
+#include <stdbool.h>
+#define TRUE true
+#define FALSE false
 
 /* Exported macro ------------------------------------------------------------*/
 /* Exported functions ------------------------------------------------------- */
