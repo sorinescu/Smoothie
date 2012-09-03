@@ -79,8 +79,8 @@ struct smt_vector
 #if SMOOTHIE_PLATFORM == SMOOTHIE_PLATFORM_STM32F103
 
 // CPU type
-#ifndef STM32F10X_LD
-#error "STM32F10X_LD not defined; please define it in the project preprocessor flags !"
+#ifndef STM32F10X_MD
+#error "STM32F10X_MD not defined; please define it in the project preprocessor flags !"
 #endif
 
 // Include file from glue code, which includes required peripheral headers

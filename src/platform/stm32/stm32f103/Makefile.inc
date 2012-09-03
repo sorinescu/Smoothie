@@ -6,13 +6,13 @@ PROJINCS += \
     src/platform/stm32/stm32f103/STM32F10x_StdPeriph_Driver/inc \
     src/platform/stm32/stm32f103/glue
 
-LSCRIPT := src/platform/stm32/stm32f103/glue/gcc/stm32f103c6.ld
+LSCRIPT := src/platform/stm32/stm32f103/glue/gcc/stm32f103cb.ld
 
 MCFLAGS := -mcpu=cortex-m3 -mthumb -mlittle-endian
 MLDFLAGS := -mcpu=cortex-m3 -mthumb
 MASFLAGS := -mcpu=cortex-m3 -mthumb
 
-DEFINES += -DSTM32F10X_LD -D__USE_C99_MATH
+DEFINES += -DSTM32F10X_MD -D__USE_C99_MATH
 
 CSRCS += \
     src/platform/stm32/stm32f103/STM32F10x_StdPeriph_Driver/src/misc.c \
@@ -55,4 +55,4 @@ CPPSRCS += \
 endif # SMOOTHIE_HAS_SERIAL_CONSOLE
 
 ASRCS += \
-    src/platform/stm32/stm32f103/glue/gcc/startup_stm32f10x_ld.s
+    src/platform/stm32/stm32f103/glue/gcc/startup_stm32f10x_md.s
