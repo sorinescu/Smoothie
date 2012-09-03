@@ -16,9 +16,16 @@
 #include "libs/nuts_bolts.h"
 #include "libs/utils.h"
 
-/*
+extern "C" {
+#include "glue/hw_config.h"
+#include "usb_lib.h"
+#include "usb_desc.h"
+#include "usb_pwr.h"
+}
+
 static void CNC_Init(void)
 {
+/*
     GPIO_InitTypeDef GPIO_InitStructure;
 
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
@@ -28,10 +35,16 @@ static void CNC_Init(void)
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_Init(X_VM_SWITCH_GPIO, &GPIO_InitStructure);
-}
 */
+}
 
 int main() {
+    Set_System();
+    CNC_Init();
+    Set_USBClock();
+    USB_Interrupts_Config();
+    USB_Init();
+
     Kernel* kernel = new Kernel();
 
     kernel->streams->printf("Smoothie ( grbl port ) version 0.6.1 \r\n");
