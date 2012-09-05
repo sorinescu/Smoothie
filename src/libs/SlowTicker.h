@@ -18,14 +18,14 @@
 class SlowTicker : public Module{
     public:
         SlowTicker();
-        void set_frequency( int frequency );
+        void set_frequency( uint16_t frequency );
         void tick();
         // For some reason this can't go in the .cpp, see :  http://mbed.org/forum/mbed/topic/2774/?page=1#comment-14221
-        template<typename T> void attach( double frequency, T *optr, uint32_t ( T::*fptr )( uint32_t ) ){
+        template<typename T> void attach( uint16_t frequency, T *optr, uint32_t ( T::*fptr )( uint32_t ) ){
             Hook* hook = new Hook();
             hook->frequency = frequency;
             hook->attach(optr, fptr);
-            hook->counter = -2;
+            hook->counter = 0;
             if( frequency > this->max_frequency ){
                 this->max_frequency = frequency;
             }
@@ -34,7 +34,7 @@ class SlowTicker : public Module{
         }
 
         smt_vector<Hook*>::type hooks;
-        double max_frequency;
+        uint16_t max_frequency;
 };
 
 

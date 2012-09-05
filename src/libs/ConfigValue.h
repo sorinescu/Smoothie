@@ -125,7 +125,7 @@ public:
         switch (type) {
             case CVT_Pin: return new Pin(pin_val);
 #if SMOOTHIE_HAS_CONFIG_VALUE_STRING
-            case CVT_String: return new Pin(Pin::from_str(str_val));
+            case CVT_String: return new Pin(Pin::uint16_from_str(str_val));
 #endif
             default: SMT_ASSERT(0);
         }
@@ -136,11 +136,12 @@ public:
     smt_string as_string(){
         char fmt[32] = "";
         switch (type) {
-            case CVT_Bool: sprintf(fmt, "%s", bool_val ? "true" : "false");
-            case CVT_Double: sprintf(fmt, "%lf", double_val);
-            case CVT_Pin: PIN_IS_INVERTING(pin_val) ?
+            case CVT_Bool: sprintf(fmt, "%s", bool_val ? "true" : "false"); break;
+            case CVT_Double: sprintf(fmt, "%lf", double_val); break;
+            case CVT_Pin: pin_val == PIN_NC ? sprintf(fmt, "nc") : PIN_IS_INVERTING(pin_val) ?
                 sprintf(fmt, "%d.%d!", (int)PIN_PORT_NR(pin_val), (int)PIN_PIN(pin_val)) :
                 sprintf(fmt, "%d.%d", (int)PIN_PORT_NR(pin_val), (int)PIN_PIN(pin_val));
+                break;
             case CVT_String: return str_val;
             default: SMT_ASSERT(0);
         }

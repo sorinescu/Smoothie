@@ -45,18 +45,14 @@ Kernel::Kernel(){
     // Serial second, because the other modules might want to say something
     this->streams        = new StreamOutputPool();
 
-#if SMOOTHIE_HAS_SERIAL_CONSOLE
-    this->serial         = new SerialConsole(NULL, NULL, NULL);
-#endif
-
     this->add_module( this->config );
     //this->add_module( this->serial );
 
     init_platform();    // defined in PlatformKernel
 
-    this->slow_ticker          = new SlowTicker();
+    this->slow_ticker         = new SlowTicker();
     this->slow_ticker->kernel = this; // DEBUG: To remove
-    this->step_ticker          = new StepTicker();
+    this->step_ticker         = new StepTicker();
     this->step_ticker->kernel = this; // DEBUG: To remove
 
     // Core modules
@@ -66,6 +62,10 @@ Kernel::Kernel(){
     this->add_module( this->planner        = new Planner()       );
     this->add_module( this->player         = new Player()        );
     this->add_module( this->pauser         = new Pauser()        );
+
+#if SMOOTHIE_HAS_SERIAL_CONSOLE
+    this->add_module( this->serial         = new SerialConsole(NULL, NULL, NULL) );
+#endif
 
     // this->adc                  = new Adc();
     // this->digipot              = new Digipot();

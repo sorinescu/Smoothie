@@ -35,7 +35,7 @@ class Config : public Module {
         ConfigValue* value(uint16_t check_sum);
         ConfigValue* value(uint16_t check_sum_a, uint16_t check_sum_b);
         ConfigValue* value(uint16_t check_sum_a, uint16_t check_sum_b, uint16_t check_sum_c );
-        ConfigValue* value(smt_vector<uint16_t>::type check_sums );
+        ConfigValue* value(smt_vector<uint16_t>::type &check_sums );
 
         void get_module_list(smt_vector<uint16_t>::type* list, uint16_t family);
 

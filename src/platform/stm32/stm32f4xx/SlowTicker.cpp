@@ -22,13 +22,13 @@
 SlowTicker* global_slow_ticker;
 
 SlowTicker::SlowTicker(){
-	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-	TIM_OCInitTypeDef  TIM_OCInitStructure;
-	uint16_t PrescalerValue = 0;
+        TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+        TIM_OCInitTypeDef  TIM_OCInitStructure;
+        uint16_t PrescalerValue = 0;
 
-	NVIC_InitTypeDef NVIC_InitStructure;
+        NVIC_InitTypeDef NVIC_InitStructure;
 
-	this->max_frequency = 1;
+        this->max_frequency = 1;
     global_slow_ticker = this;
 
     // TIM2 clock enable - we are using RCC for TIM2 which is an internal clock of 48MHz I believe
@@ -45,10 +45,10 @@ SlowTicker::SlowTicker(){
     // PrescalerValue = (uint16_t) ((SystemCoreClock / 2) / 100000) - 1; //  This + a TIM_Period of 100000 makes it tick every second.
     TIM_PrescalerConfig(TIM2, PrescalerValue, TIM_PSCReloadMode_Immediate);
     TIM_TimeBaseStructure.TIM_Period = SystemCoreClock / 2; // default to 1Hz
-	TIM_TimeBaseStructure.TIM_Prescaler = PrescalerValue;
-	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
+        TIM_TimeBaseStructure.TIM_Prescaler = PrescalerValue;
+        TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+        TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+        TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
 
     //Enable interrupt
     TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
@@ -75,7 +75,7 @@ SlowTicker::SlowTicker(){
 // PSC = 16-bit prescaler register
 // ARR = 16/32-bit Autoreload register
 // RCR = 16-bit repetition counter
-void SlowTicker::set_frequency( int frequency ){
+void SlowTicker::set_frequency( uint16_t frequency ){
     TIM_Cmd(TIM2, DISABLE);
     TIM2->ARR = (SystemCoreClock/2)/frequency;
     TIM_Cmd(TIM2, ENABLE);
@@ -84,19 +84,19 @@ void SlowTicker::set_frequency( int frequency ){
 void SlowTicker::tick(){
     for (int i=0; i<this->hooks.size(); i++){
         Hook* hook = this->hooks.at(i);
-        hook->counter += ( hook->frequency / this->max_frequency );
-        if( hook->counter > 0 ){
-            hook->counter-=1;
+        hook->counter += hook->frequency;
+        if (hook->counter > max_frequency){
+            hook->counter-=max_frequency;
             hook->call();
         }
     }
 }
 
 extern "C" void TIM2_IRQHandler(void){
-	if(TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
-	{
-		TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
-		global_slow_ticker->tick();
-	}
+        if(TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
+        {
+                TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
+                global_slow_ticker->tick();
+        }
 }
 

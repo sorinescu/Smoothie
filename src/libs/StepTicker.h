@@ -20,7 +20,7 @@ class StepTicker : public Module {
         StepTicker();
         void set_frequency( double frequency );
         void tick();
-        void set_reset_delay( double seconds );
+        void set_reset_delay( double microseconds );
         void reset_tick();
 
         // For some reason this can't go in the .cpp, see :  http://mbed.org/forum/mbed/topic/2774/?page=1#comment-14221

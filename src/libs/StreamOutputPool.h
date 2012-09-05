@@ -13,45 +13,48 @@
 
 #include "libs/StreamOutput.h"
 
+class StreamOutputPool
+{
+public:
+    StreamOutputPool(){
+        msg_size = 0;
+    }
 
+    void printf(const smt_string format, ...){
+        // Make the message
+        va_list args;
+        va_start(args, format);
 
-class StreamOutputPool {
-    public:
-       StreamOutputPool(){}
-       void printf(const smt_string format, ...){
-            // Make the message
-            va_list args;
-            va_start(args, format);
-            int size = format.size() * 2;
-            char* buffer = new char[size];
-            while (vsprintf(buffer, format.c_str(), args) < 0){
-                delete[] buffer;
-                size *= 2;
-                buffer = new char[size];
-            }
-            smt_string message(buffer);
-            va_end(args);
+        if (!msg_size){
+            msg_size = format.size() + 1;
+            message = new char[msg_size];
+        }
 
-            // Dispatch to all
-            for(unsigned int i=0; i < this->streams.size(); i++){
-                this->streams.at(i)->printf(message.c_str());
-            }
-       }
+        int size = vsnprintf(message, msg_size, format.c_str(), args);
+        if (size >= msg_size)
+        {
+            delete[] message;
+            msg_size = size * 2;
+            message = new char[msg_size];
+        }
 
-       void append_stream(StreamOutput* stream){
-           this->streams.push_back(stream);
-       }
+        vsprintf(message, format.c_str(), args);
+        va_end(args);
 
+        // Dispatch to all
+        for (unsigned int i=0; i < this->streams.size(); i++)
+            this->streams.at(i)->printf(message);
+    }
 
-       smt_vector<StreamOutput*>::type streams;
+    void append_stream(StreamOutput* stream){
+        this->streams.push_back(stream);
+    }
+
+    smt_vector<StreamOutput*>::type streams;
+
+protected:
+    char *message;
+    int msg_size;
 };
-
-
-
-
-
-
-
-
 
 #endif

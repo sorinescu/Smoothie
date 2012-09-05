@@ -44,11 +44,12 @@
 ErrorStatus HSEStartUpStatus;
 
 uint8_t  USART_Rx_Buffer [USART_RX_DATA_SIZE]; 
-uint32_t USART_Rx_ptr_in = 0;
-uint32_t USART_Rx_ptr_out = 0;
-uint32_t USART_Rx_length  = 0;
+__IO uint32_t USART_Rx_ptr_in = 0;
+__IO uint32_t USART_Rx_ptr_out = 0;
+__IO uint32_t USART_Rx_length  = 0;
 
-uint8_t  USB_Tx_State = 0;
+__IO uint8_t  USB_Tx_State = 0;
+
 static void IntToUnicode (uint32_t value , uint8_t *pbuf , uint8_t len);
 /* Extern variables ----------------------------------------------------------*/
 
@@ -330,6 +331,7 @@ void USB_Send_Data(uint8_t* data_buffer, uint8_t Nb_bytes)
 {
     while (Nb_bytes)
     {
+#if 0
         uint32_t USART_Rx_ptr_out_copy = USART_Rx_ptr_out;
         uint32_t len;
 
@@ -359,6 +361,28 @@ void USB_Send_Data(uint8_t* data_buffer, uint8_t Nb_bytes)
 
         /* Wait for transmission */
         while (USART_Rx_ptr_out_copy == USART_Rx_ptr_out);
+
+#else
+
+        if (linecoding.datatype == 7)
+        {
+            USART_Rx_Buffer[USART_Rx_ptr_in] = *data_buffer & 0x7F;
+        }
+        else if (linecoding.datatype == 8)
+        {
+            USART_Rx_Buffer[USART_Rx_ptr_in] = *data_buffer;
+        }
+
+        USART_Rx_ptr_in++;
+        ++data_buffer;
+        --Nb_bytes;
+
+        /* To avoid buffer overflow */
+        if (USART_Rx_ptr_in == USART_RX_DATA_SIZE)
+        {
+            USART_Rx_ptr_in = 0;
+        }
+#endif
     }
 }
 

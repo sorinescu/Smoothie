@@ -76,7 +76,7 @@ void SerialConsole::printf(const char* format, ...){
     va_list args;
     char buf[255];
     va_start (args, format);
-    vsprintf(buf, format, args);
+    vsnprintf(buf, 255, format, args);
     serial->puts(buf);
     va_end (args);
 }

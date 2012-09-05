@@ -49,17 +49,17 @@
 #define MICROSECONDS_PER_STEP_PULSE   5.0
 #define ACCELERATION_TICKS_PER_SECOND 100.0
 #define MINIMUM_STEPS_PER_MINUTE      1200.0
-#define BASE_STEPPING_FREQUENCY       100000.0
+#define BASE_STEPPING_FREQUENCY       5000.0
 
-#define ALPHA_STEP_PIN      PIN(PIN_NON_INVERTING, 3, 12)
-#define BETA_STEP_PIN       PIN(PIN_NON_INVERTING, 3, 13)
-#define GAMMA_STEP_PIN      PIN(PIN_NON_INVERTING, 3, 14)
-#define ALPHA_DIR_PIN       PIN(PIN_NON_INVERTING, 3, 15)
-#define BETA_DIR_PIN        PIN(PIN_NON_INVERTING, 3, 11)
-#define GAMMA_DIR_PIN       PIN(PIN_NON_INVERTING, 3, 10)
-#define ALPHA_EN_PIN        PIN(PIN_NON_INVERTING, 0, 4)
-#define BETA_EN_PIN         PIN(PIN_NON_INVERTING, 0, 10)
-#define GAMMA_EN_PIN        PIN(PIN_NON_INVERTING, 0, 19)
+#define ALPHA_STEP_PIN      PIN(PIN_NON_INVERTING, 0, 3)
+#define BETA_STEP_PIN       PIN(PIN_NON_INVERTING, 0, 9)
+#define GAMMA_STEP_PIN      PIN(PIN_NON_INVERTING, 1, 5)
+#define ALPHA_DIR_PIN       PIN(PIN_NON_INVERTING, 0, 2)
+#define BETA_DIR_PIN        PIN(PIN_NON_INVERTING, 1, 14)
+#define GAMMA_DIR_PIN       PIN(PIN_NON_INVERTING, 1, 9)
+#define ALPHA_EN_PIN        PIN_NC
+#define BETA_EN_PIN         PIN_NC
+#define GAMMA_EN_PIN        PIN_NC
 
 // Extruder
 #define EXTRUDER_MODULE_ENABLE               false
@@ -96,6 +96,39 @@
 // PauseButton
 #define PAUSE_BUTTON_PIN    PIN_NC
 #define PAUSE_LED_PIN       PIN_NC
+
+/* TB6560AHQ stepper driver-specific */
+
+// Global enable and reset pins
+#define XYZ_RESET_PIN       PIN(PIN_INVERTING, 0, 6)
+#define XYZ_ENABLE_PIN      PIN(PIN_NON_INVERTING, 0, 7)
+
+// Motor winding relays (24V)
+#define X_VM_SWITCH_PIN     PIN(PIN_NON_INVERTING, 2, 13)
+#define Y_VM_SWITCH_PIN     PIN(PIN_NON_INVERTING, 2, 14)
+#define Z_VM_SWITCH_PIN     PIN(PIN_NON_INVERTING, 2, 15)
+
+// M1 and M2 control the stepping mode (full step, half step etc)
+#define X_M1_PIN            PIN(PIN_NON_INVERTING, 0, 4)
+#define X_M2_PIN            PIN(PIN_NON_INVERTING, 0, 5)
+#define Y_M1_PIN            PIN(PIN_NON_INVERTING, 1, 13)
+#define Y_M2_PIN            PIN(PIN_NON_INVERTING, 1, 12)
+#define Z_M1_PIN            PIN(PIN_NON_INVERTING, 1, 1)
+#define Z_M2_PIN            PIN(PIN_NON_INVERTING, 1, 0)
+
+// M0 is an input that is low when the IC is initialized.
+// We invert it here.
+#define X_M0_PIN            PIN(PIN_INVERTING, 0, 0)
+#define Y_M0_PIN            PIN(PIN_INVERTING, 1, 15)
+#define Z_M0_PIN            PIN(PIN_INVERTING, 0, 10)
+
+// PROT is an input that is driven low when the IC is in thermal shutdown.
+// We invert it here.
+#define X_PROT_PIN          PIN(PIN_INVERTING, 0, 1)
+#define Y_PROT_PIN          PIN(PIN_INVERTING, 0, 8)
+#define Z_PROT_PIN          PIN(PIN_INVERTING, 1, 8)
+
+/* End TB6560AHQ stepper driver-specific */
 
 #endif // _DEFAULT_CNC_CONFIG_H_
 

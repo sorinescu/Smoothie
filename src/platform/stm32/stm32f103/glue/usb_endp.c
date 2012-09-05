@@ -44,9 +44,9 @@
 /* Private variables ---------------------------------------------------------*/
 uint8_t USB_Rx_Buffer[VIRTUAL_COM_PORT_DATA_SIZE];
 extern  uint8_t USART_Rx_Buffer[];
-extern uint32_t USART_Rx_ptr_out;
-extern uint32_t USART_Rx_length;
-extern uint8_t  USB_Tx_State;
+extern __IO uint32_t USART_Rx_ptr_out;
+extern __IO uint32_t USART_Rx_length;
+extern __IO uint8_t  USB_Tx_State;
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
@@ -93,6 +93,8 @@ void EP1_IN_Callback (void)
       UserToPMABufferCopy(&USART_Rx_Buffer[USB_Tx_ptr], ENDP1_TXADDR, USB_Tx_length);
       SetEPTxCount(ENDP1, USB_Tx_length);
       SetEPTxValid(ENDP1); 
+      /* wait until the data transmission is finished */
+      while (GetEPTxStatus(ENDP1) == EP_TX_VALID); //0x30
 #endif  
     }
   }

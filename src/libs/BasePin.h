@@ -14,7 +14,7 @@ typedef uint16_t PinAsUint16;
 // Pin description as int16
 #define PIN(inverting, port_nr, pin) PinAsUint16((inverting ? 0x8000 : 0) | (((port_nr) & 0x7f) << 8) | ((pin) & 0xff))
 
-#define PIN_IS_INVERTING(pin) ((pin) & 0x8000 != 0)
+#define PIN_IS_INVERTING(pin) (((pin) & 0x8000) == 0x8000)
 #define PIN_PORT_NR(pin) (((pin) >> 8) & 0x7f)
 #define PIN_PIN(pin) ((pin) & 0xff)
 
@@ -31,7 +31,7 @@ typedef uint16_t PinAsUint16;
 class BasePin {
 public:
 #if SMOOTHIE_HAS_CONFIG_VALUE_STRING
-    static PinAsUint16 from_str(const smt_string& value) {
+    static PinAsUint16 uint16_from_str(const smt_string& value) {
         if (value.compare("nc") == 0)
             return PIN_NC;
 
@@ -44,16 +44,16 @@ public:
 #endif
 
 protected:
-    BasePin(PinAsUint16 pin) {
-        if (pin == PIN_NC) {
+    BasePin(PinAsUint16 apin) {
+        if (apin == PIN_NC) {
             connected   = false;
             port_number = 0xff;    // mainly for debug - large, invalid value
         }
         else {
             connected   = true;
-            inverting   = PIN_IS_INVERTING(pin);
-            port_number = PIN_PORT_NR(pin);
-            pin         = PIN_PIN(pin);
+            inverting   = PIN_IS_INVERTING(apin);
+            port_number = PIN_PORT_NR(apin);
+            pin         = PIN_PIN(apin);
         }
     }
 

@@ -72,7 +72,7 @@ void Stepper::on_config_reload(void* argument){
     // Set the Timer interval for Match Register 1,
 
     this->kernel->step_ticker->set_frequency( this->base_stepping_frequency );
-    this->kernel->step_ticker->set_reset_delay( double(this->microseconds_per_step_pulse) / 1000000 );
+    this->kernel->step_ticker->set_reset_delay( this->microseconds_per_step_pulse );
 }
 
 // When the play/pause button is set to pause, or a module calls the ON_PAUSE event

@@ -110,8 +110,8 @@ ConfigValue* Config::value(uint16_t check_sum){
 // Get a value from the configuration as a smt_string
 // Because we don't like to waste space in Flash with lengthy config parameter names, we take a checksum instead so that the name does not have to be stored
 // See get_checksum
-ConfigValue* Config::value(smt_vector<uint16_t>::type check_sums){
-    ConfigValue* result = this->config_cache[0];
+ConfigValue* Config::value(smt_vector<uint16_t>::type &check_sums){
+    ConfigValue* result = 0;
     //if( this->has_config_file() == false ){
     //   return result;
     //}
@@ -137,6 +137,14 @@ ConfigValue* Config::value(smt_vector<uint16_t>::type check_sums){
         }
         result = this->config_cache[i];
         break;
+    }
+
+    // Add value if it doesn't exist (no value assigned)
+    if( !result ) {
+        SMT_ASSERT( cache_preloaded );  // it would be disastrous to flush the cache (return deleted value)
+        result = new ConfigValue;
+        result->check_sums = check_sums;
+        this->config_cache.replace_or_push_back(result);
     }
 
     if( !cache_preloaded ){

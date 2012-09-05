@@ -113,7 +113,11 @@ void Configurator::config_load_command( smt_string parameters, StreamOutput* str
     if(source == ""){
         this->kernel->config->config_cache_load();
         this->kernel->call_event(ON_CONFIG_RELOAD);
-        stream->printf( "Reloaded settings\r\n" );
+        const char *message = "Reloaded settings\r\n";
+        if(stream)
+            stream->printf( message );
+        else
+            kernel->streams->printf( message );
 #if SMOOTHIE_USE_FILES
     } else if(file_exists(source)){
         FileConfigSource fcs(source);

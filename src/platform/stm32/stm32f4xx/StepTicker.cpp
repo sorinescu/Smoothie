@@ -24,8 +24,8 @@ StepTicker* global_step_ticker;
 
 StepTicker::StepTicker(){
     TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-	TIM_OCInitTypeDef  TIM_OCInitStructure;
-	uint16_t PrescalerValue = 0;
+        TIM_OCInitTypeDef  TIM_OCInitStructure;
+        uint16_t PrescalerValue = 0;
 
     NVIC_InitTypeDef NVIC_InitStructure;
 
@@ -71,10 +71,10 @@ void StepTicker::set_frequency( double frequency ){
     TIM_Cmd(TIM3, ENABLE);
 }
 
-void StepTicker::set_reset_delay( double seconds ){
+void StepTicker::set_reset_delay( double microseconds ){
     TIM_Cmd(TIM3, DISABLE);
     TIM3->ARR = (SystemCoreClock/2)/this->frequency;
-    double d_tmp = seconds * 84000000.0;
+    double d_tmp = microseconds * 84000000.0 / 1000000;
     int delay_val = int(floor(d_tmp));
     TIM3->CCR1 = TIM3->ARR - 1;
     TIM3->CCR2 = delay_val;
@@ -95,13 +95,13 @@ void StepTicker::reset_tick(){
 
 extern "C" void TIM3_IRQHandler(void){
     if(TIM_GetITStatus(TIM3, TIM_IT_CC1) != RESET) {
-		TIM_ClearITPendingBit(TIM3, TIM_IT_CC1);
-	    global_step_ticker->tick();
+                TIM_ClearITPendingBit(TIM3, TIM_IT_CC1);
+            global_step_ticker->tick();
     }
 
-	if(TIM_GetITStatus(TIM3, TIM_IT_CC2) != RESET) {
-		TIM_ClearITPendingBit(TIM3, TIM_IT_CC2);
-    	global_step_ticker->reset_tick();
+        if(TIM_GetITStatus(TIM3, TIM_IT_CC2) != RESET) {
+                TIM_ClearITPendingBit(TIM3, TIM_IT_CC2);
+        global_step_ticker->reset_tick();
     }
 }
 

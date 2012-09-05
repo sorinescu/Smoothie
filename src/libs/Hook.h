@@ -5,8 +5,8 @@
 class Hook : public FPointer {
     public:
         Hook();
-        double           frequency;
-        double           counter;
+        uint16_t         frequency;
+        uint16_t         counter;
 };
 
 #endif
